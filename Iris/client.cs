@@ -1,0 +1,155 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.UI.Dispatching;
+using Windows.Foundation.Metadata;
+
+namespace Iris
+{
+    [JsonSourceGenerationOptions(WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonSerializable(typeof(Message))]
+    [JsonSerializable(typeof(List<Message>))]
+    [JsonSerializable(typeof(Chat))]
+    [JsonSerializable(typeof(Binding_Message))]
+    [JsonSerializable(typeof(ObservableCollection<Binding_Message>))]
+    [JsonSerializable(typeof(Payload))]
+    [JsonSerializable(typeof(Payload.Provider))]
+    [JsonSerializable(typeof(List<string>))]
+    [JsonSerializable(typeof(Response))]
+    [JsonSerializable(typeof(Response.Choices))]
+    [JsonSerializable(typeof(List<Response.Choices>))]
+    [JsonSerializable(typeof(Response.Choices.Delta))]
+    [JsonSerializable(typeof(Response.Usage))]
+    internal partial class JsonContext : JsonSerializerContext { }
+
+    public class Message
+    {
+        public Message(Binding_Message other) 
+        {
+            backingMessage = other;
+        }
+        public Binding_Message backingMessage;
+        public string role
+        {
+            get
+            { 
+                return backingMessage.role;
+            }
+        }
+        public string content
+        {
+            get
+            {
+                if(backingMessage.isAssistantMessage) return "<>" + backingMessage.reasoning + "</>\n" + backingMessage.content;
+                return backingMessage.content;
+            }
+        }
+
+    }
+
+    class Payload
+    {
+        public string? model { get; set; }
+
+        [JsonInclude]
+        public IList<Message> messages = [];
+        [JsonInclude]
+        public string reasoning_effort = "xhigh";
+        [JsonInclude]
+        public bool stream = true;
+        
+        public class Provider
+        {
+            public List<string>? only {get; set;}
+            bool allow_fallbacks {get; set;} = false;
+        }
+        public Provider? provider {get; set;}
+    }
+
+    class Response
+    {
+        public class Choices
+        {
+            public string? finish_reason { get; set; }
+            public class Delta
+            {
+                [JsonInclude]
+                public string content = "";
+                [JsonInclude]
+                public string reasoning = "";
+            }
+            [JsonInclude]
+            public Delta delta = new();
+        }
+        public class Usage
+        { 
+            public int completion_tokens { get; set; }
+            public int prompt_tokens { get; set; }
+            public int total_tokens { get; set; }
+            public double cost { get; set; }
+        }
+        [JsonInclude]
+        public List<Choices> choices = [];
+        public Usage? usage { get; set; }
+    }
+
+    public class Client
+    {
+        public Client()
+        {
+
+            client = new();
+            client.BaseAddress = new Uri("https://openrouter.ai/api/v1/");
+            client.DefaultRequestHeaders.Add("X-OpenRouter-Title", "Iris");
+            client.DefaultRequestHeaders.Add("HTTP-Referer", "https://github.com/StrixLake/Iris"); // the api needs this header otherwise
+                                                                                       // it won't display the name in usage logs
+        }
+
+        HttpClient client;
+        public static string apikey = "";
+
+        public async Task ChatCompletion(Binding_Message response, List<Message> context, string model, CancellationToken cancellationToken)
+        {
+            Payload payload = new() { model = model, messages = context};
+
+            if(model.StartsWith("deepseek")) payload.provider = new(){only=["DeepSeek"]};
+            
+            string json = JsonSerializer.Serialize(payload, JsonContext.Default.Payload);
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            HttpRequestMessage request = new(HttpMethod.Post, "chat/completions") { Content = content};
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apikey);
+            HttpResponseMessage incomplete_response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            incomplete_response.EnsureSuccessStatusCode();
+
+            Stream stream  = await incomplete_response.Content.ReadAsStreamAsync();
+            StreamReader reader = new StreamReader(stream);
+
+            response.isAssistantMessage = true;
+
+            string? line;
+            while ((line = await reader.ReadLineAsync(cancellationToken)) != null)  // <-- no EndOfStream
+            {
+                if (line.StartsWith("data: ") && !line.Contains("[DONE]"))
+                {
+                    line = line["data: ".Length..];
+                    Response api_response = JsonSerializer.Deserialize<Response>(line, JsonContext.Default.Response) ?? new Response();
+                    response.content += api_response.choices[0].delta.content ?? "";
+                    response.reasoning += api_response.choices[0].delta.reasoning ?? "";
+                }
+            }
+
+        }
+
+    }
+}

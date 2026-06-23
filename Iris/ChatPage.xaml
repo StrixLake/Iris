@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Iris.ChatPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Iris"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    mc:Ignorable="d">
+
+    <Grid KeyUp="Cancel">
+        <Grid.Resources>
+            <local:BoolToColor x:Key="ColorConverter"/>
+        </Grid.Resources>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ScrollView Grid.Row="0" HorizontalAlignment="Stretch">
+
+            <StackPanel HorizontalAlignment="Stretch">
+
+                <ItemsControl ItemsSource="{x:Bind activeChat.messages, Mode=OneWay}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+
+                            <StackPanel Margin="4" Visibility="{Binding isNotSystemPrompt}">
+
+                                <TextBlock Text="{Binding role}" Foreground="DarkGray" FontFamily="Consolas"/>
+
+                                <Expander Visibility="{Binding isAssistantMessage}"
+                                          FontFamily="Consolas" HorizontalAlignment="Stretch">
+                                    <Expander.Header>
+                                        <TextBlock Text="Reasoning" FontFamily="Consolas"/>
+                                    </Expander.Header>
+                                    <Expander.Background>
+                                        <AcrylicBrush TintColor="Black"/>
+                                    </Expander.Background>
+
+                                    <controls:MarkdownTextBlock Text="{Binding reasoning}" TextWrapping="WrapWholeWords"
+                                                                Background="Transparent" UseSyntaxHighlighting="True"
+                                                                WrapCodeBlock="True"/>
+                                </Expander>
+
+                                <controls:MarkdownTextBlock Text="{Binding content}" TextWrapping="WrapWholeWords"
+                                                            FontFamily="Consolas" Foreground="{Binding isAssistantMessage, Converter={StaticResource ColorConverter}}"
+                                                            UseSyntaxHighlighting="True" Background="Transparent"/>
+
+                            </StackPanel>
+
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollView>
+
+        <TextBox x:Name="promptField" Grid.Row="1" HorizontalAlignment="Stretch"
+                 MaxHeight="200" Margin="0,10,0,20" TextWrapping="Wrap" 
+                 AcceptsReturn="True"
+                 KeyDown="SendMessage" KeyUp="promptField_KeyUp"/>
+
+    </Grid>
+</Page>
