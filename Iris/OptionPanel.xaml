@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Iris.OptionPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Iris"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    mc:Ignorable="d">
+
+    <Grid HorizontalAlignment="Stretch" Padding="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.Background>
+            <AcrylicBrush TintColor="Black" TintOpacity="0.5"/>
+        </Grid.Background>
+
+        <TextBox PlaceholderText="Add Model" HorizontalAlignment="Stretch"
+                 KeyDown="TextBox_KeyDown" Grid.Row="0"
+                 x:Name="add_model"/>
+        
+        <ComboBox ItemsSource="{x:Bind Models, Mode=OneWay}" 
+                  HorizontalAlignment="Stretch" Margin="0,10,0,0"
+                  SelectedItem="{x:Bind SelectedModel, Mode=TwoWay}"
+                  SelectionChanged="GetModelDescription" Grid.Row="1" />
+        
+        <controls:MarkdownTextBlock Text="{x:Bind ModelDescription, Mode=OneWay}" TextWrapping="WrapWholeWords" 
+                                    Margin="0,20,0,0" WrapCodeBlock="True"
+                                    Background="Transparent" Grid.Row="2"/>
+
+    </Grid>
+</Page>
