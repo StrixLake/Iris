@@ -103,8 +103,15 @@ namespace Iris
         public Usage? usage { get; set; }
     }
 
+    public enum ClientStatus
+    {
+        JSON_Serialiser_Failed, JSON_Serialiser_Success, JSON_Deserialiser_Failed,
+        Network_Error, Response_Error, Response_Success,
+        Generation_Begin, Generation_End, Generation_Cancelled
+    }
     public class Client
     {
+        public delegate void StatusUpdateEventHandler(ClientStatus status, string log);
         public Client()
         {
 
@@ -117,37 +124,88 @@ namespace Iris
 
         HttpClient client;
         public static string apikey = "";
+        public event StatusUpdateEventHandler? StatusUpdate;
 
         public async Task ChatCompletion(Binding_Message response, List<Message> context, string model, CancellationToken cancellationToken)
         {
             Payload payload = new() { model = model, messages = context};
 
             if(model.StartsWith("deepseek")) payload.provider = new(){only=["DeepSeek"]};
-            
-            string json = JsonSerializer.Serialize(payload, JsonContext.Default.Payload);
+            string json;
+
+            try { json = JsonSerializer.Serialize(payload, JsonContext.Default.Payload); }
+            catch
+            {
+                StatusUpdate?.Invoke(ClientStatus.JSON_Serialiser_Failed, "Json Serializer Failed");
+                return;
+            }
+
             StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
             HttpRequestMessage request = new(HttpMethod.Post, "chat/completions") { Content = content};
 
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apikey);
-            HttpResponseMessage incomplete_response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-            incomplete_response.EnsureSuccessStatusCode();
+            HttpResponseMessage incomplete_response;
 
-            Stream stream  = await incomplete_response.Content.ReadAsStreamAsync();
-            StreamReader reader = new StreamReader(stream);
+            try { incomplete_response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken); }
+            catch
+            {
+                StatusUpdate?.Invoke(ClientStatus.Network_Error, "Send Async Failed, check network");
+                return;
+            }
+
+            try { incomplete_response.EnsureSuccessStatusCode(); }
+            catch
+            {
+                using Stream stream_temp = await incomplete_response.Content.ReadAsStreamAsync();
+                using StreamReader reader_temp = new StreamReader(stream_temp);
+                string failed_response = await reader_temp.ReadToEndAsync();
+
+                using JsonDocument response_json = JsonDocument.Parse(failed_response);
+                JsonElement error = response_json.RootElement.GetProperty("error");
+                string message = error.GetProperty("message").ToString();
+                int code = error.GetProperty("code").GetInt32();
+
+                StatusUpdate?.Invoke(ClientStatus.Response_Error, String.Format("Code: {0}. {1}", error, message));
+                return;
+            }
+
+            StatusUpdate?.Invoke(ClientStatus.Response_Success, "Response Succeed");
+
+            using Stream stream  = await incomplete_response.Content.ReadAsStreamAsync();
+            using StreamReader reader = new StreamReader(stream);
 
             response.isAssistantMessage = true;
 
+            StatusUpdate?.Invoke(ClientStatus.Generation_Begin, "Starting Message Streaming");
+
             string? line;
-            while ((line = await reader.ReadLineAsync(cancellationToken)) != null)  // <-- no EndOfStream
+            try
             {
-                if (line.StartsWith("data: ") && !line.Contains("[DONE]"))
+                while ((line = await reader.ReadLineAsync(cancellationToken)) != null)  // <-- no EndOfStream
                 {
-                    line = line["data: ".Length..];
-                    Response api_response = JsonSerializer.Deserialize<Response>(line, JsonContext.Default.Response) ?? new Response();
-                    response.content += api_response.choices[0].delta.content ?? "";
-                    response.reasoning += api_response.choices[0].delta.reasoning ?? "";
+                    if (line.StartsWith("data: ") && !line.Contains("[DONE]"))
+                    {
+                        line = line["data: ".Length..];
+                        Response api_response;
+
+                        try { api_response = JsonSerializer.Deserialize<Response>(line, JsonContext.Default.Response) ?? new Response(); }
+                        catch 
+                        {
+                            StatusUpdate?.Invoke(ClientStatus.JSON_Deserialiser_Failed, String.Format("Deserialisation failed. API returned: {0}", line));
+                            return;
+                        }
+                        response.content += api_response.choices[0].delta.content ?? "";
+                        response.reasoning += api_response.choices[0].delta.reasoning ?? "";
+                    }
                 }
             }
+            catch (OperationCanceledException)
+            {
+                StatusUpdate?.Invoke(ClientStatus.Generation_Cancelled, "Message Streaming Cancelled");
+                return;
+            }
+
+            StatusUpdate?.Invoke(ClientStatus.Generation_End, "Message Streaming Finished");
 
         }
 

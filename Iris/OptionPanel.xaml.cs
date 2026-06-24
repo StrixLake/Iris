@@ -51,8 +51,13 @@ namespace Iris
             using HttpClient client = new();
             client.BaseAddress = new Uri("https://openrouter.ai/api/v1/model/");
 
-            HttpResponseMessage responce = await client.GetAsync(model);
-            responce.EnsureSuccessStatusCode();
+            HttpResponseMessage responce;
+            try 
+            {
+                responce = await client.GetAsync(model);
+                responce.EnsureSuccessStatusCode();
+            }
+            catch { return; }
 
             string modelDescription = await responce.Content.ReadAsStringAsync();
             using JsonDocument jsonDocument = JsonDocument.Parse(modelDescription);
