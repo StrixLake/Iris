@@ -47,7 +47,22 @@
 
                                 <controls:MarkdownTextBlock Text="{Binding content}" TextWrapping="WrapWholeWords"
                                                             FontFamily="Consolas" Foreground="{Binding isAssistantMessage, Converter={StaticResource ColorConverter}}"
-                                                            UseSyntaxHighlighting="True" Background="Transparent"/>
+                                                            UseSyntaxHighlighting="True" Background="Transparent">
+                                    <controls:MarkdownTextBlock.ContextFlyout>
+                                        <CommandBarFlyout>
+                                            <!-- Primary commands render as a horizontal bar -->
+                                            <CommandBarFlyout.PrimaryCommands>
+                                                <AppBarButton Icon="Copy" Label="Copy"/>
+                                                <AppBarButton Icon="SelectAll" Label="Select All"/>
+                                            </CommandBarFlyout.PrimaryCommands>
+
+                                            <!-- Secondary commands render as a traditional vertical list -->
+                                            
+                                        </CommandBarFlyout>
+                                    </controls:MarkdownTextBlock.ContextFlyout>
+                                </controls:MarkdownTextBlock>
+
+
 
                             </StackPanel>
 

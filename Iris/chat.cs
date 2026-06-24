@@ -6,8 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.UI;
+using Windows.UI;
 
 namespace Iris
 {
@@ -59,7 +62,7 @@ namespace Iris
 
     }
 
-    public class Chat
+    public class Chat : INotifyPropertyChanged
     {
         public string filename { get; set; }
         public string title { get; set; } = "New Chat";
@@ -68,6 +71,20 @@ namespace Iris
         public string model { get; set; } = "google/gemma-4-31b-it";
         Client client = new();
         public CancellationTokenSource cancellationToken = new CancellationTokenSource();
+        public event Client.StatusUpdateEventHandler? StatusUpdate;
+        public event PropertyChangedEventHandler? PropertyChanged;
+        
+        Color Status_ = Colors.Transparent;
+        [JsonIgnore]
+        public Color Status
+        {
+            get { return Status_; }
+            set
+            {
+                Status_ = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Status)));
+            }
+        }
 
         // methods
         public Chat()
@@ -102,6 +119,9 @@ You are a reasoning model and the reasoning tokens are recieved by the system. D
             // generate a random filename
             Random random = new Random();
             filename = ((int)(random.NextDouble()*1_000_000)).ToString() + ".json";
+
+            // chain the event with client's event
+            client.StatusUpdate += ChainStatusUpdate;
         }
 
         public async void SendMessage(string prompt)
@@ -142,5 +162,32 @@ You are a reasoning model and the reasoning tokens are recieved by the system. D
             using StreamWriter filewrite = new StreamWriter(filepath);
             filewrite.Write(json);
         }
+
+        void ChainStatusUpdate(ClientStatus status, string log)
+        {
+            StatusUpdate?.Invoke(status, log);
+            switch(status)
+            {
+                case ClientStatus.Network_Error:
+                    Status = Colors.Red;
+                    break;
+                case ClientStatus.Response_Error:
+                    Status = Colors.DarkOrange;
+                    break;
+                case ClientStatus.Response_Success:
+                    Status = Colors.Green;
+                    break;
+                case ClientStatus.Generation_Begin:
+                    Status = Colors.Blue;
+                    break;
+                case ClientStatus.Generation_End:
+                    Status = Colors.Transparent;
+                    break;
+                case ClientStatus.Generation_Cancelled:
+                    Status = Colors.Yellow;
+                    break;
+            }
+        }
     }
+
 }

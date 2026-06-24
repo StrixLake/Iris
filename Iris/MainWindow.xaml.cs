@@ -20,6 +20,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Windows.ApplicationModel.VoiceCommands;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Media.Streaming.Adaptive;
 using Windows.System;
 using Windows.UI.Core;
 
@@ -31,7 +32,7 @@ namespace Iris
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainWindow : Window
+    public sealed partial class MainWindow : Window, INotifyPropertyChanged
     {
 
         public MainWindow()
@@ -90,7 +91,7 @@ namespace Iris
 
         }
 
-        // new messages
+        // new messages 
         void NewMessage()
         {
             // this method is subscribed to ChatPanel.NewMessage
@@ -114,7 +115,18 @@ namespace Iris
 
 
         public ObservableCollection<Chat> chats { get; set; }
-        public Chat activeChat { get; set; }
+        Chat activeChat_ = null!;
+        public Chat activeChat 
+        { 
+            get { return activeChat_; } 
+            set
+            {
+                activeChat_ = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(activeChat)));
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
         
 
         // animation events
