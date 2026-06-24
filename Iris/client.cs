@@ -50,7 +50,7 @@ namespace Iris
         {
             get
             {
-                if(backingMessage.isAssistantMessage) return "<>" + backingMessage.reasoning + "</>\n" + backingMessage.content;
+                if(backingMessage.isAssistantMessage) return "<reasoning>" + backingMessage.reasoning + "<reasoning/>\n" + backingMessage.content;
                 return backingMessage.content;
             }
         }
@@ -105,8 +105,8 @@ namespace Iris
 
     public enum ClientStatus
     {
-        JSON_Serialiser_Failed, JSON_Serialiser_Success, JSON_Deserialiser_Failed,
-        Network_Error, Response_Error, Response_Success,
+        JSON_Serialiser_Begin, JSON_Serialiser_Failed, JSON_Serialiser_Success, 
+        JSON_Deserialiser_Failed, Network_Error, Response_Error, Response_Success,
         Generation_Begin, Generation_End, Generation_Cancelled
     }
     public class Client
@@ -133,12 +133,16 @@ namespace Iris
             if(model.StartsWith("deepseek")) payload.provider = new(){only=["DeepSeek"]};
             string json;
 
+            StatusUpdate?.Invoke(ClientStatus.JSON_Serialiser_Begin, "Starting Serialisation");
+
             try { json = JsonSerializer.Serialize(payload, JsonContext.Default.Payload); }
             catch
             {
                 StatusUpdate?.Invoke(ClientStatus.JSON_Serialiser_Failed, "Json Serializer Failed");
                 return;
             }
+
+            StatusUpdate?.Invoke(ClientStatus.JSON_Serialiser_Success, "Serialiser Finished");
 
             StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
             HttpRequestMessage request = new(HttpMethod.Post, "chat/completions") { Content = content};

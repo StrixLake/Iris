@@ -32,13 +32,11 @@
                                 <TextBlock Text="{Binding role}" Foreground="DarkGray" FontFamily="Consolas"/>
 
                                 <Expander Visibility="{Binding isAssistantMessage}"
-                                          FontFamily="Consolas" HorizontalAlignment="Stretch">
+                                          FontFamily="Consolas" HorizontalAlignment="Stretch"
+                                          Background="#1FFFFFFF">
                                     <Expander.Header>
                                         <TextBlock Text="Reasoning" FontFamily="Consolas"/>
                                     </Expander.Header>
-                                    <Expander.Background>
-                                        <AcrylicBrush TintColor="Black"/>
-                                    </Expander.Background>
 
                                     <controls:MarkdownTextBlock Text="{Binding reasoning}" TextWrapping="WrapWholeWords"
                                                                 Background="Transparent" UseSyntaxHighlighting="True"
