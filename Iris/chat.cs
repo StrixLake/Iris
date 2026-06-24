@@ -129,9 +129,14 @@ Therefore, do not under any circumstance use or output <rasoning> tags to wrap y
 
         public async void SendMessage(string prompt)
         {
-            Binding_Message nextMessage = new() { content = prompt};
-            messages.Add(nextMessage);
-            context.Add(new(nextMessage));
+            // only append the prompt if it's not empty,
+            // otherwise just send the message context for generation
+            if(prompt != "")
+            {
+                Binding_Message nextMessage = new() { content = prompt};
+                messages.Add(nextMessage);
+                context.Add(new(nextMessage));
+            }
 
             if(context.Count != messages.Count)
             {
