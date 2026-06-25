@@ -108,6 +108,7 @@ namespace Iris
         public ObservableCollection<Binding_Message> messages { get; set; } = new();
         public List<Message> context = new();
         public string model { get; set; } = "google/gemma-4-31b-it";
+        string save_folder = "history";
         Client client = new();
         public CancellationTokenSource cancellationToken = new CancellationTokenSource();
         public event Client.StatusUpdateEventHandler? StatusUpdate;
@@ -257,11 +258,27 @@ Therefore, do not under any circumstance use or output <rasoning> tags to wrap y
 
             string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             string DirPath = System.IO.Path.Combine(documents, ".iris");
-            string historyDir = System.IO.Path.Combine(DirPath, "history");
+            string historyDir = System.IO.Path.Combine(DirPath, save_folder);
             string filepath = System.IO.Path.Combine(historyDir, filename);
 
             using StreamWriter filewrite = new StreamWriter(filepath);
             filewrite.Write(json);
+        }
+
+        public void DeleteHistory()
+        {
+            // remove the file from history folder
+            // and move it to bin folder
+            // and also change the save path to bin in the event that it's still saving
+            save_folder = "bin";
+            string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string DirPath = System.IO.Path.Combine(documents, ".iris");
+            string historyDir = System.IO.Path.Combine(DirPath, "history");
+            string filepath = System.IO.Path.Combine(historyDir, filename);
+
+            File.Delete(filepath);
+            // so it saves it in bin
+            SaveChat();
         }
 
         void ChainStatusUpdate(ClientStatus status, string log)

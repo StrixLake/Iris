@@ -52,7 +52,22 @@ namespace Iris
 
             Chat context_item = (Chat)item.DataContext;
 
-            if (chats != null) chats.Remove(context_item);
+            if (chats != null && context_item.title != "New Chat")
+            {
+                // get the index of this chat and
+                // open the previous chat in the
+                // history if this was the active chat
+                if(context_item == chat_history.SelectedItem)
+                {
+                    int context_index = chats.IndexOf(context_item);
+                    chat_history.SelectedIndex = context_index - 1;
+                    ActiveChatChange?.Invoke((Chat)chat_history.SelectedItem);
+                }
+
+                chats.Remove(context_item);
+                context_item.DeleteHistory();
+            }
+            
 
             return;
 
