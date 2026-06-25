@@ -25,47 +25,64 @@
 
         <ScrollView Grid.Row="0" HorizontalAlignment="Stretch">
 
-                <ItemsRepeater ItemsSource="{x:Bind activeChat.messages, Mode=OneWay}">
-                    <ItemsRepeater.ItemTemplate>
-                        <DataTemplate>
+            <ItemsRepeater ItemsSource="{x:Bind activeChat.messages, Mode=OneWay}">
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate>
 
-                            <StackPanel Margin="4" Visibility="{Binding isNotSystemPrompt}">
+                        <StackPanel Margin="4" Visibility="{Binding isNotSystemPrompt}" Padding="10">
 
-                                <TextBlock Text="{Binding role}" Foreground="DarkGray" FontFamily="Consolas"/>
+                            <TextBlock Text="{Binding role}" Foreground="DarkGray" FontFamily="Consolas">
+                                <TextBlock.ContextFlyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutSubItem Text="Edit">
+                                            <MenuFlyoutItem Text="Reasoning"/>
+                                            <MenuFlyoutItem Text="Content"/>
+                                        </MenuFlyoutSubItem>
 
-                                <Expander Visibility="{Binding isAssistantMessage}"
+                                        <MenuFlyoutSubItem Text="Delete">
+                                            <MenuFlyoutItem Text="Reasoning"/>
+                                            <MenuFlyoutItem Text="Content"/>
+                                        </MenuFlyoutSubItem>
+
+                                        <MenuFlyoutItem Text="Regenerate" Click="Regenerate"/>
+                                    </MenuFlyout>
+                                </TextBlock.ContextFlyout>
+                            </TextBlock>
+
+
+                            <Expander Visibility="{Binding isAssistantMessage}"
                                           FontFamily="Consolas" HorizontalAlignment="Stretch"
                                           Background="#1FFFFFFF">
-                                    <Expander.Header>
-                                        <TextBlock Text="Reasoning" FontFamily="Consolas"/>
-                                    </Expander.Header>
+                                <Expander.Header>
+                                    <TextBlock Text="Reasoning" FontFamily="Consolas"/>
+                                </Expander.Header>
 
-                                    <StackPanel>
-                                        <controls:MarkdownTextBlock Text="{Binding reasoning}" TextWrapping="WrapWholeWords"
+                                <StackPanel>
+                                    <controls:MarkdownTextBlock Text="{Binding reasoning}" TextWrapping="WrapWholeWords"
                                                                     Background="Transparent" WrapCodeBlock="True"
                                                                     UseSyntaxHighlighting="True" Visibility="{Binding hasFinishedStreamingMessage}"/>
 
-                                        <TextBlock Text="{Binding reasoning}" TextWrapping="WrapWholeWords" Visibility="{Binding hasNotFinishedStreamingMessage}"/>
-                                        
-                                    </StackPanel>
+                                    <TextBlock Text="{Binding reasoning}" TextWrapping="WrapWholeWords" Visibility="{Binding hasNotFinishedStreamingMessage}"/>
 
-                                </Expander>
+                                </StackPanel>
 
-                                <controls:MarkdownTextBlock Text="{Binding content}" TextWrapping="WrapWholeWords"
+                            </Expander>
+
+                            <controls:MarkdownTextBlock Text="{Binding content}" TextWrapping="WrapWholeWords"
                                                         FontFamily="Consolas" Foreground="{Binding isAssistantMessage, Converter={StaticResource ColorConverter}}"
                                                         WrapCodeBlock="True" Background="Transparent"
                                                         UseSyntaxHighlighting="True" Visibility="{Binding hasFinishedStreamingMessage}">
-                                </controls:MarkdownTextBlock>
+                            </controls:MarkdownTextBlock>
 
-                                <TextBlock Text="{Binding content}" TextWrapping="WrapWholeWords" Visibility="{Binding hasNotFinishedStreamingMessage}"/>
+                            <TextBlock Text="{Binding content}" TextWrapping="WrapWholeWords" Visibility="{Binding hasNotFinishedStreamingMessage}"/>
 
-                                <TextBlock Text="{Binding date_time}" Foreground="DarkGray" FontFamily="Consolas"/>
-                                
+                            <TextBlock Text="{Binding date_time}" Foreground="DarkGray" FontFamily="Consolas"/>
+
                         </StackPanel>
 
-                        </DataTemplate>
-                    </ItemsRepeater.ItemTemplate>
-                </ItemsRepeater>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
             
         </ScrollView>
 
