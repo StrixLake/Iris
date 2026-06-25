@@ -179,16 +179,7 @@ Therefore, do not under any circumstance use or output <rasoning> tags to wrap y
             generationBinding.hasNotFinishedStreamingMessage = false;
             context.Add(generation);
 
-            // convert this object to json and save it
-            string json = JsonSerializer.Serialize(this, JsonContext.Default.Chat);
-
-            string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string DirPath = System.IO.Path.Combine(documents, ".iris");
-            string historyDir = System.IO.Path.Combine(DirPath, "history");
-            string filepath = System.IO.Path.Combine(historyDir, filename);
-
-            using StreamWriter filewrite = new StreamWriter(filepath);
-            filewrite.Write(json);
+            SaveChat();
 
             // generate the title if there was 7 messages in the context
             // and the default title is still in use
@@ -205,6 +196,52 @@ Therefore, do not under any circumstance use or output <rasoning> tags to wrap y
                 title = title_response.content;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(title)));
             }
+        }
+
+        // when one of the messages in the context
+        // needs to generated
+        public async void SendPartialMessage(int generate_index)
+        {
+            // regenerate the context list if it's not the same size as 
+            // messages
+            if(context.Count != messages.Count)
+            {
+                context.Clear();
+                foreach (Binding_Message message in messages)
+                {
+                    context.Add(new(message));
+                }
+            }
+
+            List<Message> partial_context = context.GetRange(0, generate_index); // it shouldn't be -1 because we are also counting the system prompt
+                                                                                 // and GetIndex returns 0 based index
+            Binding_Message regeneration_message = messages[generate_index];
+            regeneration_message.hasFinishedStreaming = false;
+            regeneration_message.content = "";
+            regeneration_message.reasoning= "";
+
+            cancellationToken.Dispose();
+            cancellationToken = new();
+            await client.ChatCompletion(regeneration_message, partial_context, model, cancellationToken.Token);
+            regeneration_message.date_time = DateTime.Now.ToString();
+            regeneration_message.hasFinishedStreamingMessage = true;
+            regeneration_message.hasNotFinishedStreamingMessage = false;
+
+            SaveChat();
+        }
+
+        void SaveChat()
+        {
+            // convert this object to json and save it
+            string json = JsonSerializer.Serialize(this, JsonContext.Default.Chat);
+
+            string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string DirPath = System.IO.Path.Combine(documents, ".iris");
+            string historyDir = System.IO.Path.Combine(DirPath, "history");
+            string filepath = System.IO.Path.Combine(historyDir, filename);
+
+            using StreamWriter filewrite = new StreamWriter(filepath);
+            filewrite.Write(json);
         }
 
         void ChainStatusUpdate(ClientStatus status, string log)

@@ -56,13 +56,6 @@ namespace Iris
                 activeChat.cancellationToken.Cancel();
             }
         }
-        private void promptField_KeyUp(object sender, KeyRoutedEventArgs args)
-        {
-            if(args.Key == Windows.System.VirtualKey.Control)
-            {
-                promptField.AcceptsReturn = true;
-            }
-        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public event NewMessageEvent? NewMessage;
@@ -78,6 +71,19 @@ namespace Iris
             }
         }
 
+        private void Regenerate(object sender, RoutedEventArgs e)
+        {
+            MenuFlyoutItem regen_item = (MenuFlyoutItem)sender;
+            Binding_Message regen_messege =  (Binding_Message)regen_item.DataContext;
+            int regen_index = activeChat?.messages.IndexOf(regen_messege) ?? 1;
+
+            if (regen_index == -1) return;
+
+            if (regen_messege.role != "assistant") regen_index++;
+
+            activeChat?.SendPartialMessage(regen_index);
+
+        }
     }
 
 
