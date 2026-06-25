@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -44,5 +45,17 @@ namespace Iris
 
         public ObservableCollection<Chat>? chats { get; set; }
         public event ItemClickEvent? ActiveChatChange;
+
+        private void Delete(object sender, RoutedEventArgs e)
+        {
+            MenuFlyoutItem item = (MenuFlyoutItem)sender;
+
+            Chat context_item = (Chat)item.DataContext;
+
+            if (chats != null) chats.Remove(context_item);
+
+            return;
+
+        }
     }
 }

@@ -67,6 +67,8 @@ namespace Iris
         public string reasoning_effort = "xhigh";
         [JsonInclude]
         public bool stream = true;
+        [JsonInclude]
+        public int max_tokens = 90000;
         
         public class Provider
         {

@@ -42,6 +42,7 @@ namespace Iris
             if (eventArgs.Key == Windows.System.VirtualKey.Control)
             {
                 promptField.AcceptsReturn = false;
+                return;
             }
 
             if (!promptField.AcceptsReturn)
