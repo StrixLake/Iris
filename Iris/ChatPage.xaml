@@ -36,18 +36,26 @@
                                         <TextBlock Text="Reasoning" FontFamily="Consolas"/>
                                     </Expander.Header>
 
-                                    <controls:MarkdownTextBlock Text="{Binding reasoning}" TextWrapping="WrapWholeWords"
-                                                                Background="Transparent" WrapCodeBlock="True"
-                                                                UseSyntaxHighlighting="False"/>
-                                </Expander>
+                                    <StackPanel>
+                                        <controls:MarkdownTextBlock Text="{Binding reasoning}" TextWrapping="WrapWholeWords"
+                                                                    Background="Transparent" WrapCodeBlock="True"
+                                                                    UseSyntaxHighlighting="True" Visibility="{Binding hasFinishedStreamingMessage}"/>
 
-                                <controls:MarkdownTextBlock Text="{Binding content}" TextWrapping="WrapWholeWords"
-                                                            FontFamily="Consolas" Foreground="{Binding isAssistantMessage, Converter={StaticResource ColorConverter}}"
-                                                            WrapCodeBlock="True" Background="Transparent"
-                                                            UseSyntaxHighlighting="False">
-                                </controls:MarkdownTextBlock>
+                                        <TextBlock Text="{Binding reasoning}" TextWrapping="WrapWholeWords" Visibility="{Binding hasNotFinishedStreamingMessage}"/>
+                                        
+                                </StackPanel>
 
-                            </StackPanel>
+                            </Expander>
+
+                            <controls:MarkdownTextBlock Text="{Binding content}" TextWrapping="WrapWholeWords"
+                                                        FontFamily="Consolas" Foreground="{Binding isAssistantMessage, Converter={StaticResource ColorConverter}}"
+                                                        WrapCodeBlock="True" Background="Transparent"
+                                                        UseSyntaxHighlighting="True" Visibility="{Binding hasFinishedStreamingMessage}">
+                            </controls:MarkdownTextBlock>
+
+                            <TextBlock Text="{Binding content}" TextWrapping="WrapWholeWords" Visibility="{Binding hasNotFinishedStreamingMessage}"/>
+
+                        </StackPanel>
 
                         </DataTemplate>
                     </ItemsRepeater.ItemTemplate>
