@@ -21,10 +21,8 @@
 
         <ScrollView Grid.Row="0" HorizontalAlignment="Stretch">
 
-            <StackPanel HorizontalAlignment="Stretch">
-
-                <ItemsControl ItemsSource="{x:Bind activeChat.messages, Mode=OneWay}">
-                    <ItemsControl.ItemTemplate>
+                <ItemsRepeater ItemsSource="{x:Bind activeChat.messages, Mode=OneWay}">
+                    <ItemsRepeater.ItemTemplate>
                         <DataTemplate>
 
                             <StackPanel Margin="4" Visibility="{Binding isNotSystemPrompt}">
@@ -39,35 +37,22 @@
                                     </Expander.Header>
 
                                     <controls:MarkdownTextBlock Text="{Binding reasoning}" TextWrapping="WrapWholeWords"
-                                                                Background="Transparent" UseSyntaxHighlighting="True"
-                                                                WrapCodeBlock="True"/>
+                                                                Background="Transparent" WrapCodeBlock="True"
+                                                                UseSyntaxHighlighting="False"/>
                                 </Expander>
 
                                 <controls:MarkdownTextBlock Text="{Binding content}" TextWrapping="WrapWholeWords"
                                                             FontFamily="Consolas" Foreground="{Binding isAssistantMessage, Converter={StaticResource ColorConverter}}"
-                                                            UseSyntaxHighlighting="True" Background="Transparent">
-                                    <controls:MarkdownTextBlock.ContextFlyout>
-                                        <CommandBarFlyout>
-                                            <!-- Primary commands render as a horizontal bar -->
-                                            <CommandBarFlyout.PrimaryCommands>
-                                                <AppBarButton Icon="Copy" Label="Copy"/>
-                                                <AppBarButton Icon="SelectAll" Label="Select All"/>
-                                            </CommandBarFlyout.PrimaryCommands>
-
-                                            <!-- Secondary commands render as a traditional vertical list -->
-                                            
-                                        </CommandBarFlyout>
-                                    </controls:MarkdownTextBlock.ContextFlyout>
+                                                            WrapCodeBlock="True" Background="Transparent"
+                                                            UseSyntaxHighlighting="False">
                                 </controls:MarkdownTextBlock>
-
-
 
                             </StackPanel>
 
                         </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
+                    </ItemsRepeater.ItemTemplate>
+                </ItemsRepeater>
+            
         </ScrollView>
 
         <TextBox x:Name="promptField" Grid.Row="1" HorizontalAlignment="Stretch"

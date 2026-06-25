@@ -18,10 +18,19 @@
                   Width="250" VerticalAlignment="Top"
                   ItemClick="ListView_ItemClick"
                   IsItemClickEnabled="True">
-            
+
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="local:Chat">
-                    <TextBlock Text="{Binding title}"/>
+                    <Grid HorizontalAlignment="Stretch">
+                        
+                        <Grid.ContextFlyout>
+                            <MenuFlyout x:Name="titleOptions">
+                                <MenuFlyoutItem Text="Delete" Click="Delete"/>
+                            </MenuFlyout>
+                        </Grid.ContextFlyout>
+                        
+                        <TextBlock Text="{Binding title}"/>
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
