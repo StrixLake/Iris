@@ -80,7 +80,23 @@ namespace Iris
 
             if (regen_index == -1) return;
 
-            if (regen_message.role != "assistant") regen_index++;
+            // if the message to regen is a user, then we check the role of the next message
+            // if that role is also user or is the end of list, then we create an assistant message and insert
+            // it after this one
+            if (regen_message.role == "user")
+            {
+                // if the regen index is the last message
+                if (regen_index == activeChat?.messages.Count - 1)
+                {
+                    activeChat?.messages.Add(new Binding_Message() { role = "assistant", isAssistantMessage = true });
+                }
+                // if the next message is also from user
+                else if (activeChat?.messages[regen_index + 1].role == "user")
+                {
+                    activeChat?.messages.Insert(regen_index +1, new Binding_Message() { role = "assistant", isAssistantMessage = true });
+                }
+                regen_index++;
+            }
 
             activeChat?.SendPartialMessage(regen_index);
 
