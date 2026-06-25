@@ -48,6 +48,7 @@ namespace Iris
             }
             activeChat.SendMessage(promptField.Text);
             promptField.Text = "";
+            args.Handled = true;
                 
         }
         void Cancel(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
