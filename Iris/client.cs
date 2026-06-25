@@ -50,7 +50,7 @@ namespace Iris
         {
             get
             {
-                if(backingMessage.isAssistantMessage) return "<reasoning>" + backingMessage.reasoning + "<reasoning/>\n" + backingMessage.content;
+                if(backingMessage.isAssistantMessage && backingMessage.reasoning != "") return "<reasoning>" + backingMessage.reasoning + "<reasoning/>\n" + backingMessage.content;
                 if (!backingMessage.isNotSystemPrompt) return "<System Prompt>" + Chat.system_prompt + "</System Prompt>";
                 return backingMessage.content;
             }

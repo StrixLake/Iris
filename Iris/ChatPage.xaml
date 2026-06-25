@@ -40,8 +40,8 @@
                                         </MenuFlyoutSubItem>
 
                                         <MenuFlyoutSubItem Text="Delete">
-                                            <MenuFlyoutItem Text="Reasoning"/>
-                                            <MenuFlyoutItem Text="Content"/>
+                                            <MenuFlyoutItem Text="Reasoning" Click="Delete"/>
+                                            <MenuFlyoutItem Text="Content" Click="Delete"/>
                                         </MenuFlyoutSubItem>
 
                                         <MenuFlyoutItem Text="Regenerate" Click="Regenerate"/>
