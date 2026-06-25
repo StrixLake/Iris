@@ -89,6 +89,9 @@ namespace Iris
             using StreamReader keyStream = new StreamReader(KeyFile);
             Client.apikey = keyStream.ReadLine() ?? "";
 
+            // subscribing to this event to force the rendering to
+            // happen at 60 fps, this fixes the lag on the text box
+            CompositionTarget.Rendering += (_, _) => { };
         }
 
         // new messages 
