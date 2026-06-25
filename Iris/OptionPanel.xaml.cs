@@ -84,23 +84,21 @@ Modality: {4}
             
 
         }
-        private void TextBox_KeyDown(object sender, KeyRoutedEventArgs e)
+        private void AddModel(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
         {
-            if(e.Key == Windows.System.VirtualKey.Enter)
-            {
-                Models.Add(add_model.Text);
-                SelectedModel = add_model.Text;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedModel)));
-
-                // add the model in the local file
-                string modelPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), ".iris");
-                modelPath = System.IO.Path.Combine(modelPath, "models.txt");
-                using StreamWriter modelFile = new StreamWriter(modelPath, append: true);
-
-                modelFile.WriteLine(add_model.Text);
-
-                add_model.Text = "";
-            }
+            
+            Models.Add(add_model.Text);
+            SelectedModel = add_model.Text;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedModel)));
+            
+            // add the model in the local file
+            string modelPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), ".iris");
+            modelPath = System.IO.Path.Combine(modelPath, "models.txt");
+            using StreamWriter modelFile = new StreamWriter(modelPath, append: true);
+            
+            modelFile.WriteLine(add_model.Text);
+            
+            add_model.Text = "";
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

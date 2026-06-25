@@ -9,10 +9,14 @@
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d">
 
-    <Grid KeyUp="Cancel">
+    <Grid KeyboardAcceleratorPlacementMode="Hidden">
         <Grid.Resources>
             <local:BoolToColor x:Key="ColorConverter"/>
         </Grid.Resources>
+
+        <Grid.KeyboardAccelerators>
+            <KeyboardAccelerator Key="Back" Modifiers="Control" Invoked="Cancel"/>
+        </Grid.KeyboardAccelerators>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -65,8 +69,11 @@
 
         <TextBox x:Name="promptField" Grid.Row="1" HorizontalAlignment="Stretch"
                  MaxHeight="200" Margin="0,10,0,20" TextWrapping="Wrap" 
-                 AcceptsReturn="True"
-                 KeyDown="SendMessage" KeyUp="promptField_KeyUp"/>
+                 AcceptsReturn="True" KeyboardAcceleratorPlacementMode="Hidden">
+            <TextBox.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Enter" Modifiers="Control" Invoked="SendMessage"/>
+            </TextBox.KeyboardAccelerators>
+        </TextBox>
 
     </Grid>
 </Page>
