@@ -25,6 +25,7 @@
                         
                         <Grid.ContextFlyout>
                             <MenuFlyout x:Name="titleOptions">
+                                <MenuFlyoutItem Text="Duplicate" Click="Duplicate"/>
                                 <MenuFlyoutItem Text="Delete" Click="Delete"/>
                             </MenuFlyout>
                         </Grid.ContextFlyout>

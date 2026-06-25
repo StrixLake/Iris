@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-
+using System.Text.Json;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -67,10 +67,24 @@ namespace Iris
                 chats.Remove(context_item);
                 context_item.DeleteHistory();
             }
-            
-
             return;
+        }
 
+        void Duplicate(object sender, RoutedEventArgs e)
+        {
+            MenuFlyoutItem item = (MenuFlyoutItem)sender;
+
+            Chat context_item = (Chat)item.DataContext;
+
+            if(chats != null && context_item.title != "New Chat")
+            {
+                string copyJson = JsonSerializer.Serialize(context_item, JsonContext.Default.Chat);
+                Chat duplicate_chat = JsonSerializer.Deserialize<Chat>(copyJson, JsonContext.Default.Chat) ?? new Chat();
+                Random rnd = new();
+                duplicate_chat.filename = ((int)(rnd.NextDouble() * 1_000_000)).ToString() + ".json";
+                duplicate_chat.title = "Chat";
+                chats.Add(duplicate_chat);
+            }
         }
     }
 }
