@@ -20,6 +20,20 @@ namespace Iris
         string reasoning_ = "";
         string content_ = "";
         bool isAssistantMessage_ = false;
+        public bool hasFinishedStreaming = true;
+        public bool hasFinishedStreamingMessage { get { return hasFinishedStreaming; }
+            set
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(hasFinishedStreamingMessage)));
+            }
+        }
+        public bool hasNotFinishedStreamingMessage { get { return !hasFinishedStreaming; } 
+            set 
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(hasNotFinishedStreamingMessage)));
+            } 
+        }
+
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public string role { get; set; } = "user";
@@ -149,7 +163,7 @@ Therefore, do not under any circumstance use or output <rasoning> tags to wrap y
                 }
             }
 
-            Binding_Message generationBinding = new() { role = "assistant"};
+            Binding_Message generationBinding = new() { role = "assistant", hasFinishedStreaming = false};
             Message generation = new(generationBinding);
             messages.Add(generationBinding);
 
@@ -157,6 +171,8 @@ Therefore, do not under any circumstance use or output <rasoning> tags to wrap y
             cancellationToken = new();
             await client.ChatCompletion(generationBinding, context, model, cancellationToken.Token);
             generationBinding.date_time = DateTime.Now.ToString();
+            generationBinding.hasFinishedStreamingMessage = true;
+            generationBinding.hasNotFinishedStreamingMessage = false;
             context.Add(generation);
 
             // convert this object to json and save it

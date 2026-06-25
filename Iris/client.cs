@@ -211,6 +211,7 @@ namespace Iris
                 return;
             }
 
+            response.hasFinishedStreaming = true;
             StatusUpdate?.Invoke(ClientStatus.Generation_End, "Message Streaming Finished");
 
         }
