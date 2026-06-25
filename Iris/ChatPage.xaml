@@ -47,18 +47,20 @@
 
                                         <TextBlock Text="{Binding reasoning}" TextWrapping="WrapWholeWords" Visibility="{Binding hasNotFinishedStreamingMessage}"/>
                                         
-                                </StackPanel>
+                                    </StackPanel>
 
-                            </Expander>
+                                </Expander>
 
-                            <controls:MarkdownTextBlock Text="{Binding content}" TextWrapping="WrapWholeWords"
+                                <controls:MarkdownTextBlock Text="{Binding content}" TextWrapping="WrapWholeWords"
                                                         FontFamily="Consolas" Foreground="{Binding isAssistantMessage, Converter={StaticResource ColorConverter}}"
                                                         WrapCodeBlock="True" Background="Transparent"
                                                         UseSyntaxHighlighting="True" Visibility="{Binding hasFinishedStreamingMessage}">
-                            </controls:MarkdownTextBlock>
+                                </controls:MarkdownTextBlock>
 
-                            <TextBlock Text="{Binding content}" TextWrapping="WrapWholeWords" Visibility="{Binding hasNotFinishedStreamingMessage}"/>
+                                <TextBlock Text="{Binding content}" TextWrapping="WrapWholeWords" Visibility="{Binding hasNotFinishedStreamingMessage}"/>
 
+                                <TextBlock Text="{Binding date_time}" Foreground="DarkGray" FontFamily="Consolas"/>
+                                
                         </StackPanel>
 
                         </DataTemplate>
