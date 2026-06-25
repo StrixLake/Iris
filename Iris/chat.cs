@@ -21,9 +21,29 @@ namespace Iris
         string content_ = "";
         bool isAssistantMessage_ = false;
         public bool hasFinishedStreaming = true;
+        bool editing_ = false;
 
         [JsonIgnore]
-        public bool hasFinishedStreamingMessage { get { return hasFinishedStreaming; }
+        public bool editing { get { return editing_; } 
+            set
+            {
+                editing_ = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(editing)));
+            }
+        }
+        [JsonIgnore]
+        public bool notEditing{ get { return !editing_; } 
+            set
+            {
+                editing_ = !value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(notEditing)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(hasFinishedStreamingMessage)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(hasNotFinishedStreamingMessage)));
+            }
+        }
+
+        [JsonIgnore]
+        public bool hasFinishedStreamingMessage { get { return hasFinishedStreaming && notEditing; }
             set
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(hasFinishedStreamingMessage)));
@@ -31,7 +51,7 @@ namespace Iris
         }
 
         [JsonIgnore]
-        public bool hasNotFinishedStreamingMessage { get { return !hasFinishedStreaming; } 
+        public bool hasNotFinishedStreamingMessage { get { return (!hasFinishedStreaming) && notEditing; } 
             set 
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(hasNotFinishedStreamingMessage)));
@@ -183,7 +203,7 @@ Therefore, do not under any circumstance use or output <rasoning> tags to wrap y
 
             // generate the title if there was 7 messages in the context
             // and the default title is still in use
-            if (messages.Count > 7 && title == "Chat")
+            if (messages.Count > 7 && (title == "Chat" || title == ""))
             {
                 Binding_Message title_response = new();
                 Binding_Message title_prompt = new() { content = "ok now based on the conversation so far, generate a title for this chat. You can think about the title before generating it. But in your final response, reply with only the title as that will be copied one to one. Make it short, preferably 4 words or less. Don't output anything weird like reasoning tags." };

@@ -34,11 +34,8 @@
                             <TextBlock Text="{Binding role}" Foreground="DarkGray" FontFamily="Consolas">
                                 <TextBlock.ContextFlyout>
                                     <MenuFlyout>
-                                        <MenuFlyoutSubItem Text="Edit">
-                                            <MenuFlyoutItem Text="Reasoning"/>
-                                            <MenuFlyoutItem Text="Content"/>
-                                        </MenuFlyoutSubItem>
-
+                                        <MenuFlyoutItem Text="Edit" Click="Edit"/>
+                                        
                                         <MenuFlyoutSubItem Text="Delete">
                                             <MenuFlyoutItem Text="Reasoning" Click="Delete"/>
                                             <MenuFlyoutItem Text="Content" Click="Delete"/>
@@ -64,6 +61,13 @@
 
                                     <TextBlock Text="{Binding reasoning}" TextWrapping="WrapWholeWords" Visibility="{Binding hasNotFinishedStreamingMessage}"/>
 
+                                    <TextBox Text="{Binding reasoning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                             TextWrapping="Wrap" Visibility="{Binding editing}" AcceptsReturn="True">
+                                        <TextBox.KeyboardAccelerators>
+                                            <KeyboardAccelerator Key="Enter" Modifiers="Control" Invoked="FinishEditing"/>
+                                        </TextBox.KeyboardAccelerators>
+                                    </TextBox>
+
                                 </StackPanel>
 
                             </Expander>
@@ -71,10 +75,16 @@
                             <controls:MarkdownTextBlock Text="{Binding content}" TextWrapping="WrapWholeWords"
                                                         FontFamily="Consolas" Foreground="{Binding isAssistantMessage, Converter={StaticResource ColorConverter}}"
                                                         WrapCodeBlock="True" Background="Transparent"
-                                                        UseSyntaxHighlighting="True" Visibility="{Binding hasFinishedStreamingMessage}">
-                            </controls:MarkdownTextBlock>
+                                                        UseSyntaxHighlighting="True" Visibility="{Binding hasFinishedStreamingMessage}"/>
 
                             <TextBlock Text="{Binding content}" TextWrapping="WrapWholeWords" Visibility="{Binding hasNotFinishedStreamingMessage}"/>
+
+                            <TextBox Text="{Binding content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                     TextWrapping="Wrap" Visibility="{Binding editing}" AcceptsReturn="True">
+                                <TextBox.KeyboardAccelerators>
+                                    <KeyboardAccelerator Key="Enter" Modifiers="Control" Invoked="FinishEditing"/>
+                                </TextBox.KeyboardAccelerators>
+                            </TextBox>
 
                             <TextBlock Text="{Binding date_time}" Foreground="DarkGray" FontFamily="Consolas"/>
 

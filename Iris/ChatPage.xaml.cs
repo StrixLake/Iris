@@ -121,6 +121,22 @@ namespace Iris
 
             activeChat?.SaveChat();
         }
+
+        void Edit(object sender, RoutedEventArgs e)
+        {
+            Binding_Message msg_to_edit = (Binding_Message)((MenuFlyoutItem)sender).DataContext;
+            msg_to_edit.editing = true;
+            msg_to_edit.notEditing = false;
+        }
+        void FinishEditing(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            TextBox editBox = (TextBox)args.Element;
+            Binding_Message msg_to_edit = (Binding_Message)editBox.DataContext;
+
+            msg_to_edit.editing = false;
+            msg_to_edit.notEditing = true;
+            args.Handled = true;
+        }
     }
 
 
