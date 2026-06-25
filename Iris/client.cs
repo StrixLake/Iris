@@ -109,7 +109,7 @@ namespace Iris
     {
         JSON_Serialiser_Begin, JSON_Serialiser_Failed, JSON_Serialiser_Success, 
         JSON_Deserialiser_Failed, Network_Error, Response_Error, Response_Success,
-        Generation_Begin, Generation_End, Generation_Cancelled
+        Generation_Begin, Generation_End, Generation_Cancelled, Unknown_error
     }
     public class Client
     {
@@ -204,15 +204,20 @@ namespace Iris
                         response.reasoning += api_response.choices[0].delta.reasoning ?? "";
                     }
                 }
+
+                StatusUpdate?.Invoke(ClientStatus.Generation_End, "Message Streaming Finished");
+
             }
             catch (OperationCanceledException)
             {
                 StatusUpdate?.Invoke(ClientStatus.Generation_Cancelled, "Message Streaming Cancelled");
-                return;
+            }
+            catch
+            {
+                StatusUpdate?.Invoke(ClientStatus.Unknown_error, "Unknown Error Occured");
             }
 
             response.hasFinishedStreaming = true;
-            StatusUpdate?.Invoke(ClientStatus.Generation_End, "Message Streaming Finished");
 
         }
 
