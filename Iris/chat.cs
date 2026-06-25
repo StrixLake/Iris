@@ -214,6 +214,7 @@ Therefore, do not under any circumstance use or output <rasoning> tags to wrap y
                 case ClientStatus.JSON_Serialiser_Success:
                     Status = Colors.HotPink;
                     break;
+                case ClientStatus.Unknown_error:
                 case ClientStatus.Network_Error:
                     Status = Colors.Red;
                     break;
