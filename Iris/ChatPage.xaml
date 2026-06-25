@@ -35,12 +35,7 @@
                                 <TextBlock.ContextFlyout>
                                     <MenuFlyout>
                                         <MenuFlyoutItem Text="Edit" Click="Edit"/>
-                                        
-                                        <MenuFlyoutSubItem Text="Delete">
-                                            <MenuFlyoutItem Text="Reasoning" Click="Delete"/>
-                                            <MenuFlyoutItem Text="Content" Click="Delete"/>
-                                        </MenuFlyoutSubItem>
-
+                                        <MenuFlyoutItem Text="Delete" Click="Delete"/>
                                         <MenuFlyoutItem Text="Regenerate" Click="Regenerate"/>
                                     </MenuFlyout>
                                 </TextBlock.ContextFlyout>
