@@ -5,6 +5,7 @@ using System.Diagnostics.Tracing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.AccessControl;
 using Microsoft.UI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
@@ -74,15 +75,35 @@ namespace Iris
         private void Regenerate(object sender, RoutedEventArgs e)
         {
             MenuFlyoutItem regen_item = (MenuFlyoutItem)sender;
-            Binding_Message regen_messege =  (Binding_Message)regen_item.DataContext;
-            int regen_index = activeChat?.messages.IndexOf(regen_messege) ?? 1;
+            Binding_Message regen_message =  (Binding_Message)regen_item.DataContext;
+            int regen_index = activeChat?.messages.IndexOf(regen_message) ?? 1;
 
             if (regen_index == -1) return;
 
-            if (regen_messege.role != "assistant") regen_index++;
+            if (regen_message.role != "assistant") regen_index++;
 
             activeChat?.SendPartialMessage(regen_index);
 
+        }
+        void Delete(object sender, RoutedEventArgs e)
+        {
+            MenuFlyoutItem item_to_delete = (MenuFlyoutItem)sender;
+            Binding_Message msg_to_delete = (Binding_Message)item_to_delete.DataContext;
+
+            // delete both one by one
+            if (item_to_delete.Text == "Reasoning")
+                msg_to_delete.reasoning = "";
+            if (item_to_delete.Text == "Content")
+                msg_to_delete.content = "";
+            
+            // if both of them have been deleted, remove this
+            // msg from the list
+            if(msg_to_delete.content == "" && msg_to_delete.reasoning == "")
+            {
+                activeChat?.messages.Remove(msg_to_delete);
+            }
+
+            activeChat?.SaveChat();
         }
     }
 

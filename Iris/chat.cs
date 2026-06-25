@@ -35,7 +35,7 @@ namespace Iris
             set 
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(hasNotFinishedStreamingMessage)));
-            } 
+            }
         }
 
 
@@ -230,7 +230,7 @@ Therefore, do not under any circumstance use or output <rasoning> tags to wrap y
             SaveChat();
         }
 
-        void SaveChat()
+        public void SaveChat()
         {
             // convert this object to json and save it
             string json = JsonSerializer.Serialize(this, JsonContext.Default.Chat);
