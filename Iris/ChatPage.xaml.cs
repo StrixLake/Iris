@@ -107,18 +107,12 @@ namespace Iris
             MenuFlyoutItem item_to_delete = (MenuFlyoutItem)sender;
             Binding_Message msg_to_delete = (Binding_Message)item_to_delete.DataContext;
 
-            // delete both one by one
-            if (item_to_delete.Text == "Reasoning")
-                msg_to_delete.reasoning = "";
-            if (item_to_delete.Text == "Content")
-                msg_to_delete.content = "";
+            // delete the message entirely instead of seperating
+            // reasoning and content
+            // if one needs to be deleted seperately
+            // then edit and empty the text
+            activeChat?.messages.Remove(msg_to_delete);
             
-            // if both of them have been deleted, remove this
-            // msg from the list
-            if(msg_to_delete.content == "" && msg_to_delete.reasoning == "")
-            {
-                activeChat?.messages.Remove(msg_to_delete);
-            }
 
             activeChat?.SaveChat();
         }
