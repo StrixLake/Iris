@@ -35,36 +35,23 @@ namespace Iris
             InitializeComponent();
         }
 
-        void SendMessage(object sender, KeyRoutedEventArgs eventArgs)
+        void SendMessage(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
         {
             if (sender == null || activeChat == null) return;
 
-            if (eventArgs.Key == Windows.System.VirtualKey.Control)
+            // let the main window handle
+            // it being a new chat
+            if (activeChat.title == "New Chat")
             {
-                promptField.AcceptsReturn = false;
-                return;
+                NewMessage?.Invoke();
             }
-
-            if (!promptField.AcceptsReturn)
-            {
-                if (eventArgs.Key == Windows.System.VirtualKey.Enter)
-                {
-                    // let the main window handle
-                    // it being a new chat
-                    if (activeChat.title == "New Chat")
-                    {
-                        NewMessage?.Invoke();
-                    }
-                    activeChat.SendMessage(promptField.Text);
-                    promptField.Text = "";
-                }
-
-            }
+            activeChat.SendMessage(promptField.Text);
+            promptField.Text = "";
+                
         }
-        void Cancel(object sender, KeyRoutedEventArgs args)
+        void Cancel(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
         {
-            CoreVirtualKeyStates ctrl = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Control);
-            if (ctrl == CoreVirtualKeyStates.Down && args.Key == VirtualKey.Back && activeChat != null)
+            if (activeChat != null)
             {
                 activeChat.cancellationToken.Cancel();
             }

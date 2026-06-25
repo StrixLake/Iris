@@ -21,9 +21,12 @@
         </Grid.Background>
 
         <TextBox PlaceholderText="Add Model" HorizontalAlignment="Stretch"
-                 KeyDown="TextBox_KeyDown" Grid.Row="0"
-                 x:Name="add_model"/>
-        
+                 Grid.Row="0" x:Name="add_model" KeyboardAcceleratorPlacementMode="Hidden">
+            <TextBox.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Enter" Invoked="AddModel"/>
+            </TextBox.KeyboardAccelerators>
+        </TextBox>
+
         <ComboBox ItemsSource="{x:Bind Models, Mode=OneWay}" 
                   HorizontalAlignment="Stretch" Margin="0,10,0,0"
                   SelectedItem="{x:Bind SelectedModel, Mode=TwoWay}"
