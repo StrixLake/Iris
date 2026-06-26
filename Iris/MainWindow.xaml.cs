@@ -42,7 +42,7 @@ namespace Iris
             AppWindow.TitleBar.BackgroundColor = Colors.Black;
             
             chats = new();
-            activeChat = new();
+            activeChat = new() { Status=Colors.Black};
             chats.Add(activeChat);
 
             chatPage.NewMessage += NewMessage;

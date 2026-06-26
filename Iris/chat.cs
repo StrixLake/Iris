@@ -105,6 +105,8 @@ namespace Iris
     {
         public string filename { get; set; }
         public string title { get; set; } = "New Chat";
+        [JsonIgnore]
+        public bool isNewChat { get { return title == "New Chat" ? true : false; } }
         public ObservableCollection<Binding_Message> messages { get; set; } = new();
         public List<Message> context = new();
         public string model { get; set; } = "google/gemma-4-31b-it";
@@ -211,9 +213,11 @@ Therefore, do not under any circumstance use or output <rasoning> tags to wrap y
                 List<Message> title_context = context.ToList();
                 title_context.Add(new Message(title_prompt));
 
-                cancellationToken.Dispose();
-                cancellationToken = new();
-                await client.ChatCompletion(title_response, title_context, "deepseek/deepseek-v4-flash", cancellationToken.Token);
+                // we don't want to accedently cancel the title generation
+                // so we create a temp token
+                CancellationTokenSource cancellationToken_Temp = new();
+                await client.ChatCompletion(title_response, title_context, "deepseek/deepseek-v4-flash", cancellationToken_Temp.Token);
+                cancellationToken_Temp.Dispose();
                 title = title_response.content;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(title)));
             }
