@@ -23,13 +23,18 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <TextBlock Text="IRIS" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   FontSize="120" FontFamily="Times New Roman" FontStyle="Italic" 
+                   FontWeight="Thin" Visibility="{x:Bind activeChat.isNewChat, Mode=OneWay}"
+                   Grid.Row="0"/>
+
         <ScrollView Grid.Row="0" HorizontalAlignment="Stretch">
 
             <ItemsRepeater ItemsSource="{x:Bind activeChat.messages, Mode=OneWay}">
                 <ItemsRepeater.ItemTemplate>
                     <DataTemplate>
 
-                        <StackPanel Margin="4" Visibility="{Binding isNotSystemPrompt}" Padding="10">
+                        <StackPanel Margin="60,4,60,4" Visibility="{Binding isNotSystemPrompt}" Padding="10">
 
                             <TextBlock Text="{Binding role}" Foreground="DarkGray" FontFamily="Consolas">
                                 <TextBlock.ContextFlyout>
@@ -91,9 +96,10 @@
             
         </ScrollView>
 
-        <TextBox x:Name="promptField" Grid.Row="1" HorizontalAlignment="Stretch"
+        <TextBox x:Name="promptField" HorizontalAlignment="Stretch"
                  MaxHeight="200" Margin="0,10,0,20" TextWrapping="Wrap" 
-                 AcceptsReturn="True" KeyboardAcceleratorPlacementMode="Hidden">
+                 AcceptsReturn="True" KeyboardAcceleratorPlacementMode="Hidden"
+                 Grid.Row="1">
             <TextBox.KeyboardAccelerators>
                 <KeyboardAccelerator Key="Enter" Modifiers="Control" Invoked="SendMessage"/>
             </TextBox.KeyboardAccelerators>
