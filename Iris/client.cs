@@ -18,7 +18,9 @@ namespace Iris
 {
     [JsonSourceGenerationOptions(WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonSerializable(typeof(Message))]
+    [JsonSerializable(typeof(Content))]
     [JsonSerializable(typeof(List<Message>))]
+    [JsonSerializable(typeof(List<Content>))]
     [JsonSerializable(typeof(Chat))]
     [JsonSerializable(typeof(Binding_Message))]
     [JsonSerializable(typeof(ObservableCollection<Binding_Message>))]
@@ -32,11 +34,33 @@ namespace Iris
     [JsonSerializable(typeof(Response.Usage))]
     internal partial class JsonContext : JsonSerializerContext { }
 
+    public class Content
+    {
+        public Content(Binding_Message other) { backingMessage = other; }
+
+        public Binding_Message backingMessage;
+
+        [JsonInclude]
+        public string type = "text";
+
+        public string text
+        {
+            get
+            {
+                if (backingMessage.isAssistantMessage && backingMessage.reasoning != "") return "<think>" + backingMessage.reasoning + "</think>\n" + backingMessage.content;
+                if (!backingMessage.isNotSystemPrompt) return "<System Prompt>" + Chat.system_prompt + "</System Prompt>";
+                return backingMessage.content;
+            }
+        }
+
+    }
+
     public class Message
     {
         public Message(Binding_Message other) 
         {
             backingMessage = other;
+            content = [new Content(other)];
         }
         public Binding_Message backingMessage;
         public string role
@@ -46,16 +70,9 @@ namespace Iris
                 return backingMessage.role;
             }
         }
-        public string content
-        {
-            get
-            {
-                if(backingMessage.isAssistantMessage && backingMessage.reasoning != "") return "<reasoning>" + backingMessage.reasoning + "<reasoning/>\n" + backingMessage.content;
-                if (!backingMessage.isNotSystemPrompt) return "<System Prompt>" + Chat.system_prompt + "</System Prompt>";
-                return backingMessage.content;
-            }
-        }
 
+        [JsonInclude]
+        public List<Content> content;
     }
 
     class Payload
