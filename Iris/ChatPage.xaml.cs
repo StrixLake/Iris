@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.Tracing;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ObjectiveC;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.AccessControl;
+using System.Text.Json.Serialization;
+using Microsoft.Graphics.Canvas;
 using Microsoft.UI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
@@ -14,11 +19,17 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Graphics.Imaging;
+using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.System;
 using Windows.UI.Core;
+using WinRT;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -73,12 +84,14 @@ namespace Iris
             }
         }
 
+        public ObservableCollection<string> images_base64 { get; set; } = new();
+
         private void Regenerate(object sender, RoutedEventArgs e)
         {
             MenuFlyoutItem regen_item = (MenuFlyoutItem)sender;
             Binding_Message regen_message =  (Binding_Message)regen_item.DataContext;
             int regen_index = activeChat?.messages.IndexOf(regen_message) ?? 1;
-
+            
             if (regen_index == -1) return;
 
             // if the message to regen is a user, then we check the role of the next message
@@ -112,7 +125,6 @@ namespace Iris
             // if one needs to be deleted seperately
             // then edit and empty the text
             activeChat?.messages.Remove(msg_to_delete);
-            
 
             activeChat?.SaveChat();
         }
@@ -132,6 +144,31 @@ namespace Iris
             msg_to_edit.notEditing = true;
             args.Handled = true;
         }
+
+        private void Grid_DragOver(object sender, DragEventArgs e)
+        {
+            e.AcceptedOperation = Windows.ApplicationModel.DataTransfer.DataPackageOperation.Copy;
+        }
+
+        private async void Grid_Drop(object sender, DragEventArgs e)
+        {
+            if (!e.DataView.Contains(StandardDataFormats.StorageItems)) return;
+
+            IReadOnlyList<Windows.Storage.IStorageItem> items = await e.DataView.GetStorageItemsAsync();
+            if(items.Count == 0) return;
+
+            foreach(StorageFile storageFile in items)
+            {
+                using IRandomAccessStream stream = await storageFile.OpenAsync(FileAccessMode.Read);
+
+                using MemoryStream ms = new MemoryStream();
+                await stream.AsStream().CopyToAsync(ms);
+                stream.Seek(0);
+
+                images_base64.Add(Convert.ToBase64String(ms.ToArray()));
+
+            }
+        }
     }
 
 
@@ -144,10 +181,50 @@ namespace Iris
             {
                 return new SolidColorBrush(Colors.White);
             }
-            else return new SolidColorBrush(Colors.DeepSkyBlue);
+            else return new SolidColorBrush(Colors.LightGray);
         }
         public object ConvertBack(object value, Type targetType,
             object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class CountToVisibility : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            // Use ICollection so it works with any collection type, and handle nulls safely
+            if (value is System.Collections.ICollection collection)
+            {
+                return collection.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+            }
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class StringToImage : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            string base64_image = (string)value;
+            byte[] image = System.Convert.FromBase64String(base64_image);
+
+            using MemoryStream ms = new MemoryStream(image);
+            using IRandomAccessStream image_stream = ms.AsRandomAccessStream();
+
+            BitmapImage out_image = new();
+            out_image.SetSource(image_stream);
+
+            return out_image;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
             throw new NotImplementedException();
         }
