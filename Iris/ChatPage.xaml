@@ -9,9 +9,13 @@
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d">
 
-    <Grid KeyboardAcceleratorPlacementMode="Hidden">
+    <Grid KeyboardAcceleratorPlacementMode="Hidden"
+          AllowDrop="True" Background="Transparent"
+          DragOver="Grid_DragOver" Drop="Grid_Drop">
         <Grid.Resources>
             <local:BoolToColor x:Key="ColorConverter"/>
+            <local:CountToVisibility x:Key="CountConverter"/>
+            <local:StringToImage x:Key="ImageConverter"/>
         </Grid.Resources>
 
         <Grid.KeyboardAccelerators>
@@ -20,6 +24,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
@@ -96,10 +101,37 @@
             
         </ScrollView>
 
+        <ListView Height="60" Grid.Row="1"
+                  ScrollViewer.HorizontalScrollMode="Enabled"
+                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                  ScrollViewer.VerticalScrollMode="Disabled"
+                  SelectionMode="None"
+                  Visibility="{Binding images_base64, Converter={StaticResource CountConverter}}"
+                  ItemsSource="{x:Bind images_base64, Mode=OneWay}"
+                  Margin="0,10,0,0"
+                  CornerRadius="4">
+
+
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsStackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border CornerRadius="4">
+                        <Image Source="{Binding Converter={StaticResource ImageConverter}}"/>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
         <TextBox x:Name="promptField" HorizontalAlignment="Stretch"
                  MaxHeight="200" Margin="0,10,0,20" TextWrapping="Wrap" 
                  AcceptsReturn="True" KeyboardAcceleratorPlacementMode="Hidden"
-                 Grid.Row="1">
+                 Grid.Row="2">
             <TextBox.KeyboardAccelerators>
                 <KeyboardAccelerator Key="Enter" Modifiers="Control" Invoked="SendMessage"/>
             </TextBox.KeyboardAccelerators>
