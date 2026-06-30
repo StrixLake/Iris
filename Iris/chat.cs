@@ -23,6 +23,8 @@ namespace Iris
         public bool hasFinishedStreaming = true;
         bool editing_ = false;
 
+        public ObservableCollection<string>? images_base64 { get; set; }
+
         [JsonIgnore]
         public bool editing { get { return editing_; } 
             set
@@ -164,13 +166,13 @@ Assistant: [slur]
             client.StatusUpdate += ChainStatusUpdate;
         }
 
-        public async void SendMessage(string prompt)
+        public async void SendMessage(string prompt, ObservableCollection<string>? image_attachments)
         {
             // only append the prompt if it's not empty,
             // otherwise just send the message context for generation
-            if(prompt != "")
+            if(prompt != "" || image_attachments?.Count != 0)
             {
-                Binding_Message nextMessage = new() { content = prompt};
+                Binding_Message nextMessage = new() { content = prompt, images_base64 = image_attachments};
                 messages.Add(nextMessage);
                 context.Add(new(nextMessage));
             }
