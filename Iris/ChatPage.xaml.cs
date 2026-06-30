@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -6,6 +7,7 @@ using System.Diagnostics.Tracing;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices.ObjectiveC;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.AccessControl;
@@ -57,7 +59,9 @@ namespace Iris
             {
                 NewMessage?.Invoke();
             }
-            activeChat.SendMessage(promptField.Text);
+            activeChat.SendMessage(promptField.Text, images_base64);
+            images_base64 = [];
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(images_base64)));
             promptField.Text = "";
             args.Handled = true;
                 
@@ -84,7 +88,7 @@ namespace Iris
             }
         }
 
-        public ObservableCollection<string> images_base64 { get; set; } = new();
+        public ObservableCollection<string> images_base64 { get; set; } = [];
 
         private void Regenerate(object sender, RoutedEventArgs e)
         {
@@ -165,10 +169,19 @@ namespace Iris
                 await stream.AsStream().CopyToAsync(ms);
                 stream.Seek(0);
 
-                images_base64.Add(Convert.ToBase64String(ms.ToArray()));
+                string base64_representation = Convert.ToBase64String(ms.ToArray());
+                string content_type = storageFile.ContentType;
+
+                images_base64.Add("data:" + content_type + ";base64," + base64_representation);
 
             }
         }
+
+        Visibility CountToVisibility(ICollection collection)
+        {
+            return collection.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+        }
+
     }
 
 
@@ -195,9 +208,14 @@ namespace Iris
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             // Use ICollection so it works with any collection type, and handle nulls safely
-            if (value is System.Collections.ICollection collection)
+            if (value is ObservableCollection<string> collection)
             {
-                return collection.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+                Visibility out_val = collection.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+                if(out_val == Visibility.Visible)
+                {
+                    string a = collection[0];
+                }
+                return out_val;
             }
             return Visibility.Collapsed;
         }
@@ -213,7 +231,9 @@ namespace Iris
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             string base64_image = (string)value;
-            byte[] image = System.Convert.FromBase64String(base64_image);
+            int data_index = base64_image.IndexOf(',');
+
+            byte[] image = System.Convert.FromBase64String(base64_image.Substring(data_index+1));
 
             using MemoryStream ms = new MemoryStream(image);
             using IRandomAccessStream image_stream = ms.AsRandomAccessStream();
