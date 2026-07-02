@@ -52,11 +52,16 @@ namespace Iris
             if(activeChat ==  null) return;
             if(args.PropertyName == nameof(activeChat.logs))
             {
-                Usage_Details.Text = String.Format("###Logs:  \n {0}({1})/{2}  \n Finish Reason: {3}  \n Cost: ${4}", activeChat.logs.InTokens
+                Usage_Details.Text = String.Format("###Logs:  \n {0}({1})/{2}  \n Finish Reason: {3}  \n Cost: ${4}  \n Serialization Time: {5}ms  \n Latency: {6}s  \n Tokens\\s: {7}\\s  \n Logs: {8}"
+                                                                                                                        , activeChat.logs.InTokens
                                                                                                                         , activeChat.logs.CachedIn
                                                                                                                         , activeChat.logs.OutTokens
                                                                                                                         , activeChat.logs.Stop_Reason
-                                                                                                                        , activeChat.logs.Cost.ToString("0.#####"));
+                                                                                                                        , activeChat.logs.Cost.ToString("0.#####")
+                                                                                                                        , activeChat.logs.JsonSerialisationTime
+                                                                                                                        , activeChat.logs.ResponceLatency / 1000
+                                                                                                                        , activeChat.logs.TPS
+                                                                                                                        , activeChat.logs.logMessage);
             }
         }
 
