@@ -176,19 +176,15 @@ Assistant: [slur]
             {
                 Binding_Message nextMessage = new() { content = prompt, images_base64 = image_attachments};
                 messages.Add(nextMessage);
-                context.Add(new(nextMessage));
             }
-
-            if(context.Count != messages.Count)
+               
+            // we just reconstruct the context to sync them
+            context.Clear();
+            foreach(Binding_Message message in  messages)
             {
-                // the number of messages in both of the lists is not the same
-                // we just reconstruct the context to sync them
-                context.Clear();
-                foreach(Binding_Message message in  messages)
-                {
-                    context.Add(new(message));
-                }
+                context.Add(new(message));
             }
+            
 
             Binding_Message generationBinding = new() { role = "assistant", hasFinishedStreaming = false};
             Message generation = new(generationBinding);
@@ -208,6 +204,12 @@ Assistant: [slur]
             // and the default title is still in use
             if (messages.Count > 7 && (title == "Chat" || title == ""))
             {
+                context.Clear();
+                foreach (Binding_Message message in messages)
+                {
+                    context.Add(new(message, true));
+                }
+
                 Binding_Message title_response = new();
                 Binding_Message title_prompt = new() { content = "ok now based on the conversation so far, generate a title for this chat. You can think about the title before generating it. But in your final response, reply with only the title as that will be copied one to one. Make it short, preferably 4 words or less. Don't output anything weird like reasoning tags." };
                 List<Message> title_context = context.ToList();

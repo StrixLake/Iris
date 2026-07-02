@@ -82,7 +82,7 @@ namespace Iris
 
     public class Message
     {
-        public Message(Binding_Message other) 
+        public Message(Binding_Message other, bool ignore_images = false)
         {
             role_ = other.role;
             content = [];
@@ -96,9 +96,13 @@ namespace Iris
                 content.Add(new Content() { content = other.content, reasoning = other.reasoning });
             }
             if (other.images_base64 == null) return;
-            foreach(var image in other.images_base64)
+
+            if(!ignore_images)
             {
-                content.Add(new Content() {type = "image_url", url = image });
+                foreach(var image in other.images_base64)
+                {
+                    content.Add(new Content() {type = "image_url", url = image });
+                }
             }
         }
         string role_;
