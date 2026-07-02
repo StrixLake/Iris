@@ -32,9 +32,9 @@ namespace Iris
         public OptionPanel()
         {
             InitializeComponent();
-            Models = ["google/gemma-4-31b-it"];
+            Models = [];
 
-            SelectedModel = Models[0];
+            SelectedModel = "xiaomi/mimo-v2.5";
         }
 
         public void ActiveChatChanged(Chat newChat)

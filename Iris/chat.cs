@@ -111,7 +111,7 @@ namespace Iris
         public bool isNewChat { get { return title == "New Chat" ? true : false; } }
         public ObservableCollection<Binding_Message> messages { get; set; } = new();
         public List<Message> context = new();
-        public string model { get; set; } = "google/gemma-4-31b-it";
+        public string model { get; set; } = "xiaomi/mimo-v2.5";
         string save_folder = "history";
         Client client = new();
         public CancellationTokenSource cancellationToken = new CancellationTokenSource();
