@@ -39,9 +39,25 @@ namespace Iris
 
         public void ActiveChatChanged(Chat newChat)
         {
+            if (activeChat != null) activeChat.PropertyChanged -= UpdateLogs;
             activeChat = newChat;
             SelectedModel = activeChat.model;
+            activeChat.PropertyChanged += UpdateLogs;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedModel)));
+            UpdateLogs(activeChat, new PropertyChangedEventArgs(nameof(activeChat.logs)));
+        }
+        
+        void UpdateLogs(object? sender, PropertyChangedEventArgs args)
+        {
+            if(activeChat ==  null) return;
+            if(args.PropertyName == nameof(activeChat.logs))
+            {
+                Usage_Details.Text = String.Format("###Logs:  \n {0}({1})/{2}  \n Finish Reason: {3}  \n Cost: ${4}", activeChat.logs.InTokens
+                                                                                                                        , activeChat.logs.CachedIn
+                                                                                                                        , activeChat.logs.OutTokens
+                                                                                                                        , activeChat.logs.Stop_Reason
+                                                                                                                        , activeChat.logs.Cost.ToString("0.#####"));
+            }
         }
 
         async void GetModelDescription(object o, SelectionChangedEventArgs args)
