@@ -19,6 +19,7 @@ namespace Iris
     [JsonSourceGenerationOptions(WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonSerializable(typeof(Message))]
     [JsonSerializable(typeof(Content))]
+    [JsonSerializable(typeof(Content.Image_Url))]
     [JsonSerializable(typeof(List<Message>))]
     [JsonSerializable(typeof(List<Content>))]
     [JsonSerializable(typeof(Chat))]
@@ -36,20 +37,42 @@ namespace Iris
 
     public class Content
     {
-        public Content(Binding_Message other) { backingMessage = other; }
-
-        public Binding_Message backingMessage;
+        public bool isSystemMessage = false;
+        public string content = null!;
+        public string? reasoning;
+        public string? url;
 
         [JsonInclude]
         public string type = "text";
 
-        public string text
+        public string? text
         {
             get
             {
-                if (backingMessage.isAssistantMessage && backingMessage.reasoning != "") return "<think>" + backingMessage.reasoning + "</think>\n" + backingMessage.content;
-                if (!backingMessage.isNotSystemPrompt) return "<System Prompt>" + Chat.system_prompt + "</System Prompt>";
-                return backingMessage.content;
+                if(type == "text")
+                {
+                    if(isSystemMessage) return "<System Prompt>" + Chat.system_prompt + "</System Prompt>";
+                    if (reasoning != "") return "<think>" + reasoning + "</think>\n" + content;
+                    return content;
+                }
+                else return null;
+            }
+        }
+
+        public class Image_Url
+        {
+            public string? url { get; set; }
+        }
+
+        public Image_Url? image_url
+        {
+            get
+            {
+                if(type == "image_url")
+                {
+                    return new Image_Url() { url = url };
+                }
+                else return null;
             }
         }
 
@@ -59,15 +82,29 @@ namespace Iris
     {
         public Message(Binding_Message other) 
         {
-            backingMessage = other;
-            content = [new Content(other)];
+            role_ = other.role;
+            content = [];
+            if(other.role == "system")
+            {
+                content.Add(new Content() { isSystemMessage = true });
+                return;
+            }
+            if(other.content != "")
+            {
+                content.Add(new Content() { content = other.content, reasoning = other.reasoning });
+            }
+            if (other.images_base64 == null) return;
+            foreach(var image in other.images_base64)
+            {
+                content.Add(new Content() {type = "image_url", url = image });
+            }
         }
-        public Binding_Message backingMessage;
+        string role_;
         public string role
         {
             get
-            { 
-                return backingMessage.role;
+            {
+                return role_;
             }
         }
 
