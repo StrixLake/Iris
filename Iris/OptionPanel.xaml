@@ -13,6 +13,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
@@ -35,6 +36,11 @@
         <controls:MarkdownTextBlock Text="{x:Bind ModelDescription, Mode=OneWay}" TextWrapping="WrapWholeWords" 
                                     Margin="0,20,0,0" WrapCodeBlock="True"
                                     Background="Transparent" Grid.Row="2"/>
+
+        <controls:MarkdownTextBlock x:Name="Usage_Details"
+                                    VerticalAlignment="Bottom"
+                                    Background="Transparent"
+                                    Grid.Row="3" />
 
     </Grid>
 </Page>

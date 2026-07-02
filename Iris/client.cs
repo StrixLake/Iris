@@ -33,6 +33,7 @@ namespace Iris
     [JsonSerializable(typeof(List<Response.Choices>))]
     [JsonSerializable(typeof(Response.Choices.Delta))]
     [JsonSerializable(typeof(Response.Usage))]
+    [JsonSerializable(typeof(Response.Usage.Details))]
     internal partial class JsonContext : JsonSerializerContext { }
 
     public class Content
@@ -154,10 +155,26 @@ namespace Iris
             public int prompt_tokens { get; set; }
             public int total_tokens { get; set; }
             public double cost { get; set; }
+
+            public class Details
+            {
+                public int cached_tokens { get; set; }
+            }
+
+            public Details prompt_tokens_details { get; set; } = new();
         }
         [JsonInclude]
         public List<Choices> choices = [];
         public Usage? usage { get; set; }
+    }
+
+    public class Logs
+    {
+        public string Stop_Reason { get; set; } = "";
+        public double Cost { get; set; }
+        public int InTokens { get; set; }
+        public int OutTokens { get; set; }
+        public int CachedIn { get; set; }
     }
 
     public enum ClientStatus
@@ -183,7 +200,7 @@ namespace Iris
         public static string apikey = "";
         public event StatusUpdateEventHandler? StatusUpdate;
 
-        public async Task ChatCompletion(Binding_Message response, List<Message> context, string model, CancellationToken cancellationToken)
+        public async Task ChatCompletion(Binding_Message response, List<Message> context, string model, CancellationToken cancellationToken, Logs logs)
         {
             Payload payload = new() { model = model, messages = context};
 
@@ -257,6 +274,15 @@ namespace Iris
                         }
                         response.content += api_response.choices[0].delta.content ?? "";
                         response.reasoning += api_response.choices[0].delta.reasoning ?? "";
+
+                        if(api_response.usage != null)
+                        {
+                            logs.InTokens = api_response.usage.prompt_tokens;
+                            logs.OutTokens = api_response.usage.completion_tokens;
+                            logs.CachedIn = api_response.usage.prompt_tokens_details.cached_tokens;
+                            logs.Stop_Reason = api_response.choices[0].finish_reason ?? "";
+                            logs.Cost = api_response.usage.cost;
+                        }
                     }
                 }
 

@@ -115,6 +115,8 @@ namespace Iris
         string save_folder = "history";
         Client client = new();
         public CancellationTokenSource cancellationToken = new CancellationTokenSource();
+        public Logs logs = new();
+
         public event Client.StatusUpdateEventHandler? StatusUpdate;
         public event PropertyChangedEventHandler? PropertyChanged;
         
@@ -194,13 +196,13 @@ Assistant: [slur]
 
             cancellationToken.Dispose();
             cancellationToken = new();
-            await client.ChatCompletion(generationBinding, context, model, cancellationToken.Token);
+            await client.ChatCompletion(generationBinding, context, model, cancellationToken.Token, logs);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(logs)));
             generationBinding.date_time = DateTime.Now.ToString();
             generationBinding.hasFinishedStreamingMessage = true;
             generationBinding.hasNotFinishedStreamingMessage = false;
             context.Add(generation);
 
-            SaveChat();
 
             // generate the title if there was 7 messages in the context
             // and the default title is still in use
@@ -214,11 +216,13 @@ Assistant: [slur]
                 // we don't want to accedently cancel the title generation
                 // so we create a temp token
                 CancellationTokenSource cancellationToken_Temp = new();
-                await client.ChatCompletion(title_response, title_context, "deepseek/deepseek-v4-flash", cancellationToken_Temp.Token);
+                await client.ChatCompletion(title_response, title_context, "deepseek/deepseek-v4-flash", cancellationToken_Temp.Token, new());
                 cancellationToken_Temp.Dispose();
                 title = title_response.content;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(title)));
             }
+
+            SaveChat();
         }
 
         // when one of the messages in the context
@@ -245,7 +249,8 @@ Assistant: [slur]
 
             cancellationToken.Dispose();
             cancellationToken = new();
-            await client.ChatCompletion(regeneration_message, partial_context, model, cancellationToken.Token);
+            await client.ChatCompletion(regeneration_message, partial_context, model, cancellationToken.Token, logs);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(logs)));
             regeneration_message.date_time = DateTime.Now.ToString();
             regeneration_message.hasFinishedStreamingMessage = true;
             regeneration_message.hasNotFinishedStreamingMessage = false;
