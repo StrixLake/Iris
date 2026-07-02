@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -175,6 +176,10 @@ namespace Iris
         public int InTokens { get; set; }
         public int OutTokens { get; set; }
         public int CachedIn { get; set; }
+        public double JsonSerialisationTime { get; set; }
+        public double ResponceLatency { get; set; }
+        public double TPS { get; set; }
+        public string logMessage = "";
     }
 
     public enum ClientStatus
@@ -208,6 +213,8 @@ namespace Iris
             string json;
 
             StatusUpdate?.Invoke(ClientStatus.JSON_Serialiser_Begin, "Starting Serialisation");
+            Stopwatch timer = new();
+            timer.Start();
 
             try { json = JsonSerializer.Serialize(payload, JsonContext.Default.Payload); }
             catch
@@ -217,6 +224,9 @@ namespace Iris
             }
 
             StatusUpdate?.Invoke(ClientStatus.JSON_Serialiser_Success, "Serialiser Finished");
+
+            logs.JsonSerialisationTime = timer.ElapsedMilliseconds;
+            timer.Restart();
 
             StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
             HttpRequestMessage request = new(HttpMethod.Post, "chat/completions") { Content = content};
@@ -243,9 +253,12 @@ namespace Iris
                 string message = error.GetProperty("message").ToString();
                 int code = error.GetProperty("code").GetInt32();
 
-                StatusUpdate?.Invoke(ClientStatus.Response_Error, String.Format("Code: {0}. {1}", error, message));
+                StatusUpdate?.Invoke(ClientStatus.Response_Error, String.Format("Code: {0}. {1}", code, message));
                 return;
             }
+
+            logs.ResponceLatency = timer.ElapsedMilliseconds;
+            timer.Restart();
 
             StatusUpdate?.Invoke(ClientStatus.Response_Success, "Response Succeed");
 
@@ -282,6 +295,7 @@ namespace Iris
                             logs.CachedIn = api_response.usage.prompt_tokens_details.cached_tokens;
                             logs.Stop_Reason = api_response.choices[0].finish_reason ?? "";
                             logs.Cost = api_response.usage.cost;
+                            logs.TPS = ((double)logs.OutTokens / timer.ElapsedMilliseconds) * 1000;
                         }
                     }
                 }

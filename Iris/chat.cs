@@ -319,6 +319,7 @@ Assistant: [slur]
                     Status = Colors.Yellow;
                     break;
             }
+            logs.logMessage = log;
         }
     }
 
