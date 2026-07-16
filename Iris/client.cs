@@ -127,6 +127,8 @@ namespace Iris
         [JsonInclude]
         public string reasoning_effort = "xhigh";
         [JsonInclude]
+        public string session_id = "iris-session";
+        [JsonInclude]
         public bool stream = true;
         [JsonInclude]
         public int max_tokens = 90000;
@@ -169,12 +171,15 @@ namespace Iris
             public Details prompt_tokens_details { get; set; } = new();
         }
         [JsonInclude]
+        public string provider = "";
+        [JsonInclude]
         public List<Choices> choices = [];
         public Usage? usage { get; set; }
     }
 
     public class Logs
     {
+        public string provider { get; set; } = "";
         public string Stop_Reason { get; set; } = "";
         public double Cost { get; set; }
         public int InTokens { get; set; }
@@ -294,6 +299,7 @@ namespace Iris
 
                         if(api_response.usage != null)
                         {
+                            logs.provider = api_response.provider;
                             logs.InTokens = api_response.usage.prompt_tokens;
                             logs.OutTokens = api_response.usage.completion_tokens;
                             logs.CachedIn = api_response.usage.prompt_tokens_details.cached_tokens;
