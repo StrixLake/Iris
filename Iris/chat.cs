@@ -231,16 +231,13 @@ Assistant: [slur]
         // needs to generated
         public async void SendPartialMessage(int generate_index)
         {
-            // regenerate the context list if it's not the same size as 
-            // messages
-            if(context.Count != messages.Count)
+            // regenerate the context
+            context.Clear();
+            foreach (Binding_Message message in messages)
             {
-                context.Clear();
-                foreach (Binding_Message message in messages)
-                {
-                    context.Add(new(message));
-                }
+                context.Add(new(message));
             }
+            
 
             List<Message> partial_context = context.GetRange(0, generate_index); // it shouldn't be -1 because we are also counting the system prompt
                                                                                  // and GetIndex returns 0 based index
