@@ -52,7 +52,7 @@ namespace Iris
             if(activeChat ==  null) return;
             if(args.PropertyName == nameof(activeChat.logs))
             {
-                Usage_Details.Text = String.Format("###Logs:  \n {0}({1})/{2} \n  Provider: {3} \n Finish Reason: {4}  \n Cost: ${5}  \n Serialization Time: {6}ms  \n Latency: {7}s  \n Tokens\\s: {8}\\s  \n Logs: {9}"
+                Usage_Details.Text = String.Format("###Logs:  \n {0}({1})/{2}  \n Provider: {3}  \n Finish Reason: {4}  \n Cost: ${5}  \n Serialization Time: {6}ms  \n Latency: {7}s  \n Tokens\\s: {8}\\s  \n Logs: {9}"
                                                                                                                         , activeChat.logs.InTokens
                                                                                                                         , activeChat.logs.CachedIn
                                                                                                                         , activeChat.logs.OutTokens
