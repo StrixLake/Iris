@@ -125,6 +125,17 @@ namespace Iris.Core
             }
         }
 
+        bool streaming_ = false;
+        public bool streaming
+        {
+            get => streaming_;
+            set
+            {
+                streaming_ = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(streaming)));
+            }
+        }
+
         // base64 representation of images
         public ObservableCollection<string> images = [];
 
