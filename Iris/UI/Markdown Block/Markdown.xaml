@@ -1,0 +1,46 @@
+<UserControl x:Class="Iris.UI.Markdown"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:Iris.UI"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+      mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <MenuFlyout x:Name="MarkdownFlyout">
+            <MenuFlyoutItem Text="Edit" Click="Edit_Start"/>
+            <MenuFlyoutItem Text="Select All"/>
+            <MenuFlyoutItem Text="Select Block"/>
+            <MenuFlyoutItem Text="Delete"/>
+            <MenuFlyoutItem Text="Regenerate"/>
+            <MenuFlyoutItem Text="Logs"/>
+        </MenuFlyout>
+    </UserControl.Resources>
+    
+    <Grid>
+
+        <controls:MarkdownTextBlock x:Name="InnerMarkdown"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    MarkdownRendered="Markdown_Rendered"/>
+        
+        <TextBlock x:Name="InnerTextBlock"
+                   HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"
+                   Visibility="Collapsed"/>
+
+        <TextBox x:Name="InnerTextBox_Edit"
+                 HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch"
+                 Visibility="Collapsed"
+                 AcceptsReturn="True">
+            <TextBox.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Enter" Modifiers="Control" Invoked="Edit_Complete"/>
+            </TextBox.KeyboardAccelerators>
+        </TextBox>
+
+    </Grid>
+    
+
+</UserControl>
