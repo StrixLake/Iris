@@ -11,9 +11,7 @@
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
-    <NoWarn>IDE1006</NoWarn>
-    <NoWarn>IDE0090</NoWarn>
-    <NoWarn>IDE0057</NoWarn>
+    <NoWarn>IDE1006;IDE0090;IDE0057</NoWarn>
   </PropertyGroup>
 	
 <PropertyGroup>
