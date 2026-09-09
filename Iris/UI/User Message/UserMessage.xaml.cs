@@ -10,6 +10,8 @@ using Windows.Storage.Streams;
 
 namespace Iris.UI
 {
+    public delegate void StringEvent(string eventarg);
+
     public partial class UserMessage : UserControl
     {
 
@@ -18,7 +20,9 @@ namespace Iris.UI
         // the markdown control
         Markdown markdown;
 
-        public UserMessage(Core.Message message)
+        event StringEvent? OpenFile;
+
+        public UserMessage(Core.Message message, StringEvent FileOpenMethod)
         {
             InitializeComponent();
             this.message = message;
@@ -30,6 +34,21 @@ namespace Iris.UI
             // configure visibility for file list and image list
             if (message.files.Count == 0) FileList.Visibility = Visibility.Collapsed;
             if (message.images.Count == 0) ImageList.Visibility = Visibility.Collapsed;
+
+            OpenFile += FileOpenMethod;
+        }
+
+        void OpenFileViewer(object sender, RoutedEventArgs e)
+        {
+            if(sender is Button button)
+            {
+                if(button.DataContext is Tuple<string, string> tuple)
+                {
+                    string content = tuple.Item2;
+                    OpenFile?.Invoke(content);
+
+                }
+            }
         }
     }
 

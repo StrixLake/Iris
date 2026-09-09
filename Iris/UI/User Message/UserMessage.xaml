@@ -63,7 +63,8 @@
                     <DataTemplate>
                         <Border CornerRadius="4">
                             <Button Content="{Binding Converter={StaticResource FileConverter}}"
-                                    ContextFlyout="{StaticResource attachmentOptions}"/>
+                                    ContextFlyout="{StaticResource attachmentOptions}"
+                                    Click="OpenFileViewer"/>
                         </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>
