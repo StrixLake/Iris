@@ -23,7 +23,8 @@
         <controls:MarkdownTextBlock x:Name="InnerMarkdown"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
-                                    MarkdownRendered="Markdown_Rendered"/>
+                                    MarkdownRendered="Markdown_Rendered"
+                                    Background="Transparent"/>
         
         <TextBlock x:Name="InnerTextBlock"
                    HorizontalAlignment="Stretch"
