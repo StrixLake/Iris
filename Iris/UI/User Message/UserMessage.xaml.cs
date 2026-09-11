@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
+using System.Linq;
 
 
 
@@ -92,7 +93,7 @@ namespace Iris.UI
             // and we want to return the filename
 
             Tuple<string, string> tuple = (Tuple<string, string>)value;
-            return tuple.Item1;
+            return tuple.Item1 + "\n" + tuple.Item2.Count(c => c == ' ') + " Words";
 
         }
 
