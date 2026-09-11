@@ -1,0 +1,46 @@
+<UserControl x:Class="Iris.UI.AssistantMessage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:Iris.UI"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+      mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="ExpanderHeaderBorderBrush" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderContentBackground" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderContentBorderBrush" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderHeaderBorderPointerOverBrush" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderHeaderBorderPressedBrush" Color="Transparent"/>
+        <Thickness x:Key="ExpanderContentPadding">0</Thickness>
+    </UserControl.Resources>
+    
+    <StackPanel CornerRadius="8"
+                Padding="8"
+                HorizontalAlignment="Stretch">
+
+        <StackPanel.Background>
+            <AcrylicBrush TintOpacity="0"
+                          TintColor="Black"/>
+        </StackPanel.Background>
+
+        <!--reasoning block-->
+        <Expander HorizontalAlignment="Stretch">
+            <Expander.Header>
+                <TextBlock Text="Thinking"/>
+            </Expander.Header>
+            <Border CornerRadius="8"
+                    Padding="8"
+                    Background="#80000000">
+                <ContentControl x:Name="reasoningBlock"/>
+            </Border>
+        </Expander>
+        
+        <!--main responce-->
+        <ContentControl x:Name="contentBlock"/>
+
+    </StackPanel>
+
+</UserControl>
