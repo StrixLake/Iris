@@ -95,7 +95,7 @@
                               TintColor="Black"/>
             </Border.Background>
 
-            <Grid MinHeight="200" MinWidth="600">
+            <Grid>
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>

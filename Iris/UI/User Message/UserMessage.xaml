@@ -15,67 +15,73 @@
         </MenuFlyout>
     </UserControl.Resources>
 
-    <StackPanel>
-        <TextBlock x:Name="RoleField" Text="{x:Bind message.role}"/>
+    <Border BorderThickness="1"
+            CornerRadius="8"
+            BorderBrush="DeepSkyBlue"
+            HorizontalAlignment="Stretch"
+            Padding="10">
 
-        <StackPanel Orientation="Horizontal">
-            <!--> image list <-->
-            <ListView x:Name="ImageList"
-                      ScrollViewer.HorizontalScrollMode="Enabled"
-                      ScrollViewer.VerticalScrollMode="Disabled"
-                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                      SelectionMode="None"
-                      ItemsSource="{x:Bind message.images}">
+        <StackPanel VerticalAlignment="Center">
 
-                <ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <ItemsStackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
+            <StackPanel Orientation="Horizontal">
+                <!--> image list <-->
+                <ListView x:Name="ImageList"
+                          ScrollViewer.HorizontalScrollMode="Enabled"
+                          ScrollViewer.VerticalScrollMode="Disabled"
+                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                          SelectionMode="None"
+                          ItemsSource="{x:Bind message.images}">
 
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border CornerRadius="4">
-                            <Image Source="{Binding Converter={StaticResource ImageConverter}}"
-                                   ContextFlyout="{StaticResource attachmentOptions}"/>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsStackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
 
-            </ListView>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border CornerRadius="4">
+                                <Image Source="{Binding Converter={StaticResource ImageConverter}}"
+                                       ContextFlyout="{StaticResource attachmentOptions}"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
 
-            <!--> files list <-->
+                </ListView>
 
-            <ListView x:Name="FileList"
-                      ScrollViewer.HorizontalScrollMode="Enabled"
-                      ScrollViewer.VerticalScrollMode="Disabled"
-                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                      SelectionMode="None"
-                      ItemsSource="{x:Bind message.files}">
+                <!--> files list <-->
 
-                <ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <ItemsStackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
+                <ListView x:Name="FileList"
+                          ScrollViewer.HorizontalScrollMode="Enabled"
+                          ScrollViewer.VerticalScrollMode="Disabled"
+                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                          SelectionMode="None"
+                          ItemsSource="{x:Bind message.files}">
 
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border CornerRadius="4">
-                            <Button Content="{Binding Converter={StaticResource FileConverter}}"
-                                    ContextFlyout="{StaticResource attachmentOptions}"
-                                    Click="OpenFileViewer"/>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsStackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border CornerRadius="4">
+                                <Button Content="{Binding Converter={StaticResource FileConverter}}"
+                                        ContextFlyout="{StaticResource attachmentOptions}"
+                                        Click="OpenFileViewer"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
 
 
-            </ListView>
+                </ListView>
+            </StackPanel>
+
+            <ContentControl x:Name="MarkdownControl"/>
+            <TextBlock x:Name="DateTimeField"/>
         </StackPanel>
-
-        <ContentControl x:Name="MarkdownControl"/>
-        <TextBlock x:Name="DateTimeField"/>
-    </StackPanel>
     
+    </Border>
 
 </UserControl>
