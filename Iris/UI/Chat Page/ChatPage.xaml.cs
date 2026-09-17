@@ -29,7 +29,7 @@ namespace Iris.UI
                 }
             }
 
-            promptField = new(session.worker.Item2);
+            promptField = new(session.worker.Item2, (msg) => { });
 
             prompt.Content = promptField;
         }

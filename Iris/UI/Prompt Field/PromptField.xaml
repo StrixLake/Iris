@@ -31,7 +31,7 @@
 
             <StackPanel Orientation="Horizontal">
 
-                <ItemsRepeater ItemsSource="{x:Bind images}">
+                <ItemsRepeater ItemsSource="{x:Bind images, Mode=OneWay}">
                     <ItemsRepeater.Layout>
                         <StackLayout Orientation="Horizontal"/>
                     </ItemsRepeater.Layout>
@@ -55,7 +55,7 @@
                     </ItemsRepeater.ItemTemplate>
                 </ItemsRepeater>
                 
-                <ItemsRepeater ItemsSource="{x:Bind fileAttachments}">
+                <ItemsRepeater ItemsSource="{x:Bind fileAttachments, Mode=OneWay}">
                     <ItemsRepeater.Layout>
                         <StackLayout Orientation="Horizontal"/>
                     </ItemsRepeater.Layout>
@@ -105,9 +105,11 @@
                 <TextBox x:Name="textField"
                          Grid.Row="0" AcceptsReturn="True"
                          Padding="20"
+                         PlaceholderText="Type here (Ctrl + return to send)"
                          KeyboardAcceleratorPlacementMode="Hidden">
                     <TextBox.KeyboardAccelerators>
                         <KeyboardAccelerator Key="V" Modifiers="Control" Invoked="Paste"/>
+                        <KeyboardAccelerator Key="Enter" Modifiers="Control" Invoked="SendMessage"/>
                     </TextBox.KeyboardAccelerators>
                 </TextBox>
 

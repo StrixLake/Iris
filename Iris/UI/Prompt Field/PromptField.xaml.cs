@@ -11,20 +11,25 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;
 using Buffer = Windows.Storage.Streams.Buffer;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.ComponentModel;
 
 namespace Iris.UI
 {
-    public partial class PromptField : UserControl
+    public delegate void SendMessageEvent(Core.Message? message);
+    public partial class PromptField : UserControl, INotifyPropertyChanged
     {
         Core.Worker settings;
+        event SendMessageEvent? sendMessageEvent;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        ObservableCollection<Tuple<string, string>> fileAttachments = [];
-        ObservableCollection<string> images = [];
+        ObservableCollection<Tuple<string, string>> fileAttachments { get; set; } = [];
+        ObservableCollection<string> images { get; set; } = [];
         
-        public PromptField(Core.Worker worker)
+        public PromptField(Core.Worker worker, SendMessageEvent sendMessageEvent)
         {
             InitializeComponent();
             settings = worker;
+            this.sendMessageEvent += sendMessageEvent;
         }
 
         async void Paste(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
@@ -62,6 +67,33 @@ namespace Iris.UI
                 images.Add(base64image);
                 
             }
+        }
+
+        void SendMessage(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            args.Handled = true;
+            // construct the message object and invoke the event
+            // if the text field is empty or attachments
+            // are empty, send a null object
+            if(textField.Text.Trim() == "" && fileAttachments.Count == 0 && images.Count == 0)
+            {
+                sendMessageEvent?.Invoke(null);
+                return;
+            }
+
+            Core.Message message = new()
+            {
+                role = "user",
+                text = textField.Text.Trim(),
+                images = this.images,
+                files = this.fileAttachments
+            };
+
+            this.images = [];
+            this.fileAttachments = [];
+            textField.Text = "";
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(images)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(fileAttachments)));
         }
 
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
