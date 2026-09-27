@@ -16,6 +16,7 @@ using System.ComponentModel;
 namespace Iris.UI
 {
     public delegate void SendMessageEvent(Core.Message? message);
+    
     public partial class PromptField : UserControl, INotifyPropertyChanged
     {
         Core.Worker settings;
@@ -83,8 +84,8 @@ namespace Iris.UI
 
             Core.Message message = new()
             {
-                role = "user",
-                text = textField.Text.Trim(),
+                Role = "user",
+                Content = textField.Text.Trim(),
                 images = this.images,
                 files = this.fileAttachments
             };
