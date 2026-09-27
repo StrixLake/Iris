@@ -43,8 +43,8 @@ namespace Iris.UI
             this.element = element;
             message.PropertyChanged += MessageChanged;
 
-            if (element == "content") InnerMarkdown.Text = message.text;
-            if (element == "reasoning") InnerMarkdown.Text = message.reasoning;
+            if (element == "content") InnerMarkdown.Text = message.Content;
+            if (element == "reasoning") InnerMarkdown.Text = message.Reasoning;
         }
 
         private void Markdown_Rendered(object sender, CommunityToolkit.WinUI.UI.Controls.MarkdownRenderedEventArgs e)
@@ -88,8 +88,8 @@ namespace Iris.UI
             InnerMarkdown.Visibility = Visibility.Collapsed;
             InnerTextBlock.Visibility = Visibility.Collapsed;
 
-            if (element == "reasoning") InnerTextBox_Edit.Text = message.reasoning;
-            if (element == "content") InnerTextBox_Edit.Text = message.text;
+            if (element == "reasoning") InnerTextBox_Edit.Text = message.Reasoning;
+            if (element == "content") InnerTextBox_Edit.Text = message.Content;
         }
 
 
@@ -99,8 +99,8 @@ namespace Iris.UI
         {
             InnerTextBox_Edit.Visibility = Visibility.Collapsed;
 
-            if (element == "content") message.text = InnerTextBox_Edit.Text;
-            if (element == "reasoning") message.reasoning = InnerTextBox_Edit.Text;
+            if (element == "content") message.Content = InnerTextBox_Edit.Text;
+            if (element == "reasoning") message.Reasoning = InnerTextBox_Edit.Text;
 
             InnerMarkdown.Visibility = Visibility.Visible;
 
@@ -114,24 +114,24 @@ namespace Iris.UI
         {
             // if either of the display text changes, check the element we are updating
             // and update that
-            if(args.PropertyName == nameof(message.text) || args.PropertyName == nameof(message.reasoning))
+            if(args.PropertyName == nameof(message.Content) || args.PropertyName == nameof(message.Reasoning))
             {
-                if (element == "reasoning") InnerTextBlock.Text = message.reasoning;
-                if (element == "content") InnerTextBlock.Text = message.text;
+                if (element == "reasoning") InnerTextBlock.Text = message.Reasoning;
+                if (element == "content") InnerTextBlock.Text = message.Content;
                 // this event is invoked when edit finishes
                 // update the markdown block too if the message is not streaming
-                if(!message.streaming)
+                if(!message.Streaming)
                 {
-                    if (element == "reasoning") InnerMarkdown.Text = message.reasoning;
-                    if (element == "content") InnerMarkdown.Text = message.text;
+                    if (element == "reasoning") InnerMarkdown.Text = message.Reasoning;
+                    if (element == "content") InnerMarkdown.Text = message.Content;
                 }
             }
 
             // if the streaming property changes to false, then we display the markdown block
             // if it's not streaming and collapse it if its streaming
-            if(args.PropertyName == nameof(message.streaming))
+            if(args.PropertyName == nameof(message.Streaming))
             {
-                if (message.streaming)
+                if (message.Streaming)
                 { 
                     InnerMarkdown.Visibility = Visibility.Collapsed;
                     InnerTextBlock.Visibility = Visibility.Visible;
@@ -139,8 +139,8 @@ namespace Iris.UI
                 else
                 {
                     InnerMarkdown.Visibility = Visibility.Visible;
-                    if (element == "content") InnerMarkdown.Text = message.text;
-                    if (element == "reasoning") InnerMarkdown.Text = message.reasoning;
+                    if (element == "content") InnerMarkdown.Text = message.Content;
+                    if (element == "reasoning") InnerMarkdown.Text = message.Reasoning;
                 }
             }
         }

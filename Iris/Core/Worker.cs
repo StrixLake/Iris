@@ -1,34 +1,94 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Threading;
 
-// a worker class contains the settings
-// for an llm like temp and model
-// as well as the payload settings
-// like whether to include reasoning or not
 
 namespace Iris.Core
 {
-    public class Worker
+    public partial class Worker : INotifyPropertyChanged
     {
-        // default model
-        string model_ = "xiomi/mimo-v2.5";
-        public string model
+        public Worker()
         {
-            get => model_;
-            set 
-            { 
-                model_ = value; 
-                ModelChanged();
-            }
+            ModelChanged();
         }
-        public string variant = "";
-        public float temperature = 1;
-        public float top_p = 1;
-        public List<string> input_modality = ["text", "image"];
-        public int context_length = 1_000_000;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        
+        string model = "xiaomi/mimo-v2.6";
+        int context_length = 1_000_000;
+        string description = "";
+        public string id = "";
+        
+        public ObservableCollection<string> Inputs {get; set;} = ["text", "image"];
+        public ObservableCollection<Message> Context {get; set;} = [];
+
+        public string Model
+        {
+            get => model;
+            set => OnPropertyChanged(ref model, value);
+        }
+
+        public int Context_Length
+        {
+            get => context_length;
+            set => OnPropertyChanged(ref context_length, value);
+        }
+
+        public string Description
+        {
+            get => description;
+            set => OnPropertyChanged(ref description, value);
+        }
+
+        public List<Worker>? splitWorkers;
+        public List<Worker>? agents;
+        public Worker? preSplitWorker;
+
+        public List<Message> MessageBox = [];
+        Mutex MessageBoxMutex = new();
+        CancellationTokenSource cancellationToken = new();
+
+        List<Message> GetContext()
+        {
+            List<Message> preSplitContext = [];
+            if(preSplitWorker != null) preSplitContext = preSplitWorker.GetContext();
+            preSplitContext.AddRange(Context);
+            return preSplitContext;
+        }
+
+        static string GeneratePayload(List<Message> context, Worker worker)
+        {
+            Payload payload = new(worker.Model);
+
+            foreach (Message message in context)
+            {
+                JsonMessage jsonMessage = new(message);
+                if(worker.Inputs.Contains("image"))
+                {
+                    foreach(string image in message.images)
+                    {
+                        jsonMessage.content.Add(new Dictionary<string, object>
+                        {
+                            ["type"] = "image_url",
+                            ["image_url"] = new Dictionary<string, string>
+                            {
+                                ["image_url"] = image
+                            }
+                        });
+                    }
+                }
+                payload.messages.Add(jsonMessage);
+            }
+
+            return JsonSerializer.Serialize(payload);
+        }
 
         async void ModelChanged()
         {
@@ -46,7 +106,7 @@ namespace Iris.Core
             {
                 // if we can't get the info, then we assume that
                 // only text can be input
-                input_modality = ["text"];
+                Inputs = ["text"];
                 return; 
             }
 
@@ -56,8 +116,14 @@ namespace Iris.Core
             // we want to get the input modalities and context
             JsonElement architecture = jsonDocument.RootElement.GetProperty("data").GetProperty("architecture");
             JsonElement input_modalities = architecture.GetProperty("input_modalities");
-            input_modality = input_modalities.Deserialize<List<string>>() ?? ["text"];
-            context_length = int.Parse(jsonDocument.RootElement.GetProperty("data").GetProperty("context_length").ToString());
+            Inputs = input_modalities.Deserialize<ObservableCollection<string>>() ?? ["text"];
+            Context_Length = int.Parse(jsonDocument.RootElement.GetProperty("data").GetProperty("context_length").ToString());
+        }
+
+        void OnPropertyChanged<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        {
+            field = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -164,7 +164,7 @@
                                                     StepFrequency="0.01" SmallChange="0.05"/>
 
                                             <controls:MarkdownTextBlock x:Name="descriptionFlyout"
-                                                                        Text="{x:Bind settings.model}"
+                                                                        Text="{x:Bind settings.Model}"
                                                                         Background="Transparent"/>
 
                                         </StackPanel>

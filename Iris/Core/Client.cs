@@ -30,10 +30,10 @@ namespace Iris.Core
         {
             // handle the processing of role, content and files
             // in the constructor
-            role = self.role;
+            role = self.Role;
             string text;
 
-            if(role == "assistant") text = "<think>" + self.reasoning + "</think> \n" + self.text;
+            if(role == "assistant") text = "<think>" + self.Reasoning + "</think> \n" + self.Content;
             else if(self.files.Count != 0) 
             {
                 text = "";
@@ -42,9 +42,9 @@ namespace Iris.Core
                 {
                     text += String.Format("<{0}> \n {1} \n </{0}> \n", file.Item1, file.Item2);
                 }
-                text += self.text;
+                text += self.Content;
             }
-            else text = self.text;
+            else text = self.Content;
 
             content.Add(new Dictionary<string, object>
             {
@@ -78,9 +78,7 @@ namespace Iris.Core
     class Payload
     {
         public string? model {get;set;}
-        public float temperature {get;set;}
-        public float top_p {get;set;}
-        public Dictionary<string, string> provider {get; set;} = [];
+        public Dictionary<string, object> provider {get; set;} = [];
         public Dictionary<string, bool> usage{get;set;} = [];
         public string reasoning_effort {get;set;} = "max";
         public string session_id {get;set;} = "iris-session";
@@ -89,20 +87,13 @@ namespace Iris.Core
 
         public List<JsonMessage> messages {get;set;} = [];
 
-        public Payload(Worker worker)
+        public Payload(string Model)
         {
-            model = worker.model;
-            if(worker.variant != "") model += ":" + worker.variant;
-
-            temperature = worker.temperature;
-            top_p = worker.top_p;
+            model = Model;
 
             // for deepseek modals, i want to use deepseek provider
             // because it is so much cheaper
-            if(worker.model.StartsWith("deepseek"))
-            {
-                provider.Add("only", "DeepSeek");
-            }
+            provider.Add("order", new List<string>{"DeepSeek", "Xiaomi"});
 
             // add the usage include to get provider info
             usage.Add("include", true);
@@ -215,8 +206,8 @@ namespace Iris.Core
                     Dictionary<string, string> delta = JsonSerializer.Deserialize<Dictionary<string,string>>(choice.GetProperty("delta")) ?? [];
 
                     delta.TryGetValue("reasoning", out string? value);
-                    assistantMessage.reasoning += value;
-                    assistantMessage.text += delta["content"];
+                    assistantMessage.Reasoning += value;
+                    assistantMessage.Content += delta["content"];
 
                     if (api_responce.ContainsKey("usage"))
                     {
