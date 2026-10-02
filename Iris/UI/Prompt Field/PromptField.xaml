@@ -8,20 +8,15 @@
       mc:Ignorable="d">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="TextControlBackground" Color="Transparent"/>
-        <SolidColorBrush x:Key="TextControlBorderBrush" Color="Transparent"/>
-        <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="Transparent"/>
-        <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="Transparent"/>
-        <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="Transparent"/>
-        <SolidColorBrush x:Key="TextControlButtonForegroundPointerOver" Color="Black"/>
-        <SolidColorBrush x:Key="TextControlButtonForeground" Color="Black"/>
-        <Thickness x:Key="TextControlBorderThemeThicknessFocused">0,0,0,2</Thickness>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/UI/Prompt Field/PromptFieldStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#AF000000"/>
+            <local:StringToImage x:Key="ImageConverter"/>
+            <local:FileConverter x:Key="FileConverter"/>
 
-        <local:StringToImage x:Key="ImageConverter"/>
-        <local:FileConverter x:Key="FileConverter"/>
-
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <StackPanel>
