@@ -15,11 +15,60 @@
 
             <local:StringToImage x:Key="ImageConverter"/>
             <local:FileConverter x:Key="FileConverter"/>
+            <BackEase x:Key="Easing" EasingMode="EaseOut"/>
 
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <StackPanel>
+    <StackPanel RenderTransformOrigin="0.5,1">
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Normal">
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="promptFieldTransform"
+                                         Storyboard.TargetProperty="ScaleX"
+                                         To="0.8" Duration="0:0:0.2"
+                                         EasingFunction="{StaticResource Easing}"/>
+                        <DoubleAnimation Storyboard.TargetName="promptFieldTransform"
+                                         Storyboard.TargetProperty="ScaleY"
+                                         To="0.4" Duration="0:0:0.2"
+                                         EasingFunction="{StaticResource Easing}"/>
+                    </Storyboard>
+                    <VisualState.Setters>
+                        <Setter Target="ModelSwitchTransform.ScaleX" Value="0"/>
+                        <Setter Target="fieldBorder.BorderThickness" Value="0"/>
+                        <Setter Target="textField.PlaceholderText" Value=""/>
+                    </VisualState.Setters>
+                </VisualState>
+                
+                <VisualState x:Name="Expanded">
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="promptFieldTransform"
+                                         Storyboard.TargetProperty="ScaleX"
+                                         To="1" Duration="0:0:0.2"
+                                         EasingFunction="{StaticResource Easing}"/>
+                        <DoubleAnimation Storyboard.TargetName="promptFieldTransform"
+                                         Storyboard.TargetProperty="ScaleY"
+                                         To="1" Duration="0:0:0.2"
+                                         EasingFunction="{StaticResource Easing}"/>
+                        <DoubleAnimation Storyboard.TargetName="ModelSwitchTransform"
+                                         Storyboard.TargetProperty="ScaleY"
+                                         To="1" Duration="0:0:0.2"
+                                         EasingFunction="{StaticResource Easing}"/>
+                    </Storyboard>
+                    <VisualState.Setters>
+                        <Setter Target="ModelSwitchTransform.ScaleX" Value="1"/>
+                        <Setter Target="fieldBorder.BorderThickness" Value="2,0,2,2"/>
+                        <Setter Target="textField.PlaceholderText" Value="(Ctrl + Enter to send)"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <StackPanel.RenderTransform>
+            <ScaleTransform x:Name="promptFieldTransform"/>
+        </StackPanel.RenderTransform>
 
         <ScrollView ScrollViewer.HorizontalScrollMode="Enabled"
                     ScrollViewer.VerticalScrollMode="Disabled">
@@ -81,14 +130,19 @@
             </StackPanel>
         </ScrollView>
 
-        <Border CornerRadius="12" 
+        <Border x:Name="fieldBorder"
+                CornerRadius="12" 
                 HorizontalAlignment="Stretch" 
-                VerticalAlignment="Stretch">
+                VerticalAlignment="Stretch"
+                BorderThickness="2,0,2,2"
+                Background="#20FFFFFF">
 
-            <Border.Background>
-                <AcrylicBrush TintOpacity="0"
-                              TintColor="Black"/>
-            </Border.Background>
+            <Border.BorderBrush>
+                <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
+                    <GradientStop Color="Black" Offset="0.5"/>
+                    <GradientStop Color="{ThemeResource SystemAccentColor}" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.BorderBrush>
 
             <Grid>
 
@@ -100,7 +154,6 @@
                 <TextBox x:Name="textField"
                          Grid.Row="0" AcceptsReturn="True"
                          Padding="20"
-                         PlaceholderText="Type here (Ctrl + return to send)"
                          KeyboardAcceleratorPlacementMode="Hidden">
                     <TextBox.KeyboardAccelerators>
                         <KeyboardAccelerator Key="V" Modifiers="Control" Invoked="Paste"/>
@@ -108,69 +161,53 @@
                     </TextBox.KeyboardAccelerators>
                 </TextBox>
 
-                <StackPanel Grid.Row="1" Orientation="Horizontal"
-                            Padding="20">
-                    <Grid>
+                <Button Grid.Row="1" Margin="20, 0, 20, 20" Content="{x:Bind settings.Name, Mode=OneWay}"
+                        CornerRadius="14" x:Name="ModelButton">
 
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
+                    <Button.RenderTransform>
+                        <ScaleTransform x:Name="ModelSwitchTransform"/>
+                    </Button.RenderTransform>
+                    
+                    <Button.Flyout>
+                        <Flyout x:Name="modelFlyout">
+                            <Flyout.FlyoutPresenterStyle>
+                                <Style TargetType="FlyoutPresenter">
+                                    <Setter Property="MaxWidth" Value="800"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Flyout.FlyoutPresenterStyle>
 
-                        <ComboBox Grid.Column="0"
-                                  VerticalAlignment="Center"
-                                  CornerRadius="6,0,0,6"
-                                  Height="35"/>
+                            <Border CornerRadius="14" 
+                                    Padding="10"
+                                    Background="{ThemeResource BlackBrush}">
 
-                        <Button Grid.Column="1"
-                                CornerRadius="0,6,6,0"
-                                Height="35">
-                            <Button.Content>
-                                <FontIcon Glyph="&#xE713;" />
-                            </Button.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-                            <Button.Flyout>
-                                <Flyout>
-                                    <Flyout.FlyoutPresenterStyle>
-                                        <Style TargetType="FlyoutPresenter">
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
-                                    </Flyout.FlyoutPresenterStyle>
+                                    <ListView Grid.Column="0" ItemsSource="{x:Bind settings.Models, Mode=OneWay}"
+                                              Background="#0FFFFFFF" CornerRadius="12"
+                                              Padding="2,8,2,2" Margin="0,0,8,0"
+                                              SelectedItem="{x:Bind settings.Model}" SelectionChanged="ChangeSelectedModel"/>
 
-                                    <Border CornerRadius="14" Padding="10">
-                                        <Border.Background>
-                                            <AcrylicBrush TintOpacity="0"
-                                                          TintLuminosityOpacity="0"/>
-                                        </Border.Background>
+                                    <controls:MarkdownTextBlock Grid.Column="1"
+                                                                x:Name="descriptionFlyout"
+                                                                Text="{x:Bind settings.Description, Mode=OneWay}"
+                                                                Background="Transparent"
+                                                                TextWrapping="WrapWholeWords"/>
+                                </Grid>
 
-                                        <StackPanel>
-                                            <Slider Header="Temperature"
-                                                    Minimum="0" Maximum="2" Value="1"
-                                                    StepFrequency="0.01" SmallChange="0.1"/>
-
-
-                                            <Slider Header="Top-P"
-                                                    Minimum="0.1" Maximum="1" Value="0.95"
-                                                    StepFrequency="0.01" SmallChange="0.05"/>
-
-                                            <controls:MarkdownTextBlock x:Name="descriptionFlyout"
-                                                                        Text="{x:Bind settings.Model}"
-                                                                        Background="Transparent"/>
-
-                                        </StackPanel>
-
-                                    </Border>
-                                </Flyout>
-                            </Button.Flyout>
-
-                        </Button>
-                    </Grid>
-                </StackPanel>
+                            </Border>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
 
             </Grid>
 

@@ -11,8 +11,7 @@
     <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="Transparent"/>
     <SolidColorBrush x:Key="TextControlButtonForegroundPointerOver" Color="Black"/>
     <SolidColorBrush x:Key="TextControlButtonForeground" Color="Black"/>
-    <Thickness x:Key="TextControlBorderThemeThicknessFocused">0,0,0,2</Thickness>
-
-    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#AF000000"/>
+    <Thickness x:Key="TextControlBorderThemeThicknessFocused">0</Thickness>
+    <AcrylicBrush x:Key="BlackBrush" TintOpacity="0.2" TintLuminosityOpacity="0.1" TintColor="{ThemeResource SystemAccentColor}"/>
 
 </ResourceDictionary>

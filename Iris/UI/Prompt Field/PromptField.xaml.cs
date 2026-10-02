@@ -31,6 +31,14 @@ namespace Iris.UI
             InitializeComponent();
             settings = worker;
             this.sendMessageEvent += sendMessageEvent;
+
+            VisualStateManager.GoToState(this, "Normal", false);
+            textField.LostFocus += (o, e) =>
+            {
+                if(!ModelButton.IsPressed) VisualStateManager.GoToState(this, "Normal", false);
+            };
+            textField.GotFocus += (o, e) => VisualStateManager.GoToState(this, "Expanded", false);
+            modelFlyout.Closing += (o, e) => textField.Focus(FocusState.Keyboard);
         }
 
         async void Paste(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
@@ -119,6 +127,11 @@ namespace Iris.UI
         private void Delete_file(object sender, RoutedEventArgs e)
         {
             fileAttachments.Remove((Tuple<string, string>)((Button)sender).DataContext);
+        }
+
+        private void ChangeSelectedModel(object sender, SelectionChangedEventArgs e)
+        {
+            settings.Model = (string)e.AddedItems[0];
         }
     }
 }
