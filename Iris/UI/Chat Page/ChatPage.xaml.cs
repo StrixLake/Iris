@@ -9,11 +9,18 @@ namespace Iris.UI
     {
 
         ObservableCollection<UserControl> controls = [];
-        UI.PromptField promptField;
+        readonly UI.PromptField promptField;
         
-        public ChatPage()
+        Core.Worker worker;
+        
+        public ChatPage(Core.Worker worker)
         {
             InitializeComponent();
+
+            this.worker = worker;
+            promptField = new PromptField(worker, (e) => {});
+            prompt.Content = promptField;
+
         }
 
     }
