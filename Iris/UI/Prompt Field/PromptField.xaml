@@ -192,10 +192,33 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <ListView Grid.Column="0" ItemsSource="{x:Bind settings.Models, Mode=OneWay}"
-                                              Background="#0FFFFFFF" CornerRadius="12"
-                                              Padding="2,8,2,2" Margin="0,0,8,0"
-                                              SelectedItem="{x:Bind settings.Model}" SelectionChanged="ChangeSelectedModel"/>
+                                    <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                        <ListView ItemsSource="{x:Bind settings.Models, Mode=OneWay}"
+                                                  Background="#0FFFFFFF" CornerRadius="12"
+                                                  Padding="2,8,2,2"
+                                                  SelectedItem="{x:Bind settings.Model}" SelectionChanged="ChangeSelectedModel">
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}">
+                                                        <TextBlock.ContextFlyout>
+                                                            <MenuFlyout>
+                                                                <MenuFlyoutItem Text="Delete" Click="RemoveModel"/>
+                                                            </MenuFlyout>
+                                                        </TextBlock.ContextFlyout>
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+
+                                        <TextBox PlaceholderText="Add Model"
+                                                 Margin="0,6,0,0"
+                                                 x:Name="ModelAddField">
+                                            <TextBox.KeyboardAccelerators>
+                                                <KeyboardAccelerator Key="Enter" Invoked="AddModel"/>
+                                            </TextBox.KeyboardAccelerators>
+                                        </TextBox>
+
+                                    </StackPanel>
 
                                     <controls:MarkdownTextBlock Grid.Column="1"
                                                                 x:Name="descriptionFlyout"

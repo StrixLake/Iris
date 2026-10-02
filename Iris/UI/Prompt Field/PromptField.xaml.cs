@@ -129,9 +129,30 @@ namespace Iris.UI
             fileAttachments.Remove((Tuple<string, string>)((Button)sender).DataContext);
         }
 
+        // only remove the model if there is at least 2 models in the list
+        // when the model is removed, check if that model was selected
+        // and if it was, change the model to the first one
         private void ChangeSelectedModel(object sender, SelectionChangedEventArgs e)
         {
-            settings.Model = (string)e.AddedItems[0];
+            if(e.AddedItems.Count != 0) settings.Model = (string)e.AddedItems[0];
+            if(e.RemovedItems.Count != 0 && settings.Model == (string)e.RemovedItems[0])
+            {
+                settings.Model = settings.Models[0];
+            }
+        }
+
+        private void RemoveModel(object sender, RoutedEventArgs e)
+        {
+            if(settings.Models.Count > 1) settings.Models.Remove((string)((MenuFlyoutItem)sender).DataContext);
+        }
+
+        private void AddModel(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            if (ModelAddField.Text != "")
+            {
+                settings.Models.Add(ModelAddField.Text);
+                ModelAddField.Text = "";
+            }
         }
     }
 }
