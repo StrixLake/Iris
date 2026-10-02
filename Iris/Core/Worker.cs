@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection.Metadata.Ecma335;
@@ -17,6 +18,13 @@ namespace Iris.Core
 {
     public partial class Worker : INotifyPropertyChanged
     {
+        static Worker()
+        {
+            string folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            folder = Path.Combine(folder, ".iris", "description_template.txt");
+            using StreamReader streamReader = new StreamReader(folder);
+            descriptionTemplate = streamReader.ReadToEnd();
+        }
         public Worker()
         {
             Model = models[0];
@@ -25,9 +33,11 @@ namespace Iris.Core
 
         public event PropertyChangedEventHandler? PropertyChanged;
         
-        static ObservableCollection<string> models = ["xiaomi/mimo-v2.6-flash"];
+        static ObservableCollection<string> models = ["xiaomi/mimo-v2.6-flash","z-ai/glm-5.2","nvidia/nemotron-3-ultra-550b-a55b","deepseek/deepseek-v4-pro","deepseek/deepseek-v4-flash","xiaomi/mimo-v2.5","deepseek/deepseek-v4-pro-0813","z-ai/glm-5.3"];
+        readonly static string descriptionTemplate;
 
         string model = "";
+        string name = "";
         int context_length = 1_000_000;
         string description = "";
         public string id = "";
@@ -43,6 +53,12 @@ namespace Iris.Core
                 OnPropertyChanged(ref model, value);
                 ModelChanged();
             }
+        }
+
+        public string Name
+        {
+            get => name;
+            set => OnPropertyChanged(ref name, value);
         }
 
         public int Context_Length
@@ -134,8 +150,15 @@ namespace Iris.Core
             JsonElement architecture = jsonDocument.RootElement.GetProperty("data").GetProperty("architecture");
             JsonElement input_modalities = architecture.GetProperty("input_modalities");
             Inputs = input_modalities.Deserialize<ObservableCollection<string>>() ?? ["text"];
+            Name = jsonDocument.RootElement.GetProperty("data").GetProperty("name").ToString();
             Context_Length = int.Parse(jsonDocument.RootElement.GetProperty("data").GetProperty("context_length").ToString());
-            Description = jsonDocument.RootElement.GetProperty("data").GetProperty("description").ToString();
+            int created = int.Parse(jsonDocument.RootElement.GetProperty("data").GetProperty("created").ToString());
+            string date_created = DateTimeOffset.FromUnixTimeSeconds(created).ToString("d MMMM, yyy");
+            // pricing on the api is per token
+            float inPrice = float.Parse(jsonDocument.RootElement.GetProperty("data").GetProperty("pricing").GetProperty("prompt").ToString()) * 1_000_000_000;
+            inPrice = (float)(int)inPrice / 1_000;
+            float outPrice = float.Parse(jsonDocument.RootElement.GetProperty("data").GetProperty("pricing").GetProperty("completion").ToString()) * 1_000_000_000;
+            outPrice = (float)(int)outPrice / 1_000;
 
             // to get the real description, we need to get the html page
             // of the model, and then regex with a string
@@ -151,6 +174,8 @@ namespace Iris.Core
             string regexPattern2 = "(?<=description\":\").*(?=\")";
 
             Description = Regex.Match(Regex.Match(html, regexPattern1).Value, regexPattern2).Value;
+            Description = Description.Replace("\\n", "\n");
+            Description = String.Format(descriptionTemplate, Name, Context_Length.ToString("N0"), inPrice, outPrice, date_created, Description);
         }
 
         void OnPropertyChanged<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
