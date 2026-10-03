@@ -216,7 +216,8 @@
 
                                         <TextBox PlaceholderText="Add Model"
                                                  Margin="0,6,0,0"
-                                                 x:Name="ModelAddField">
+                                                 x:Name="ModelAddField"
+                                                 KeyboardAcceleratorPlacementMode="Hidden">
                                             <TextBox.KeyboardAccelerators>
                                                 <KeyboardAccelerator Key="Enter" Invoked="AddModel"/>
                                             </TextBox.KeyboardAccelerators>

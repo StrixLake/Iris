@@ -43,6 +43,8 @@ namespace Iris.UI
 
         async void Paste(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
         {
+            // don't paste if the menu flyout is open
+            if (ModelButton.Flyout.IsOpen) return;
             // get the image or the text from the clipboard
             DataPackageView paste_content = Clipboard.GetContent();
 
