@@ -22,20 +22,34 @@ namespace Iris.Core
         static Worker()
         {
             string folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            folder = Path.Combine(folder, ".iris", "description_template.txt");
-            using StreamReader streamReader = new StreamReader(folder);
+            string template = Path.Combine(folder, ".iris", "description_template.txt");
+            using StreamReader streamReader = new StreamReader(template);
             descriptionTemplate = streamReader.ReadToEnd();
+
+            string system = Path.Combine(folder, ".iris", "system_prompt.txt");
+            using StreamReader streamReader2 = new StreamReader(system);
+            system_prompt = streamReader2.ReadToEnd();
+
         }
         public Worker()
         {
             Model = models[0];
             ModelChanged();
+
+            Message system_message = new()
+            {
+                Role = "system",
+                Content = system_prompt
+            };
+
+            Context.Add(system_message);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         
         static ObservableCollection<string> models = ["xiaomi/mimo-v2.6-flash","z-ai/glm-5.2","nvidia/nemotron-3-ultra-550b-a55b","deepseek/deepseek-v4-pro","deepseek/deepseek-v4-flash","xiaomi/mimo-v2.5","deepseek/deepseek-v4-pro-0813","z-ai/glm-5.3"];
         readonly static string descriptionTemplate;
+        readonly static string system_prompt;
 
         string model = "";
         string name = "";
