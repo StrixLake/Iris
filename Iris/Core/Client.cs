@@ -203,11 +203,11 @@ namespace Iris.Core
                     Dictionary<string, JsonElement> api_responce = JsonSerializer.Deserialize<Dictionary<string,JsonElement>>(line) ?? [];
 
                     JsonElement choice = api_responce["choices"].EnumerateArray().First();
-                    Dictionary<string, string> delta = JsonSerializer.Deserialize<Dictionary<string,string>>(choice.GetProperty("delta")) ?? [];
+                    Dictionary<string, JsonElement> delta = JsonSerializer.Deserialize<Dictionary<string,JsonElement>>(choice.GetProperty("delta")) ?? [];
 
-                    delta.TryGetValue("reasoning", out string? value);
-                    assistantMessage.Reasoning += value;
-                    assistantMessage.Content += delta["content"];
+                    delta.TryGetValue("reasoning", out JsonElement value);
+                    assistantMessage.Reasoning += value.ToString();
+                    assistantMessage.Content += delta["content"].ToString();
 
                     if (api_responce.ContainsKey("usage"))
                     {
