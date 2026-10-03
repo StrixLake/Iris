@@ -11,6 +11,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Iris.UI;
 using Windows.Foundation.Metadata;
 
 
@@ -96,7 +97,7 @@ namespace Iris.Core
             return preSplitContext;
         }
 
-        static string GeneratePayload(List<Message> context, Worker worker)
+        static string GeneratePayload(ObservableCollection<Message> context, Worker worker)
         {
             Payload payload = new(worker.Model);
 
@@ -121,6 +122,24 @@ namespace Iris.Core
             }
 
             return JsonSerializer.Serialize(payload);
+        }
+
+        public async void SendMessage(Message? prompt)
+        {
+            if(prompt is not null) Context.Add(prompt);
+
+            string payload = GeneratePayload(Context, this);
+            Message assistantResponce = new()
+            {
+                Role = "assistant",
+            };
+            Context.Add(assistantResponce);
+
+            cancellationToken.Dispose();
+            cancellationToken = new();
+            assistantResponce.Streaming = true;
+            await Client.SendMessage(payload, assistantResponce, cancellationToken.Token);
+            assistantResponce.Streaming = false;
         }
 
         async void ModelChanged()
