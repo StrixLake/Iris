@@ -139,6 +139,7 @@ namespace Iris.UI
                 else
                 {
                     InnerMarkdown.Visibility = Visibility.Visible;
+                    InnerTextBlock.Visibility = Visibility.Collapsed;
                     if (element == "content") InnerMarkdown.Text = message.Content;
                     if (element == "reasoning") InnerMarkdown.Text = message.Reasoning;
                 }
