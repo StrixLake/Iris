@@ -32,8 +32,12 @@
                                          EasingFunction="{StaticResource Easing}"/>
                         <DoubleAnimation Storyboard.TargetName="promptFieldTransform"
                                          Storyboard.TargetProperty="ScaleY"
-                                         To="0.4" Duration="0:0:0.2"
+                                         To="0.65" Duration="0:0:0.2"
                                          EasingFunction="{StaticResource Easing}"/>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ModelButton"
+                                                       Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0:0:0.01" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                     <VisualState.Setters>
                         <Setter Target="ModelSwitchTransform.ScaleX" Value="0"/>
@@ -98,7 +102,7 @@
                         </DataTemplate>
                     </ItemsRepeater.ItemTemplate>
                 </ItemsRepeater>
-                
+
                 <ItemsRepeater ItemsSource="{x:Bind fileAttachments, Mode=OneWay}">
                     <ItemsRepeater.Layout>
                         <StackLayout Orientation="Horizontal"/>
