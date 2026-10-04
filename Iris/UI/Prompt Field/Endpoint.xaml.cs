@@ -121,6 +121,7 @@ namespace Iris.UI
 
         static string ToMillionTokens(string price)
         {
+            if (price == "") return "";
             float perToken = float.Parse(price);
             float perMillion = (float)((int)(perToken * 1_000_000_000)) / 1_000;
             return perMillion.ToString();

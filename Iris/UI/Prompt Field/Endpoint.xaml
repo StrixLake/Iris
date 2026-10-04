@@ -7,8 +7,40 @@
       xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
       mc:Ignorable="d">
 
-    <Grid>
-        <ListView ItemsSource="{x:Bind endpoints, Mode=OneWay}" HorizontalAlignment="Stretch">
+    <Grid Padding="0,0,10,0">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="0" Margin="10,0,0,10">
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1.1*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1.2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Text="Provider" Grid.Column="0" Margin="5"/>
+            <TextBlock Text="Input" Grid.Column="1" HorizontalAlignment="Right" Margin="5"/>
+            <TextBlock Text="Output" Grid.Column="2" HorizontalAlignment="Right" Margin="5"/>
+            <TextBlock Text="Cache Read" Grid.Column="3" HorizontalAlignment="Right" Margin="5"/>
+            <TextBlock Text="Context" Grid.Column="4" HorizontalAlignment="Right" Margin="5"/>
+            <TextBlock Text="Quantization" Grid.Column="5" HorizontalAlignment="Center" Margin="5"/>
+            <TextBlock Text="Discount" Grid.Column="6" HorizontalAlignment="Right" Margin="5"/>
+        
+        </Grid>
+        
+        
+        <ListView ItemsSource="{x:Bind endpoints, Mode=OneWay}"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  Grid.Row="1">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -23,13 +55,13 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         
-                        <TextBlock Text="{Binding provider_name}" Grid.Column="0" Margin="5"/>
-                        <TextBlock Text="{Binding pricing.prompt}" Grid.Column="1" HorizontalAlignment="Right" Margin="5"/>
-                        <TextBlock Text="{Binding pricing.completion}" Grid.Column="2" HorizontalAlignment="Right" Margin="5"/>
-                        <TextBlock Text="{Binding pricing.input_cache_read}" Grid.Column="3" HorizontalAlignment="Right" Margin="5"/>
-                        <TextBlock Text="{Binding context_length}" Grid.Column="4" HorizontalAlignment="Right" Margin="5"/>
-                        <TextBlock Text="{Binding quantization}" Grid.Column="5" HorizontalAlignment="Center" Margin="5"/>
-                        <TextBlock Text="{Binding pricing.Discount}" Grid.Column="6" HorizontalAlignment="Right" Margin="5"/>
+                        <TextBlock Text="{Binding provider_name}" Grid.Column="0" />
+                        <TextBlock Text="{Binding pricing.prompt}" Grid.Column="1" HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding pricing.completion}" Grid.Column="2" HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding pricing.input_cache_read}" Grid.Column="3" HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding context_length}" Grid.Column="4" HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding quantization}" Grid.Column="5" HorizontalAlignment="Center" />
+                        <TextBlock Text="{Binding pricing.Discount}" Grid.Column="6" HorizontalAlignment="Right" />
 
                     </Grid>
                 </DataTemplate>
