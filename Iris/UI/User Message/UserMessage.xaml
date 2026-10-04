@@ -15,11 +15,11 @@
         </MenuFlyout>
     </UserControl.Resources>
 
-    <Border BorderThickness="1"
+    <Border BorderThickness="1,1,1,0"
             CornerRadius="8"
-            BorderBrush="DeepSkyBlue"
             HorizontalAlignment="Stretch"
-            Padding="10">
+            Padding="20,10,10,10"
+            BorderBrush="{ThemeResource SystemAccentColorDark2}">
 
         <StackPanel VerticalAlignment="Center">
 
@@ -79,7 +79,6 @@
             </StackPanel>
 
             <ContentControl x:Name="MarkdownControl"/>
-            <TextBlock x:Name="DateTimeField"/>
         </StackPanel>
     
     </Border>
