@@ -16,7 +16,8 @@
         </Grid.RowDefinitions>
 
         <ScrollView Grid.Row="0">
-            <ItemsRepeater ItemsSource="{x:Bind controls, Mode=OneWay}">
+            <ItemsRepeater ItemsSource="{x:Bind controls, Mode=OneWay}"
+                           x:Name="controlRepeater">
                 <ItemsRepeater.ItemTemplate>
                     <DataTemplate>
                         <ContentControl Content="{Binding}" HorizontalContentAlignment="Stretch"

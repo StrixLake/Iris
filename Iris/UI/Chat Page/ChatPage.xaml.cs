@@ -4,6 +4,8 @@ using Core = Iris.Core;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.Specialized;
 using System;
+using System.Linq;
+using Microsoft.UI.Xaml;
 
 namespace Iris.UI
 {
@@ -33,6 +35,12 @@ namespace Iris.UI
             if(e.Action == NotifyCollectionChangedAction.Add && e.NewItems is not null)
             {
                 AddControls(e.NewItems);
+                // this was to make the last message into view
+                // but i didn't find that very userful, it works though
+                // controlRepeater.UpdateLayout();
+                // int index = controls.Count - 1;
+                // UIElement element = controlRepeater.GetOrCreateElement(index);
+                // element.StartBringIntoView();
             }
         }
 
