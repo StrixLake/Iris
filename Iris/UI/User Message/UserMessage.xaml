@@ -78,7 +78,8 @@
                 </ListView>
             </StackPanel>
 
-            <ContentControl x:Name="MarkdownControl"/>
+            <ContentControl x:Name="MarkdownControl"
+                            HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
         </StackPanel>
     
     </Border>

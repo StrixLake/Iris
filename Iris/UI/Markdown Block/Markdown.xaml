@@ -21,7 +21,7 @@
     <Grid>
 
         <controls:MarkdownTextBlock x:Name="InnerMarkdown"
-                                    HorizontalAlignment="Stretch"
+                                    HorizontalAlignment="Left"
                                     VerticalAlignment="Stretch"
                                     MarkdownRendered="Markdown_Rendered"
                                     Background="Transparent"/>
