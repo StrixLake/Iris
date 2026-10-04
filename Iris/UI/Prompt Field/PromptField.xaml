@@ -191,7 +191,7 @@
                         <Flyout x:Name="modelFlyout">
                             <Flyout.FlyoutPresenterStyle>
                                 <Style TargetType="FlyoutPresenter">
-                                    <Setter Property="MaxWidth" Value="800"/>
+                                    <Setter Property="MaxWidth" Value="1200"/>
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate>
@@ -204,7 +204,7 @@
                             <Border CornerRadius="14" 
                                     Padding="10"
                                     Background="{ThemeResource BlackBrush}"
-                                    Width="800"
+                                    Width="900"
                                     Height="500">
 
                                 <Grid>
@@ -259,7 +259,8 @@
                                                                     TextWrapping="WrapWholeWords"
                                                                     Margin="10, 0, 10, 0"/>
                                         <ContentControl x:Name="Endpoints" Visibility="Collapsed"
-                                                        HorizontalContentAlignment="Stretch"/>
+                                                        HorizontalContentAlignment="Stretch"
+                                                        VerticalContentAlignment="Stretch"/>
                                     </Grid>
 
                                     <StackPanel Grid.Column="1" Grid.Row="1"
