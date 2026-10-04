@@ -129,7 +129,7 @@ namespace Iris.Core
                                                         Content = payload
                                                     };
 
-            HttpResponseMessage response = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            using HttpResponseMessage response = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             response.EnsureSuccessStatusCode();
 

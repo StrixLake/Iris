@@ -163,11 +163,10 @@ namespace Iris.Core
             using HttpClient client = new();
             client.BaseAddress = new Uri("https://openrouter.ai/api/v1/model/");
 
-            HttpResponseMessage responce;
+            using HttpResponseMessage responce = await client.GetAsync(model);;
 
             try 
             {
-                responce = await client.GetAsync(model);
                 responce.EnsureSuccessStatusCode(); 
             }
             catch 
@@ -180,6 +179,7 @@ namespace Iris.Core
 
             string modelDescription = await responce.Content.ReadAsStringAsync();
             using JsonDocument jsonDocument = JsonDocument.Parse(modelDescription);
+            responce.Dispose();
 
             // we want to get the input modalities and context
             JsonElement architecture = jsonDocument.RootElement.GetProperty("data").GetProperty("architecture");
