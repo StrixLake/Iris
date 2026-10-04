@@ -29,7 +29,8 @@
         <TextBlock x:Name="InnerTextBlock"
                    HorizontalAlignment="Stretch"
                    VerticalAlignment="Stretch"
-                   Visibility="Collapsed"/>
+                   Visibility="Collapsed"
+                   TextWrapping="WrapWholeWords"/>
 
         <TextBox x:Name="InnerTextBox_Edit"
                  HorizontalAlignment="Stretch"
