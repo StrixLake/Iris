@@ -45,7 +45,7 @@
                         <Setter Target="textField.PlaceholderText" Value=""/>
                     </VisualState.Setters>
                 </VisualState>
-                
+
                 <VisualState x:Name="Expanded">
                     <Storyboard>
                         <DoubleAnimation Storyboard.TargetName="promptFieldTransform"
@@ -65,6 +65,21 @@
                         <Setter Target="ModelSwitchTransform.ScaleX" Value="1"/>
                         <Setter Target="fieldBorder.BorderThickness" Value="2,0,2,2"/>
                         <Setter Target="textField.PlaceholderText" Value="(Ctrl + Enter to send)"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup>
+                <VisualState x:Name="DescriptionState">
+                    <VisualState.Setters>
+                        <Setter Target="descriptionFlyout.Visibility" Value="Visible"/>
+                        <Setter Target="DescriptionButton.Background" Value="#40FFFFFF"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="ProviderState">
+                    <VisualState.Setters>
+                        <Setter Target="Endpoints.Visibility" Value="Visible"/>
+                        <Setter Target="descriptionFlyout.Visibility" Value="Collapsed"/>
+                        <Setter Target="ProviderButton.Background" Value="#40FFFFFF"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -188,7 +203,9 @@
 
                             <Border CornerRadius="14" 
                                     Padding="10"
-                                    Background="{ThemeResource BlackBrush}">
+                                    Background="{ThemeResource BlackBrush}"
+                                    Width="800"
+                                    Height="500">
 
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -196,40 +213,63 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                                        <ListView ItemsSource="{x:Bind settings.Models, Mode=OneWay}"
-                                                  Background="#0FFFFFFF" CornerRadius="12"
-                                                  Padding="2,8,2,2"
-                                                  SelectedItem="{x:Bind settings.Model}" SelectionChanged="ChangeSelectedModel">
-                                            <ListView.ItemTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding}">
-                                                        <TextBlock.ContextFlyout>
-                                                            <MenuFlyout>
-                                                                <MenuFlyoutItem Text="Delete" Click="RemoveModel"/>
-                                                            </MenuFlyout>
-                                                        </TextBlock.ContextFlyout>
-                                                    </TextBlock>
-                                                </DataTemplate>
-                                            </ListView.ItemTemplate>
-                                        </ListView>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                                        <TextBox PlaceholderText="Add Model"
-                                                 Margin="0,6,0,0"
-                                                 x:Name="ModelAddField"
-                                                 KeyboardAcceleratorPlacementMode="Hidden">
-                                            <TextBox.KeyboardAccelerators>
-                                                <KeyboardAccelerator Key="Enter" Invoked="AddModel"/>
-                                            </TextBox.KeyboardAccelerators>
-                                        </TextBox>
+                                    
+                                    <ListView Grid.Column="0" Grid.Row="0"
+                                              ItemsSource="{x:Bind settings.Models, Mode=OneWay}"
+                                              Background="#0FFFFFFF" CornerRadius="12"
+                                              Padding="2,8,2,2"
+                                              SelectedItem="{x:Bind settings.Model}" SelectionChanged="ChangeSelectedModel">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}">
+                                                    <TextBlock.ContextFlyout>
+                                                        <MenuFlyout>
+                                                            <MenuFlyoutItem Text="Delete" Click="RemoveModel"/>
+                                                        </MenuFlyout>
+                                                    </TextBlock.ContextFlyout>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
 
+                                    <TextBox PlaceholderText="Add Model"
+                                             Margin="0,6,0,0"
+                                             x:Name="ModelAddField"
+                                             KeyboardAcceleratorPlacementMode="Hidden"
+                                             Grid.Column="0" Grid.Row="1">
+                                        <TextBox.KeyboardAccelerators>
+                                            <KeyboardAccelerator Key="Enter" Invoked="AddModel"/>
+                                        </TextBox.KeyboardAccelerators>
+                                    </TextBox>
+
+
+                                    <Grid Grid.Row="0" Grid.Column="1"
+                                          Background="#0FFFFFFF"
+                                          CornerRadius="12"
+                                          Padding="8"
+                                          Margin="10,0,0,0">
+                                        <controls:MarkdownTextBlock x:Name="descriptionFlyout"
+                                                                    Text="{x:Bind settings.Description, Mode=OneWay}"
+                                                                    Background="Transparent"
+                                                                    TextWrapping="WrapWholeWords"
+                                                                    Margin="10, 0, 10, 0"/>
+                                        <ContentControl x:Name="Endpoints" Visibility="Collapsed"
+                                                        HorizontalContentAlignment="Stretch"/>
+                                    </Grid>
+
+                                    <StackPanel Grid.Column="1" Grid.Row="1"
+                                                Orientation="Horizontal"
+                                                Margin="10,0,0,0">
+                                        <Button Content="Description" x:Name="DescriptionButton" Margin="0,5,10,0" CornerRadius="14"/>
+                                        <Button Content="Providers" x:Name="ProviderButton" Margin="0,5,10,0" CornerRadius="14"/>
                                     </StackPanel>
+                                        
 
-                                    <controls:MarkdownTextBlock Grid.Column="1"
-                                                                x:Name="descriptionFlyout"
-                                                                Text="{x:Bind settings.Description, Mode=OneWay}"
-                                                                Background="Transparent"
-                                                                TextWrapping="WrapWholeWords"/>
                                 </Grid>
 
                             </Border>

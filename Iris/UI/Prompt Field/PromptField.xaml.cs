@@ -19,9 +19,10 @@ namespace Iris.UI
     
     public partial class PromptField : UserControl, INotifyPropertyChanged
     {
-        Core.Worker settings;
+        readonly Core.Worker settings;
         event SendMessageEvent? sendMessageEvent;
         public event PropertyChangedEventHandler? PropertyChanged;
+        EndpointPage endpoint;
 
         ObservableCollection<Tuple<string, string>> fileAttachments { get; set; } = [];
         ObservableCollection<string> images { get; set; } = [];
@@ -30,9 +31,16 @@ namespace Iris.UI
         {
             InitializeComponent();
             settings = worker;
+            endpoint = new(worker);
+            Endpoints.Content = endpoint;
             this.sendMessageEvent += sendMessageEvent;
 
+            VisualStateManager.GoToState(this, "DescriptionState", true);
             VisualStateManager.GoToState(this, "Normal", false);
+
+            DescriptionButton.Click += (o, e) => VisualStateManager.GoToState(this, "DescriptionState", true);
+            ProviderButton.Click += (o, e) => VisualStateManager.GoToState(this, "ProviderState", true);
+
             textField.LostFocus += (o, e) =>
             {
                 if(!ModelButton.IsPressed) VisualStateManager.GoToState(this, "Normal", false);
