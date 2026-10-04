@@ -54,6 +54,21 @@ namespace Iris.UI
                 endpoints.Add(provider);
             }
         }
+
+        void ProviderList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(e.AddedItems.Count == 0) return;
+
+            // only handle 1 provider being added or removed
+            if(e.AddedItems.Count == 1)
+            {
+                worker.prefered_provider = ((Endpoint)e.AddedItems[0]).provider_name;
+            }
+            else if(e.RemovedItems.Count == 0 && ((Endpoint)e.RemovedItems[0]).provider_name == worker.prefered_provider)
+            {
+                worker.prefered_provider = "";
+            }
+        }
     }
 
 
@@ -116,7 +131,11 @@ namespace Iris.UI
 
         public string Discount
         {
-            get => ((int)(-discount*100)).ToString() + " %";
+            get
+            {
+                if (discount == 0) return "";
+                return ((int)(-discount * 100)).ToString() + " %";
+            }
         }
 
         static string ToMillionTokens(string price)

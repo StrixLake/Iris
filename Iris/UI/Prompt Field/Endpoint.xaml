@@ -40,7 +40,9 @@
         <ListView ItemsSource="{x:Bind endpoints, Mode=OneWay}"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
-                  Grid.Row="1">
+                  Grid.Row="1"
+                  x:Name="providerList"
+                  SelectionChanged="ProviderList_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
