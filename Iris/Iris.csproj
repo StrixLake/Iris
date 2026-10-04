@@ -11,6 +11,7 @@
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoWarn>IDE1006;IDE0090;IDE0057</NoWarn>
   </PropertyGroup>
 	
@@ -22,6 +23,10 @@
   <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
   <PublishSingleFile>true</PublishSingleFile>
 </PropertyGroup>
+	
+<ItemGroup>
+  <None Remove="PromptFieldStyles.xaml" />
+</ItemGroup>
 	
   <ItemGroup>
     <Content Include="Assets\background.png" />
@@ -44,6 +49,11 @@
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.Markdown" Version="7.1.2" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1839" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="PromptFieldStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <!--
     Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution

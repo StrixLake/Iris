@@ -36,13 +36,18 @@ namespace Iris
     /// </summary>
     public sealed partial class MainWindow : Window, INotifyPropertyChanged
     {
-        UI.ChatPage cpage;
+        ChatPage chatPage;
         public event PropertyChangedEventHandler? PropertyChanged;
         
         public MainWindow()
         {
             InitializeComponent();
 
+            Core.Worker worker = new();
+            
+            chatPage = new ChatPage(worker);
+
+            testcontrol.Content = chatPage;
 
             AppWindow.TitleBar.BackgroundColor = Colors.Black;
 
