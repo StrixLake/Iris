@@ -14,32 +14,50 @@
         <SolidColorBrush x:Key="ExpanderContentBorderBrush" Color="Transparent"/>
         <SolidColorBrush x:Key="ExpanderHeaderBorderPointerOverBrush" Color="Transparent"/>
         <SolidColorBrush x:Key="ExpanderHeaderBorderPressedBrush" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderChevronForeground" Color="Transparent"/>
         <Thickness x:Key="ExpanderContentPadding">0</Thickness>
+        <AcrylicBrush x:Key="BlackBrush" TintOpacity="0.2" TintLuminosityOpacity="0.4" TintColor="{StaticResource SystemAccentColor}"/>
     </UserControl.Resources>
-    
-    <StackPanel CornerRadius="8"
-                Padding="8"
-                HorizontalAlignment="Stretch">
 
-        <StackPanel.Background>
-            <AcrylicBrush TintOpacity="0"
-                          TintColor="Black"/>
-        </StackPanel.Background>
+    <StackPanel CornerRadius="8"
+                HorizontalAlignment="Stretch"
+                BorderThickness="1"
+                Padding="10">
+
+        <StackPanel.BorderBrush>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="Black" Offset="0.8"/>
+                <GradientStop Color="{ThemeResource SystemAccentColorDark1}" Offset="1"/>
+            </LinearGradientBrush>
+        </StackPanel.BorderBrush>
 
         <!--reasoning block-->
-        <Expander HorizontalAlignment="Stretch">
+        <Expander HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Stretch"
+                  Margin="0,0,0,10">
             <Expander.Header>
-                <TextBlock Text="Thinking"/>
+                <Border BorderBrush="{ThemeResource BlackBrush}"
+                        BorderThickness="2"
+                        HorizontalAlignment="Left"
+                        Padding="10,5,10,7"
+                        CornerRadius="12">
+                    <TextBlock Text="Thinking"/>
+                </Border>
             </Expander.Header>
-            <Border CornerRadius="8"
-                    Padding="8"
-                    Background="#80000000">
-                <ContentControl x:Name="reasoningBlock"/>
+            <Border CornerRadius="16"
+                    Padding="16"
+                    HorizontalAlignment="Stretch"
+                    BorderBrush="{ThemeResource BlackBrush}"
+                    BorderThickness="2">
+                <ContentControl x:Name="reasoningBlock"
+                                HorizontalContentAlignment="Stretch"/>
             </Border>
         </Expander>
         
         <!--main responce-->
-        <ContentControl x:Name="contentBlock"/>
+        <ContentControl x:Name="contentBlock"
+                        HorizontalContentAlignment="Stretch"
+                        Margin="10,0,0,0"/>
 
     </StackPanel>
 

@@ -19,7 +19,7 @@
             CornerRadius="8"
             HorizontalAlignment="Stretch"
             Padding="20,10,10,10"
-            BorderBrush="{ThemeResource SystemAccentColorDark2}">
+            BorderBrush="{ThemeResource SystemAccentColorDark1}">
 
         <StackPanel VerticalAlignment="Center">
 

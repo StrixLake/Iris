@@ -35,7 +35,8 @@
                  HorizontalAlignment="Stretch"
                  VerticalAlignment="Stretch"
                  Visibility="Collapsed"
-                 AcceptsReturn="True">
+                 AcceptsReturn="True"
+                 TextWrapping="Wrap">
             <TextBox.KeyboardAccelerators>
                 <KeyboardAccelerator Key="Enter" Modifiers="Control" Invoked="Edit_Complete"/>
             </TextBox.KeyboardAccelerators>
