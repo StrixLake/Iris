@@ -70,6 +70,7 @@ namespace Iris.Core
         float speed;
         float clientLatency;
         string reasoning_status = "Thought";
+        string provider = "";
         string finish_reason = "";
 
 
@@ -143,6 +144,12 @@ namespace Iris.Core
         {
             get => reasoning_status;
             set => OnPropertyChanged(ref reasoning_status, value);
+        }
+
+        public string Provider
+        {
+            get => provider;
+            set => OnPropertyChanged(ref provider, value);
         }
 
         void OnPropertyChanged<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)

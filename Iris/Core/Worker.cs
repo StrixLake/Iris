@@ -60,6 +60,8 @@ namespace Iris.Core
         public ObservableCollection<string> Inputs {get; set;} = ["text", "image"];
         public ObservableCollection<Message> Context {get; set;} = [];
 
+        public string prefered_provider {get; set;} = "";
+
         public string Model
         {
             get => model;
@@ -113,7 +115,7 @@ namespace Iris.Core
 
         static string GeneratePayload(ObservableCollection<Message> context, Worker worker)
         {
-            Payload payload = new(worker.Model);
+            Payload payload = new(worker.Model, worker.prefered_provider);
 
             foreach (Message message in context)
             {

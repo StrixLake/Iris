@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -87,13 +88,11 @@ namespace Iris.Core
 
         public List<JsonMessage> messages {get;set;} = [];
 
-        public Payload(string Model)
+        public Payload(string Model, string prefered_provider)
         {
             model = Model;
 
-            // for deepseek modals, i want to use deepseek provider
-            // because it is so much cheaper
-            provider.Add("order", new List<string>{"DeepSeek", "Xiaomi"});
+            if (prefered_provider != "") provider.Add("order", new List<string>{prefered_provider});
 
             // add the usage include to get provider info
             usage.Add("include", true);
