@@ -169,6 +169,10 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
+                
+                <!--need a hidden text box that i can focus on
+                after sending a message-->
+                <TextBox x:Name="hiddenTextField" Opacity="0"/>
 
                 <TextBox x:Name="textField"
                          Grid.Row="0" AcceptsReturn="True"

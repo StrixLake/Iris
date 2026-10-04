@@ -12,6 +12,7 @@ using Windows.Storage.Streams;
 using Buffer = Windows.Storage.Streams.Buffer;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.ComponentModel;
+using Windows.Devices.PointOfService.Provider;
 
 namespace Iris.UI
 {
@@ -47,6 +48,7 @@ namespace Iris.UI
             };
             textField.GotFocus += (o, e) => VisualStateManager.GoToState(this, "Expanded", false);
             modelFlyout.Closing += (o, e) => textField.Focus(FocusState.Keyboard);
+            hiddenTextField.TextChanged += (o, e) => textField.Focus(FocusState.Keyboard);
         }
 
         async void Paste(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
@@ -116,6 +118,7 @@ namespace Iris.UI
             textField.Text = "";
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(images)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(fileAttachments)));
+            hiddenTextField.Focus(FocusState.Keyboard);
         }
 
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
