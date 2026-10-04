@@ -20,6 +20,9 @@ namespace Iris.Core
         // <filename, content>
         public ObservableCollection<Tuple<string, string>> files = [];
 
+        // only needed for assistant messages
+        public Logs? messageLog {get; set;}
+
         public string Role
         {
             get => role;
@@ -52,17 +55,21 @@ namespace Iris.Core
 
     }
 
-    public class Logs : INotifyPropertyChanged
+    public partial class Logs : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
         string status = "";
-        int cost;
+        float cost;
         int prompt_tokens;
         int cached_tokens;
         int reasoning_tokens;
         int responce_tokens;
         int total_tokens;
+        float latency;
+        float speed;
+        float clientLatency;
+        string reasoning_status = "Thought";
         string finish_reason = "";
 
 
@@ -72,7 +79,7 @@ namespace Iris.Core
             set => OnPropertyChanged(ref status, value);
         }
 
-        public int Cost
+        public float Cost
         {
             get => cost;
             set => OnPropertyChanged(ref cost, value);
@@ -112,6 +119,30 @@ namespace Iris.Core
         {
             get => finish_reason;
             set => OnPropertyChanged(ref finish_reason, value);
+        }
+
+        public float Latency
+        {
+            get => latency;
+            set => OnPropertyChanged(ref latency, value);
+        }
+
+        public float Speed
+        {
+            get => speed;
+            set => OnPropertyChanged(ref speed, value);
+        }
+
+        public float ClientLatency
+        {
+            get => clientLatency;
+            set => OnPropertyChanged(ref clientLatency, value);
+        }
+
+        public string Reasoning_Status
+        {
+            get => reasoning_status;
+            set => OnPropertyChanged(ref reasoning_status, value);
         }
 
         void OnPropertyChanged<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
