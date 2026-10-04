@@ -173,7 +173,11 @@
                 <TextBox x:Name="textField"
                          Grid.Row="0" AcceptsReturn="True"
                          Padding="20"
-                         KeyboardAcceleratorPlacementMode="Hidden">
+                         KeyboardAcceleratorPlacementMode="Hidden"
+                         TextWrapping="Wrap"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         ScrollViewer.VerticalScrollMode="Enabled"
+                         MaxHeight="200">
                     <TextBox.KeyboardAccelerators>
                         <KeyboardAccelerator Key="V" Modifiers="Control" Invoked="Paste"/>
                         <KeyboardAccelerator Key="Enter" Modifiers="Control" Invoked="SendMessage"/>
