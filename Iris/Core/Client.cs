@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -122,12 +123,16 @@ namespace Iris.Core
 
         public static async Task SendMessage(string json, Message assistantMessage, CancellationToken cancellationToken)
         {
+            assistantMessage.messageLog!.Status = "Starting...";
+
             StringContent payload = new StringContent(json, Encoding.UTF8, "application/json");
             
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, "chat/completions")
                                                     {
                                                         Content = payload
                                                     };
+
+            Stopwatch watch = Stopwatch.StartNew();
 
             using HttpResponseMessage response = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
@@ -136,7 +141,13 @@ namespace Iris.Core
             using Stream stream = await response.Content.ReadAsStreamAsync(cancellationToken);
             // we need a steeam reader to handle text conversion
             using StreamReader reader = new(stream);
+
+            assistantMessage.messageLog!.Latency = watch.ElapsedMilliseconds;
+            watch.Restart();
             
+            assistantMessage.messageLog!.Status = "Streaming...";
+            bool was_thinking = true;
+
             string? line;
             // if it's null, then we've reached the end of stream
             while((line = await reader.ReadLineAsync(cancellationToken)) != null)
@@ -204,14 +215,29 @@ namespace Iris.Core
                     JsonElement choice = api_responce["choices"].EnumerateArray().First();
                     Dictionary<string, JsonElement> delta = JsonSerializer.Deserialize<Dictionary<string,JsonElement>>(choice.GetProperty("delta")) ?? [];
 
-                    delta.TryGetValue("reasoning", out JsonElement value);
+                    bool not_finished_reasoning = delta.TryGetValue("reasoning", out JsonElement value);
                     assistantMessage.Reasoning += value.ToString();
                     assistantMessage.Content += delta["content"].ToString();
 
+                    if(not_finished_reasoning) assistantMessage.messageLog!.Reasoning_Status = "Thinking... " + watch.Elapsed.ToString(@"mm\:ss");
+                    else if (was_thinking)
+                    {
+                        was_thinking = false;
+                        assistantMessage.messageLog!.Reasoning_Status = "Thought for " + watch.Elapsed.ToString(@"mm\:ss");
+                    }
+
                     if (api_responce.ContainsKey("usage"))
                     {
+                        assistantMessage.messageLog!.Status = "Finished";
                         Dictionary<string, JsonElement> usage = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(api_responce["usage"]) ?? [];
-                        int prompt_tokens = usage["prompt_tokens"].GetInt32();
+                        assistantMessage.messageLog!.Prompt = usage["prompt_tokens"].GetInt32();
+                        assistantMessage.messageLog!.Total = usage["completion_tokens"].GetInt32();
+                        assistantMessage.messageLog!.Cost = usage["cost"].GetSingle();
+                        assistantMessage.messageLog!.Provider = api_responce["provider"].ToString();
+                        assistantMessage.messageLog!.Speed = usage["completion_tokens"].GetInt32() / watch.Elapsed.Seconds;
+                        assistantMessage.messageLog!.Cached = usage["prompt_tokens_details"].GetProperty("cached_tokes").GetInt32();
+                        assistantMessage.messageLog!.Reasoning = usage["completion_tokens_details"].GetProperty("reasoning_tokens").GetInt32();
+                        assistantMessage.messageLog!.Responce = assistantMessage.messageLog!.Total - assistantMessage.messageLog!.Reasoning;
                     }
                 }
 

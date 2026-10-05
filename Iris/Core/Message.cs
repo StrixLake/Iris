@@ -67,9 +67,9 @@ namespace Iris.Core
         int responce_tokens;
         int total_tokens;
         float latency;
-        float speed;
+        int speed;
         float clientLatency;
-        string reasoning_status = "Thought";
+        string reasoning_status = "No Thoughts Yet";
         string provider = "";
         string finish_reason = "";
 
@@ -128,7 +128,7 @@ namespace Iris.Core
             set => OnPropertyChanged(ref latency, value);
         }
 
-        public float Speed
+        public int Speed
         {
             get => speed;
             set => OnPropertyChanged(ref speed, value);

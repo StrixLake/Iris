@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -56,6 +57,7 @@ namespace Iris.Core
         int context_length = 1_000_000;
         string description = "";
         public string id = "";
+        public Logs lastLog = new();
         
         public ObservableCollection<string> Inputs {get; set;} = ["text", "image"];
         public ObservableCollection<Message> Context {get; set;} = [];
@@ -142,14 +144,19 @@ namespace Iris.Core
 
         public async void SendMessage(Message? prompt)
         {
+            // calculate the serializer time
+            Stopwatch watch = Stopwatch.StartNew();
             if(prompt is not null) Context.Add(prompt);
 
             string payload = GeneratePayload(Context, this);
             Message assistantResponce = new()
             {
                 Role = "assistant",
+                messageLog = new()
             };
+            lastLog = assistantResponce.messageLog;
             Context.Add(assistantResponce);
+            lastLog.ClientLatency = watch.ElapsedMilliseconds;
 
             cancellationToken.Dispose();
             cancellationToken = new();
