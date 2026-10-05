@@ -219,7 +219,7 @@ namespace Iris.Core
                     assistantMessage.Reasoning += value.ToString();
                     assistantMessage.Content += delta["content"].ToString();
 
-                    if(not_finished_reasoning) assistantMessage.messageLog!.Reasoning_Status = "Thinking... " + watch.Elapsed.ToString(@"mm\:ss");
+                    if(not_finished_reasoning && value.ValueKind != JsonValueKind.Null) assistantMessage.messageLog!.Reasoning_Status = "Thinking... " + watch.Elapsed.ToString(@"mm\:ss");
                     else if (was_thinking)
                     {
                         was_thinking = false;
@@ -235,7 +235,7 @@ namespace Iris.Core
                         assistantMessage.messageLog!.Cost = usage["cost"].GetSingle();
                         assistantMessage.messageLog!.Provider = api_responce["provider"].ToString();
                         assistantMessage.messageLog!.Speed = usage["completion_tokens"].GetInt32() / watch.Elapsed.Seconds;
-                        assistantMessage.messageLog!.Cached = usage["prompt_tokens_details"].GetProperty("cached_tokes").GetInt32();
+                        assistantMessage.messageLog!.Cached = usage["prompt_tokens_details"].GetProperty("cached_tokens").GetInt32();
                         assistantMessage.messageLog!.Reasoning = usage["completion_tokens_details"].GetProperty("reasoning_tokens").GetInt32();
                         assistantMessage.messageLog!.Responce = assistantMessage.messageLog!.Total - assistantMessage.messageLog!.Reasoning;
                     }
