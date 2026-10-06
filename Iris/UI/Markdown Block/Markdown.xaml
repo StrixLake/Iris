@@ -8,14 +8,42 @@
       mc:Ignorable="d">
 
     <UserControl.Resources>
+
+        <AcrylicBrush x:Key="BlackBrush" TintOpacity="0.2" TintLuminosityOpacity="0.1" TintColor="{ThemeResource SystemAccentColor}"/>
+
         <MenuFlyout x:Name="MarkdownFlyout">
             <MenuFlyoutItem Text="Edit" Click="Edit_Start"/>
             <MenuFlyoutItem Text="Select All"/>
             <MenuFlyoutItem Text="Select Block"/>
             <MenuFlyoutItem Text="Delete"/>
             <MenuFlyoutItem Text="Regenerate"/>
-            <MenuFlyoutItem Text="Logs"/>
+            <MenuFlyoutItem Text="Logs" Click="OpenLogs"/>
         </MenuFlyout>
+
+        <Flyout x:Name="LogsFlyout">
+            <Flyout.FlyoutPresenterStyle>
+                <Style TargetType="FlyoutPresenter">
+                    <Setter Property="MaxWidth" Value="1200"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Flyout.FlyoutPresenterStyle>
+
+            <Border CornerRadius="14" 
+                    Padding="10"
+                    Background="{ThemeResource BlackBrush}">
+                
+                <controls:MarkdownTextBlock x:Name="LogsBlock"
+                                            Background="Transparent"/>
+
+            </Border>
+            
+        </Flyout>
+        
     </UserControl.Resources>
     
     <Grid>

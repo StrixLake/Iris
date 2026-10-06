@@ -165,5 +165,11 @@ namespace Iris.UI
             }
         }
 
+        private void OpenLogs(object sender, RoutedEventArgs e)
+        {
+            if (message.messageLog == null) return;
+            LogsBlock.Text = message.messageLog.ToString();
+            LogsFlyout.ShowAt(InnerMarkdown);
+        }
     }
 }
