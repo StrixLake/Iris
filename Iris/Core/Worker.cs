@@ -155,6 +155,7 @@ namespace Iris.Core
                 messageLog = new()
             };
             lastLog = assistantResponce.messageLog;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(lastLog)));
             Context.Add(assistantResponce);
             lastLog.ClientLatency = watch.ElapsedMilliseconds;
 

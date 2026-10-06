@@ -82,6 +82,13 @@
                         <Setter Target="ProviderButton.Background" Value="#40FFFFFF"/>
                     </VisualState.Setters>
                 </VisualState>
+                <VisualState x:Name="LogState">
+                    <VisualState.Setters>
+                        <Setter Target="Logs.Visibility" Value="Visible"/>
+                        <Setter Target="descriptionFlyout.Visibility" Value="Collapsed"/>
+                        <Setter Target="LogButton.Background" Value="#40FFFFFF"/>
+                    </VisualState.Setters>
+                </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
@@ -269,6 +276,10 @@
                                         <ContentControl x:Name="Endpoints" Visibility="Collapsed"
                                                         HorizontalContentAlignment="Stretch"
                                                         VerticalContentAlignment="Stretch"/>
+                                        <controls:MarkdownTextBlock x:Name="Logs" Visibility="Collapsed"
+                                                                    HorizontalAlignment="Stretch"
+                                                                    VerticalAlignment="Stretch" Background="Transparent"
+                                                                    Padding="10,0,10,0"/>
                                     </Grid>
 
                                     <StackPanel Grid.Column="1" Grid.Row="1"
@@ -276,6 +287,7 @@
                                                 Margin="10,0,0,0">
                                         <Button Content="Description" x:Name="DescriptionButton" Margin="0,5,10,0" CornerRadius="14"/>
                                         <Button Content="Providers" x:Name="ProviderButton" Margin="0,5,10,0" CornerRadius="14"/>
+                                        <Button Content="Logs" x:Name="LogButton" Margin="0,5,10,0" CornerRadius="14"/>
                                     </StackPanel>
                                         
 

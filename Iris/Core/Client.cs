@@ -124,6 +124,7 @@ namespace Iris.Core
         public static async Task SendMessage(string json, Message assistantMessage, CancellationToken cancellationToken)
         {
             assistantMessage.messageLog!.Status = "Starting...";
+            assistantMessage.messageLog!.Reasoning_Status = "Waiting To Start...";
 
             StringContent payload = new StringContent(json, Encoding.UTF8, "application/json");
             
@@ -234,7 +235,7 @@ namespace Iris.Core
                         assistantMessage.messageLog!.Total = usage["completion_tokens"].GetInt32();
                         assistantMessage.messageLog!.Cost = usage["cost"].GetSingle();
                         assistantMessage.messageLog!.Provider = api_responce["provider"].ToString();
-                        assistantMessage.messageLog!.Speed = usage["completion_tokens"].GetInt32() / watch.Elapsed.Seconds;
+                        assistantMessage.messageLog!.Speed = (int) (usage["completion_tokens"].GetSingle() / watch.Elapsed.TotalSeconds);
                         assistantMessage.messageLog!.Cached = usage["prompt_tokens_details"].GetProperty("cached_tokens").GetInt32();
                         assistantMessage.messageLog!.Reasoning = usage["completion_tokens_details"].GetProperty("reasoning_tokens").GetInt32();
                         assistantMessage.messageLog!.Responce = assistantMessage.messageLog!.Total - assistantMessage.messageLog!.Reasoning;

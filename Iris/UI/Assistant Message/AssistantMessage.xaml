@@ -42,7 +42,7 @@
                         HorizontalAlignment="Left"
                         Padding="10,5,10,7"
                         CornerRadius="12">
-                    <TextBlock Text="Thinking"/>
+                    <TextBlock Text="{x:Bind message.messageLog.Reasoning_Status, Mode=OneWay}"/>
                 </Border>
             </Expander.Header>
             <Border CornerRadius="16"

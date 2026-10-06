@@ -152,6 +152,25 @@ namespace Iris.Core
             set => OnPropertyChanged(ref provider, value);
         }
 
+        public override string ToString()
+        {
+            return $"""
+                ### **Logs**  
+                **Provider:** {Provider}  
+                **Status:** {Status}  
+                **Finish Reason:** {Finish_Reason}  
+
+                #### **Tokens**  
+                **Input:** {Prompt:N0} (Cached: {Cached:N0})  
+                **Output:** {Total:N0} ({Reasoning:N0}/{Responce:N0})  
+
+                #### **Performance & Cost**  
+                **Latency:** {Latency / 1000f:F2}s (Client: {ClientLatency / 1000f:F2}s)  
+                **Speed:** {Speed:N0} tokens/s  
+                **Cost:** ${Cost:F6}  
+                """;
+        }
+
         void OnPropertyChanged<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
             field = value;

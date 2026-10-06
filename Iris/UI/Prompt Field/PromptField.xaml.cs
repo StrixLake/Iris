@@ -21,6 +21,7 @@ namespace Iris.UI
     public partial class PromptField : UserControl, INotifyPropertyChanged
     {
         readonly Core.Worker settings;
+        Core.Logs lastLogs;
         event SendMessageEvent? sendMessageEvent;
         public event PropertyChangedEventHandler? PropertyChanged;
         EndpointPage endpoint;
@@ -32,6 +33,16 @@ namespace Iris.UI
         {
             InitializeComponent();
             settings = worker;
+            lastLogs = settings.lastLog;
+            settings.PropertyChanged += (o, e) =>
+            {
+                if(e.PropertyName != nameof(settings.lastLog)) return;
+                // unsubscribe from the last one and subscribe to the latest one
+                lastLogs.PropertyChanged -= UpdateLogs;
+                lastLogs = settings.lastLog;
+                lastLogs.PropertyChanged += UpdateLogs;
+            };
+
             endpoint = new(worker);
             Endpoints.Content = endpoint;
             this.sendMessageEvent += sendMessageEvent;
@@ -41,6 +52,7 @@ namespace Iris.UI
 
             DescriptionButton.Click += (o, e) => VisualStateManager.GoToState(this, "DescriptionState", true);
             ProviderButton.Click += (o, e) => VisualStateManager.GoToState(this, "ProviderState", true);
+            LogButton.Click += (o, e) => VisualStateManager.GoToState(this, "LogState", true);
 
             textField.LostFocus += (o, e) =>
             {
@@ -169,6 +181,11 @@ namespace Iris.UI
                 settings.Models.Add(ModelAddField.Text);
                 ModelAddField.Text = "";
             }
+        }
+
+        void UpdateLogs(object? sender, PropertyChangedEventArgs e)
+        {
+            Logs.Text = lastLogs.ToString();
         }
     }
 }
