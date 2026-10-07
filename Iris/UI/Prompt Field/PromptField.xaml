@@ -34,7 +34,7 @@
                                          Storyboard.TargetProperty="ScaleY"
                                          To="0.65" Duration="0:0:0.2"
                                          EasingFunction="{StaticResource Easing}"/>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ModelButton"
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomStack"
                                                        Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0:0:0.01" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
@@ -195,109 +195,122 @@
                     </TextBox.KeyboardAccelerators>
                 </TextBox>
 
-                <Button Grid.Row="1" Margin="20, 0, 20, 20" Content="{x:Bind settings.Name, Mode=OneWay}"
-                        CornerRadius="14" x:Name="ModelButton">
+                <StackPanel x:Name="BottomStack" Grid.Row="1" 
+                            Margin="20, 0, 20, 20" Orientation="Horizontal">
 
-                    <Button.RenderTransform>
-                        <ScaleTransform x:Name="ModelSwitchTransform"/>
-                    </Button.RenderTransform>
-                    
-                    <Button.Flyout>
-                        <Flyout x:Name="modelFlyout">
-                            <Flyout.FlyoutPresenterStyle>
-                                <Style TargetType="FlyoutPresenter">
-                                    <Setter Property="MaxWidth" Value="1200"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Flyout.FlyoutPresenterStyle>
+                    <Button Content="{x:Bind settings.Name, Mode=OneWay}"
+                            CornerRadius="14" x:Name="ModelButton">
 
-                            <Border CornerRadius="14" 
-                                    Padding="10"
-                                    Background="{ThemeResource BlackBrush}"
-                                    Width="900"
-                                    Height="500">
+                        <Button.RenderTransform>
+                            <ScaleTransform x:Name="ModelSwitchTransform"/>
+                        </Button.RenderTransform>
 
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
+                        <Button.Flyout>
+                            <Flyout x:Name="modelFlyout">
+                                <Flyout.FlyoutPresenterStyle>
+                                    <Style TargetType="FlyoutPresenter">
+                                        <Setter Property="MaxWidth" Value="1200"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Flyout.FlyoutPresenterStyle>
 
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
+                                <Border CornerRadius="14" 
+                                        Padding="10"
+                                        Background="{ThemeResource BlackBrush}"
+                                        Width="900"
+                                        Height="500">
 
-                                    
-                                    <ListView Grid.Column="0" Grid.Row="0"
-                                              ItemsSource="{x:Bind settings.Models, Mode=OneWay}"
-                                              Background="#0FFFFFFF" CornerRadius="12"
-                                              Padding="2,8,2,2"
-                                              SelectedItem="{x:Bind settings.Model}" SelectionChanged="ChangeSelectedModel">
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding}">
-                                                    <TextBlock.ContextFlyout>
-                                                        <MenuFlyout>
-                                                            <MenuFlyoutItem Text="Delete" Click="RemoveModel"/>
-                                                        </MenuFlyout>
-                                                    </TextBlock.ContextFlyout>
-                                                </TextBlock>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-                                    </ListView>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
 
-                                    <TextBox PlaceholderText="Add Model"
-                                             Margin="0,6,0,0"
-                                             x:Name="ModelAddField"
-                                             KeyboardAcceleratorPlacementMode="Hidden"
-                                             Grid.Column="0" Grid.Row="1">
-                                        <TextBox.KeyboardAccelerators>
-                                            <KeyboardAccelerator Key="Enter" Invoked="AddModel"/>
-                                        </TextBox.KeyboardAccelerators>
-                                    </TextBox>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
 
 
-                                    <Grid Grid.Row="0" Grid.Column="1"
-                                          Background="#0FFFFFFF"
-                                          CornerRadius="12"
-                                          Padding="8"
-                                          Margin="10,0,0,0">
-                                        <controls:MarkdownTextBlock x:Name="descriptionFlyout"
-                                                                    Text="{x:Bind settings.Description, Mode=OneWay}"
-                                                                    Background="Transparent"
-                                                                    TextWrapping="WrapWholeWords"
-                                                                    Margin="10, 0, 10, 0"/>
-                                        <ContentControl x:Name="Endpoints" Visibility="Collapsed"
-                                                        HorizontalContentAlignment="Stretch"
-                                                        VerticalContentAlignment="Stretch"/>
-                                        <controls:MarkdownTextBlock x:Name="Logs" Visibility="Collapsed"
-                                                                    HorizontalAlignment="Stretch"
-                                                                    VerticalAlignment="Stretch" Background="Transparent"
-                                                                    Padding="10,0,10,0"/>
+                                        <ListView Grid.Column="0" Grid.Row="0"
+                                                  ItemsSource="{x:Bind settings.Models, Mode=OneWay}"
+                                                  Background="#0FFFFFFF" CornerRadius="12"
+                                                  Padding="2,8,2,2"
+                                                  SelectedItem="{x:Bind settings.Model}" SelectionChanged="ChangeSelectedModel">
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}">
+                                                        <TextBlock.ContextFlyout>
+                                                            <MenuFlyout>
+                                                                <MenuFlyoutItem Text="Delete" Click="RemoveModel"/>
+                                                            </MenuFlyout>
+                                                        </TextBlock.ContextFlyout>
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+
+                                        <TextBox PlaceholderText="Add Model"
+                                                 Margin="0,6,0,0"
+                                                 x:Name="ModelAddField"
+                                                 KeyboardAcceleratorPlacementMode="Hidden"
+                                                 Grid.Column="0" Grid.Row="1">
+                                            <TextBox.KeyboardAccelerators>
+                                                <KeyboardAccelerator Key="Enter" Invoked="AddModel"/>
+                                            </TextBox.KeyboardAccelerators>
+                                        </TextBox>
+
+
+                                        <Grid Grid.Row="0" Grid.Column="1"
+                                              Background="#0FFFFFFF"
+                                              CornerRadius="12"
+                                              Padding="8"
+                                              Margin="10,0,0,0">
+                                            <controls:MarkdownTextBlock x:Name="descriptionFlyout"
+                                                                        Text="{x:Bind settings.Description, Mode=OneWay}"
+                                                                        Background="Transparent"
+                                                                        TextWrapping="WrapWholeWords"
+                                                                        Margin="10, 0, 10, 0"/>
+                                            <ContentControl x:Name="Endpoints" Visibility="Collapsed"
+                                                            HorizontalContentAlignment="Stretch"
+                                                            VerticalContentAlignment="Stretch"/>
+                                            <controls:MarkdownTextBlock x:Name="Logs" Visibility="Collapsed"
+                                                                        HorizontalAlignment="Stretch"
+                                                                        VerticalAlignment="Stretch" Background="Transparent"
+                                                                        Padding="10,0,10,0"/>
+                                        </Grid>
+
+                                        <StackPanel Grid.Column="1" Grid.Row="1"
+                                                    Orientation="Horizontal"
+                                                    Margin="10,0,0,0">
+                                            <Button Content="Description" x:Name="DescriptionButton" Margin="0,5,10,0" CornerRadius="14"/>
+                                            <Button Content="Providers" x:Name="ProviderButton" Margin="0,5,10,0" CornerRadius="14"/>
+                                            <Button Content="Logs" x:Name="LogButton" Margin="0,5,10,0" CornerRadius="14"/>
+                                        </StackPanel>
+
+
                                     </Grid>
 
-                                    <StackPanel Grid.Column="1" Grid.Row="1"
-                                                Orientation="Horizontal"
-                                                Margin="10,0,0,0">
-                                        <Button Content="Description" x:Name="DescriptionButton" Margin="0,5,10,0" CornerRadius="14"/>
-                                        <Button Content="Providers" x:Name="ProviderButton" Margin="0,5,10,0" CornerRadius="14"/>
-                                        <Button Content="Logs" x:Name="LogButton" Margin="0,5,10,0" CornerRadius="14"/>
-                                    </StackPanel>
-                                        
+                                </Border>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                    
+                    <!--a combo box to select the reasoning effort-->
+                    <ComboBox x:Name="ReasoningSelector"
+                              Margin="10, 0, 0, 0" CornerRadius="12"
+                              SelectedItem="{x:Bind settings.Reasoning_Effort, Mode=TwoWay}">
+                        <x:String>Max</x:String>
+                        <x:String>High</x:String>
+                        <x:String>Low</x:String>
+                    </ComboBox>
 
-                                </Grid>
-
-                            </Border>
-                        </Flyout>
-                    </Button.Flyout>
-                </Button>
-
+                </StackPanel>
             </Grid>
 
         </Border>

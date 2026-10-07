@@ -56,6 +56,7 @@ namespace Iris.Core
         string name = "";
         int context_length = 1_000_000;
         string description = "";
+        public string Reasoning_Effort { get; set; } = "Low";
         public string id = "";
         public Logs lastLog = new();
         
@@ -117,7 +118,7 @@ namespace Iris.Core
 
         static string GeneratePayload(ObservableCollection<Message> context, Worker worker)
         {
-            Payload payload = new(worker.Model, worker.prefered_provider);
+            Payload payload = new(worker.Model, worker.prefered_provider, worker.Reasoning_Effort);
 
             foreach (Message message in context)
             {

@@ -35,7 +35,7 @@ namespace Iris.Core
             role = self.Role;
             string text;
 
-            if(role == "assistant") text = "<think>" + self.Reasoning + "</think> \n" + self.Content;
+            if(role == "assistant") text = "<thinking>" + self.Reasoning + "</thinking> \n" + self.Content;
             else if(self.files.Count != 0) 
             {
                 text = "";
@@ -82,16 +82,17 @@ namespace Iris.Core
         public string? model {get;set;}
         public Dictionary<string, object> provider {get; set;} = [];
         public Dictionary<string, bool> usage{get;set;} = [];
-        public string reasoning_effort {get;set;} = "max";
+        public string reasoning_effort {get;set;}
         public string session_id {get;set;} = "iris-session";
         public bool stream {get;set;} = true;
         public int max_tokens {get;set;} = 100_000;
 
         public List<JsonMessage> messages {get;set;} = [];
 
-        public Payload(string Model, string prefered_provider)
+        public Payload(string Model, string prefered_provider, string reasoning_effort)
         {
             model = Model;
+            this.reasoning_effort = reasoning_effort.ToLower();
 
             if (prefered_provider != "") provider.Add("order", new List<string>{prefered_provider});
 

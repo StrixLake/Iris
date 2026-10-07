@@ -56,7 +56,7 @@ namespace Iris.UI
 
             textField.LostFocus += (o, e) =>
             {
-                if(!ModelButton.IsPressed) VisualStateManager.GoToState(this, "Normal", false);
+                if(!ModelButton.IsPressed && !ReasoningSelector.IsDropDownOpen) VisualStateManager.GoToState(this, "Normal", false);
             };
             textField.GotFocus += (o, e) => VisualStateManager.GoToState(this, "Expanded", false);
             modelFlyout.Closing += (o, e) => textField.Focus(FocusState.Keyboard);
