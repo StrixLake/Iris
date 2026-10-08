@@ -48,7 +48,7 @@ namespace Iris.Core
 
         public event PropertyChangedEventHandler? PropertyChanged;
         
-        static ObservableCollection<string> models = ["xiaomi/mimo-v2.6-flash","z-ai/glm-5.2","nvidia/nemotron-3-ultra-550b-a55b","deepseek/deepseek-v4-pro","deepseek/deepseek-v4-flash","xiaomi/mimo-v2.5","deepseek/deepseek-v4-pro-0813","z-ai/glm-5.3"];
+        static ObservableCollection<string> models = ["z-ai/glm-5.3-flash", "z-ai/glm-5.2","nvidia/nemotron-3-ultra-550b-a55b","deepseek/deepseek-v4-pro","deepseek/deepseek-v4-flash","xiaomi/mimo-v2.5","deepseek/deepseek-v4-pro-0813","z-ai/glm-5.3"];
         readonly static string descriptionTemplate;
         readonly static string system_prompt;
 

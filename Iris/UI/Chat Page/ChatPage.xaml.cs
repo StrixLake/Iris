@@ -12,7 +12,6 @@ namespace Iris.UI
     public partial class ChatPage : UserControl
     {
 
-        ObservableCollection<UserControl> controls = [];
         readonly UI.PromptField promptField;
         
         Core.Worker worker;
@@ -24,38 +23,21 @@ namespace Iris.UI
             this.worker = worker;
             promptField = new PromptField(worker, (e) => {});
             prompt.Content = promptField;
-
-            AddControls(this.worker.Context);
-            
-            this.worker.Context.CollectionChanged += ContextChanged;
         }
 
-        void ContextChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        public static UserControl AddControl(Core.Message message)
         {
-            if(e.Action == NotifyCollectionChangedAction.Add && e.NewItems is not null)
+            if (message.Role == "user")
             {
-                AddControls(e.NewItems);
-                // this was to make the last message into view
-                // but i didn't find that very userful, it works though
-                // controlRepeater.UpdateLayout();
-                // int index = controls.Count - 1;
-                // UIElement element = controlRepeater.GetOrCreateElement(index);
-                // element.StartBringIntoView();
+                return new UserMessage(message, (f) => { });
             }
-        }
-
-        void AddControls(IList messages)
-        {
-            foreach(Core.Message message in messages)
+            else if (message.Role == "assistant")
             {
-                if(message.Role == "user")
-                {
-                    controls.Add(new UserMessage(message, (f)=>{}));
-                }
-                else if (message.Role == "assistant")
-                {
-                    controls.Add(new AssistantMessage(message));
-                }
+                return new AssistantMessage(message);
+            }
+            else
+            {
+                return new UserControl() { Visibility = Visibility.Collapsed};
             }
         }
 
