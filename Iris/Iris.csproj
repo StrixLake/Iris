@@ -12,7 +12,7 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NoWarn>IDE1006;IDE0090;IDE0057</NoWarn>
+    <NoWarn>IDE1006;IDE0090;IDE0057;IDE0130</NoWarn>
   </PropertyGroup>
 	
 <PropertyGroup>
