@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Windows.Foundation;
@@ -8,6 +9,8 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Windows.Media.Core;
+using Windows.ApplicationModel.Contacts;
+using System.Runtime.CompilerServices;
 
 
 // a wrapper over the markdown textblock
@@ -45,6 +48,14 @@ namespace Iris.UI
 
             if (element == "content") InnerMarkdown.Text = message.Content;
             if (element == "reasoning") InnerMarkdown.Text = message.Reasoning;
+
+            // the visibility states are resolved here as well since
+            // items repeater might build this control *after* streaming is set to true
+            if(message.Streaming)
+            {
+                InnerMarkdown.Visibility = Visibility.Collapsed;
+                InnerTextBlock.Visibility = Visibility.Visible;
+            }
         }
 
         private void Markdown_Rendered(object sender, CommunityToolkit.WinUI.UI.Controls.MarkdownRenderedEventArgs e)
@@ -148,20 +159,65 @@ namespace Iris.UI
 
         static void FindVisualElement<T>(object visualElement, List<T> elementsFound)  where T : DependencyObject
         {
+
             int elements = VisualTreeHelper.GetChildrenCount((DependencyObject)visualElement);
 
             for(int i = 0; i < elements; i++)
             {
                 DependencyObject childElement = VisualTreeHelper.GetChild((DependencyObject)visualElement, i);
 
-                if(childElement.GetType().Equals(typeof(T)))
+                if (childElement.GetType().Equals(typeof(T)))
                 {
                     elementsFound.Add((T)childElement);
                 }
                 else
                 {
-                    FindVisualElement<T>(childElement, elementsFound);
+
+                    // to fix the horrible scrolling of scroll viewer, i need to hot patch
+                    // scroll viewer and replace it with a scroll view
+                    if (childElement is ScrollViewer scrollViewer)
+                    {
+                        // first just check if it contains T already (most likely, but if there is ever a bug of
+                        // menuflyout not appearing for a richtextblock, CHECK HERE)
+                        if (scrollViewer.Content is T content) elementsFound.Add(content);
+
+                        HotPatchScrollViewer(scrollViewer, visualElement);
+                    }
+
+                    else FindVisualElement<T>(childElement, elementsFound);
                 }
+            }
+        }
+
+        static void HotPatchScrollViewer(ScrollViewer scrollViewer, object parent)
+        {
+            object content = scrollViewer.Content;
+
+            if (content is not UIElement contentElement) throw new Exception("content is not ui element as expected");
+
+            scrollViewer.Content = null;
+
+            ScrollView scrollView = new();
+            scrollView.Content = contentElement;
+            scrollView.CornerRadius = new CornerRadius(12);
+            scrollView.Padding = new Thickness(10) { Left = 14 };
+            scrollView.Margin = new Thickness() { Top = 10, Bottom = 10 };
+            scrollView.BorderThickness = new Thickness(2);
+            scrollView.BorderBrush = new SolidColorBrush((Windows.UI.Color)(Application.Current.Resources.ThemeDictionaries[new String("SystemAccentColorDark1")]));
+
+            if(parent is Panel panel)
+            {
+                int index = panel.Children.IndexOf(scrollViewer);
+                panel.Children.RemoveAt(index);
+                panel.Children.Insert(index, scrollView);
+            }
+            else if(parent is Border border)
+            {
+                border.Child = scrollView;
+            }
+            else if (parent is ContentControl control)
+            {
+                control.Content = scrollView;
             }
         }
 
