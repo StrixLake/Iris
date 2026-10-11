@@ -15,68 +15,7 @@ using HttpRequestMessage = System.Net.Http.HttpRequestMessage;
 
 namespace Iris.Core
 {
-    // the DTO to use for conversion to json
-    class JsonMessage
-    {
-        public JsonMessage(string role, string message)
-        {
-            this.role = role;
-            content.Add(new Dictionary<string, object>
-            {
-                ["type"] = "text",
-                ["text"] = message
-            });
-        }
-
-        public JsonMessage(Message self)
-        {
-            // handle the processing of role, content and files
-            // in the constructor
-            role = self.Role;
-            string text;
-
-            if(role == "assistant") text = "<thinking>" + self.Reasoning + "</thinking> \n" + self.Content;
-            else if(self.files.Count != 0) 
-            {
-                text = "";
-                // append all the files in format <filename> filecontent </filename>
-                foreach(Tuple<string, string> file in self.files)
-                {
-                    text += String.Format("<{0}> \n {1} \n </{0}> \n", file.Item1, file.Item2);
-                }
-                text += self.Content;
-            }
-            else text = self.Content;
-
-            content.Add(new Dictionary<string, object>
-            {
-                ["type"] = "text",
-                ["text"] = text
-            });
-        }
-
-        public string role {get; set;}
-
-        // it can contain either <string, string> for text
-        // messages, or <string, dictionary<string, string>> for
-        // image urls
-        // since the json format for multimodal image llm is
-        // content: [
-        //  {
-        //    type: 'text',
-        //    text: "What's in this image?",
-        //  },
-        //  {
-        //    type: 'image_url',
-        //    image_url: {
-        //      url: base64Image,
-        //    },
-        //  },
-        //]
-        public List<Dictionary<string, object>> content {get;set;} = [];
-        
-    }
-
+    
     class Payload
     {
         public string? model {get;set;}

@@ -122,22 +122,11 @@ namespace Iris.Core
 
             foreach (Message message in context)
             {
-                JsonMessage jsonMessage = new(message);
-                if(worker.Inputs.Contains("image"))
-                {
-                    foreach(string image in message.images)
-                    {
-                        jsonMessage.content.Add(new Dictionary<string, object>
-                        {
-                            ["type"] = "image_url",
-                            ["image_url"] = new Dictionary<string, string>
-                            {
-                                ["image_url"] = image
-                            }
-                        });
-                    }
-                }
-                payload.messages.Add(jsonMessage);
+                bool include_image = worker.Inputs.Contains("image");
+
+                List<JsonMessage> jsonMessages = JsonMessage.MessageConstructor(message, include_image);
+
+                payload.messages.AddRange(jsonMessages);
             }
 
             return JsonSerializer.Serialize(payload);

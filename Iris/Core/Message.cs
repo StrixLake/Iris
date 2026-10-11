@@ -20,6 +20,12 @@ namespace Iris.Core
         // <filename, content>
         public ObservableCollection<Tuple<string, string>> files = [];
 
+        // aggregate tool call message chain
+        // only use it when role is "aggregate"
+        // if worker calls tools in a chain, we aggregate all the
+        // messages in a list to display them as one for cleaner ui
+        public ObservableCollection<Message>? tool_chain;
+
         // only needed for assistant messages
         public Logs? messageLog {get; set;}
 
