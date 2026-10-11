@@ -8,6 +8,8 @@ using Windows.Storage.Streams;
 using System.Linq;
 using Iris.UI;
 using Core = Iris.Core;
+using System.ComponentModel;
+using Microsoft.UI;
 
 
 namespace Iris.UI
@@ -27,6 +29,20 @@ namespace Iris.UI
 
             reasoningBlock.Content = reasoningMarkdown;
             contentBlock.Content = contentMarkdown;
+
+            message.messageLog!.PropertyChanged += StatusHandler;
+            StatusHandler(null, new PropertyChangedEventArgs(nameof(message.messageLog.Status)));
+        }
+
+        void StatusHandler(object? sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName != nameof(message.messageLog.Status)) return;
+
+            if (message.messageLog?.Status == "Network Error") ErrorGradientStop.Color = Colors.Red;
+            if (message.messageLog?.Status == "Starting...") ErrorGradientStop.Color = Colors.HotPink;
+            else if (message.messageLog?.Status == "Cancelled") ErrorGradientStop.Color = Colors.Yellow;
+            else if (message.messageLog?.Status == "Streaming...") ErrorGradientStop.Color = Colors.SkyBlue;
+            else if (message.messageLog?.Status == "Finished") ErrorGradientStop.Color = (Windows.UI.Color)Application.Current.Resources.ThemeDictionaries[new String("SystemAccentColorDark1")];
         }
     }
 }

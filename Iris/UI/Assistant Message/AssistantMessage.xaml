@@ -27,7 +27,7 @@
         <StackPanel.BorderBrush>
             <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                 <GradientStop Color="Black" Offset="0.8"/>
-                <GradientStop Color="{ThemeResource SystemAccentColorDark1}" Offset="1"/>
+                <GradientStop Color="{ThemeResource SystemAccentColorDark1}" Offset="1" x:Name="ErrorGradientStop"/>
             </LinearGradientBrush>
         </StackPanel.BorderBrush>
 
