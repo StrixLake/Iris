@@ -45,7 +45,7 @@ namespace Iris.Core
             if(msg is Message message)
             {
 
-                if(message.Role == "user") return [UserJsonMessage(message, include_image)];
+                if(message.Role == "user" || message.Role == "system") return [UserJsonMessage(message, include_image)];
                 else if(message.Role == "assistant") return [AssistantJsonMessage(message)];
                 else if(message.Role == "tool") return [ToolJsonMessaage(message)];
 
@@ -58,7 +58,7 @@ namespace Iris.Core
         static JsonMessage UserJsonMessage(Message message, bool include_image)
         {
             JsonMessage jsonMessage = new();
-            jsonMessage.role = "user";
+            jsonMessage.role = message.Role;
             
             string text = "";
             

@@ -75,9 +75,24 @@ namespace Iris.Core
 
             Stopwatch watch = Stopwatch.StartNew();
 
-            using HttpResponseMessage response = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            HttpResponseMessage response;
 
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                response = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            }
+            catch(HttpRequestException)
+            {
+                assistantMessage.messageLog.Status = "Network Error";
+                return;
+            }
+            catch(OperationCanceledException)
+            {
+                assistantMessage.messageLog.Status = "Cancelled";
+                return;
+            }
+
+            if(await ResponseErrored(response, assistantMessage.messageLog)) return;
 
             using Stream stream = await response.Content.ReadAsStreamAsync(cancellationToken);
             // we need a steeam reader to handle text conversion
@@ -184,6 +199,29 @@ namespace Iris.Core
 
             }
 
+        }
+
+        static async Task<bool> ResponseErrored(HttpResponseMessage responseMessage, Logs log)
+        {
+            if(responseMessage.IsSuccessStatusCode)
+            {
+                return false;
+            }
+            else
+            {
+                string reason = await responseMessage.Content.ReadAsStringAsync();
+                
+                JsonDocument jsonDocument = JsonDocument.Parse(reason);
+                JsonElement rootElement = jsonDocument.RootElement;
+
+                int code = rootElement.GetProperty("error").GetProperty("code").GetInt32();
+                string message = rootElement.GetProperty("error").GetProperty("message").ToString();
+
+                log.Status = $"Error: {code}, {message}";
+
+                responseMessage.Dispose();
+                return true;
+            }
         }
 
     }
