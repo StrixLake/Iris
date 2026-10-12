@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 using Iris.Core;
 using Iris.UI;
 using Microsoft.UI;
@@ -26,6 +27,7 @@ using Windows.Foundation.Collections;
 using Windows.Media.Streaming.Adaptive;
 using Windows.System;
 using Windows.UI.Core;
+using static System.Collections.Specialized.BitVector32;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -37,9 +39,8 @@ namespace Iris
     /// </summary>
     public sealed partial class MainWindow : Window, INotifyPropertyChanged
     {
-        ChatPage chatPage;
         public event PropertyChangedEventHandler? PropertyChanged;
-        public ObservableCollection<ChatPage> sessions {get; set;} = [];
+        public ObservableCollection<Tuple<Core.Worker, ChatPage>> sessions {get; set;} = [];
         
         public MainWindow()
         {
@@ -51,19 +52,22 @@ namespace Iris
             foreach(string file in Directory.GetFiles(DirPath))
             {
                 Core.Worker session = JsonSerializer.Deserialize<Core.Worker>(File.ReadAllText(file), Core.Worker.serializerOptions) ?? new();
-                sessions.Add(new ChatPage(session));
+                sessions.Add(new Tuple<Core.Worker, ChatPage>(session, new ChatPage(session)));
             }
 
             if(sessions.Count == 0)
             {
-                Core.Worker worker = new();
-                chatPage = new ChatPage(worker);
+                Core.Worker session = new();
+                sessions.Add(new Tuple<Core.Worker, ChatPage>(session, new ChatPage(session)));
             }
-            else chatPage = sessions[0];
+            else MainContent.Content = sessions[0].Item2;
 
-            testcontrol.Content = chatPage;
+            SessionList.SelectedItem = sessions[0];
             
             AppWindow.TitleBar.BackgroundColor = Colors.Black;
+
+            HistoryAreaOpen.PointerEntered += (o, e) => VisualStateManager.GoToState(rootPage, "HistoryOpen", true);
+            HistoryBorder.PointerExited += (o, e) => VisualStateManager.GoToState(rootPage, "HistoryClose", true);
 
             
             // subscribing to this event to force the rendering to
@@ -71,6 +75,25 @@ namespace Iris
             CompositionTarget.Rendering += (_, _) => { };
         }
 
+        public static string TitleConverter(object tuple)
+        {
+            if (tuple is Tuple<Core.Worker, ChatPage> session)
+            {
+                return session.Item1.Title;
+            }
+            else return "Exception, check";
+        }
+
+        private void NewChat(object sender, RoutedEventArgs e)
+        {
+            Core.Worker session = new();
+            var sessionPage = new Tuple<Core.Worker, ChatPage>(session, new ChatPage(session));
+            sessions.Add(sessionPage);
+            SessionList.SelectedItem = sessionPage;
+        }
+
+        void ChangeSession(object sender, SelectionChangedEventArgs e) => MainContent.Content = ((Tuple<Core.Worker, ChatPage>)SessionList.SelectedItem).Item2;      
+        
     }
 
 }

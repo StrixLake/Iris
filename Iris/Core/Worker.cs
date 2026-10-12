@@ -59,7 +59,7 @@ namespace Iris.Core
         public string Reasoning_Effort { get; set; } = "Low";
         public string id = "";
         public string? filename {get; set;}
-        string Title {get; set;} = "Chat";
+        public string Title {get; set;} = "Chat";
         public Logs lastLog = new();
         
         public ObservableCollection<string> Inputs {get; set;} = ["text", "image"];
