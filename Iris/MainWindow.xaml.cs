@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.Json;
 using System.Threading;
+using Iris.Core;
 using Iris.UI;
 using Microsoft.UI;
 using Microsoft.UI.Input;
@@ -38,27 +39,36 @@ namespace Iris
     {
         ChatPage chatPage;
         public event PropertyChangedEventHandler? PropertyChanged;
+        public ObservableCollection<ChatPage> sessions {get; set;} = [];
         
         public MainWindow()
         {
             InitializeComponent();
+ 
+            string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string DirPath = System.IO.Path.Combine(documents, ".iris", "newhistory");
 
-            Core.Worker worker = new();
-            
-            chatPage = new ChatPage(worker);
+            foreach(string file in Directory.GetFiles(DirPath))
+            {
+                Core.Worker session = JsonSerializer.Deserialize<Core.Worker>(File.ReadAllText(file), Core.Worker.serializerOptions) ?? new();
+                sessions.Add(new ChatPage(session));
+            }
+
+            if(sessions.Count == 0)
+            {
+                Core.Worker worker = new();
+                chatPage = new ChatPage(worker);
+            }
+            else chatPage = sessions[0];
 
             testcontrol.Content = chatPage;
-
+            
             AppWindow.TitleBar.BackgroundColor = Colors.Black;
 
-            // load settings
-            // first load the saved models
-            string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string DirPath = System.IO.Path.Combine(documents, ".iris");
             
             // subscribing to this event to force the rendering to
             // happen at 60 fps, this fixes the lag on the text box
-            // CompositionTarget.Rendering += (_, _) => { };
+            CompositionTarget.Rendering += (_, _) => { };
         }
 
     }

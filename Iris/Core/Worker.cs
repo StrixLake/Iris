@@ -58,6 +58,8 @@ namespace Iris.Core
         string description = "";
         public string Reasoning_Effort { get; set; } = "Low";
         public string id = "";
+        int filename {get; set;} = 0;
+        string Title {get; set;} = "Chat";
         public Logs lastLog = new();
         
         public ObservableCollection<string> Inputs {get; set;} = ["text", "image"];
@@ -101,8 +103,9 @@ namespace Iris.Core
         }
 
         public List<Worker>? splitWorkers {get;set;}
-        public List<Worker>? agents {get;set;}
+        public List<Worker>? subWorkers {get;set;}
         public Worker? preSplitWorker {get;set;}
+        public Worker? parentWorker {get; set;}
 
         public List<Message> MessageBox = [];
         Mutex MessageBoxMutex = new();
@@ -154,6 +157,8 @@ namespace Iris.Core
             assistantResponce.Streaming = true;
             await Client.SendMessage(payload, assistantResponce, cancellationToken.Token);
             assistantResponce.Streaming = false;
+
+            Save();
         }
 
         async void ModelChanged()
