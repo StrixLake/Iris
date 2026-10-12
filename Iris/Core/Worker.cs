@@ -58,7 +58,7 @@ namespace Iris.Core
         string description = "";
         public string Reasoning_Effort { get; set; } = "Low";
         public string id = "";
-        int filename {get; set;} = 0;
+        public string? filename {get; set;}
         string Title {get; set;} = "Chat";
         public Logs lastLog = new();
         

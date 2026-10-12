@@ -29,10 +29,11 @@ namespace Iris.Core
                 return;
             }
 
+            if(filename is null) filename = (new Random()).Next().ToString();
+
             string saveFile = JsonSerializer.Serialize(this, serializerOptions);
 
             string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            if(filename == 0) filename = (new Random()).Next();
 
             string historyPath = Path.Combine(rootPath, ".iris", "newhistory", $"{filename}.json");
             File.WriteAllText(historyPath, saveFile);
