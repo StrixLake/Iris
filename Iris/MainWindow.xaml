@@ -30,10 +30,10 @@
                 <VisualStateGroup>
                     <VisualState x:Name="HistoryOpen">
                         <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="BorderTranslate"
-                                             Storyboard.TargetProperty="X"
+                            <DoubleAnimation Storyboard.TargetName="BorderScale"
+                                             Storyboard.TargetProperty="ScaleX"
                                              Duration="0:0:0.2"
-                                             From="-260" To="0"
+                                             From="0" To="1"
                                              EasingFunction="{StaticResource HistoryEasing}"/>
                             <DoubleAnimation Storyboard.TargetName="ChatBlur"
                                              Storyboard.TargetProperty="Amount"
@@ -49,10 +49,10 @@
                     
                     <VisualState x:Name="HistoryClose">
                         <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="BorderTranslate"
-                                             Storyboard.TargetProperty="X"
+                            <DoubleAnimation Storyboard.TargetName="BorderScale"
+                                             Storyboard.TargetProperty="ScaleX"
                                              Duration="0:0:0.2"
-                                             From="0" To="-260"
+                                             From="1" To="0"
                                              EasingFunction="{StaticResource HistoryEasing}"/>
                             <DoubleAnimation Storyboard.TargetName="ChatBlur"
                                              Storyboard.TargetProperty="Amount"
@@ -109,7 +109,7 @@
                     </Border.Background>
 
                     <Border.RenderTransform>
-                        <TranslateTransform x:Name="BorderTranslate"/>
+                        <ScaleTransform x:Name="BorderScale"/>
                     </Border.RenderTransform>
 
                     <StackPanel>
