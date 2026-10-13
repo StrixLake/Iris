@@ -225,7 +225,7 @@ namespace Iris.UI
         {
             if (message.messageLog == null) return;
             LogsBlock.Text = message.messageLog.ToString();
-            LogsFlyout.ShowAt(InnerMarkdown);
+            LogsFlyout.ShowAt(richTextBlockInContext);
         }
     }
 }
