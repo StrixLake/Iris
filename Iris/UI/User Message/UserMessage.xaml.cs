@@ -23,11 +23,11 @@ namespace Iris.UI
 
         event StringEvent? OpenFile;
 
-        public UserMessage(Core.Message message, StringEvent FileOpenMethod)
+        public UserMessage(Core.Message message, StringEvent FileOpenMethod, Action<Core.Message> RequestDeletion)
         {
             InitializeComponent();
             this.message = message;
-            markdown = new(message, "content");
+            markdown = new(message, "content", RequestDeletion);
 
             // initialize the markdown
             MarkdownControl.Content = markdown;

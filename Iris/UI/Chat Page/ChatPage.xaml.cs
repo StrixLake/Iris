@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System;
 using System.Linq;
 using Microsoft.UI.Xaml;
+using Iris.Core;
 
 namespace Iris.UI
 {
@@ -25,19 +26,23 @@ namespace Iris.UI
             prompt.Content = promptField;
         }
 
-        public static UserControl AddControl(Core.Message message)
+        void PrepareControl(ItemsRepeater repeater, ItemsRepeaterElementPreparedEventArgs args)
         {
+            if (args.Element is not ContentControl contentControl) return;
+
+            Core.Message message = worker.Context[args.Index];
+
             if (message.Role == "user")
             {
-                return new UserMessage(message, (f) => { });
+                contentControl.Content = new UserMessage(message, (f) => { }, (msgToDelete) => { worker.Context.Remove(message); });
             }
             else if (message.Role == "assistant")
             {
-                return new AssistantMessage(message);
+                contentControl.Content = new AssistantMessage(message, (msgToDelete) => { worker.Context.Remove(message); });
             }
             else
             {
-                return new UserControl() { Visibility = Visibility.Collapsed};
+                contentControl.Content = new UserControl() { Visibility = Visibility.Collapsed };
             }
         }
 

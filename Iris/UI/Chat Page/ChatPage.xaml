@@ -16,12 +16,14 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+
         <ScrollView Grid.Row="0">
             <ItemsRepeater ItemsSource="{x:Bind worker.Context, Mode=OneWay}"
-                           x:Name="controlRepeater">
+                           x:Name="controlRepeater"
+                           ElementPrepared="PrepareControl">
                 <ItemsRepeater.ItemTemplate>
-                    <DataTemplate x:DataType="core:Message">
-                        <ContentControl Content="{x:Bind local:ChatPage.AddControl((core:Message))}" HorizontalContentAlignment="Stretch"
+                    <DataTemplate>
+                        <ContentControl HorizontalContentAlignment="Stretch"
                                         Margin="30,10,30,10"/>
                     </DataTemplate>
                 </ItemsRepeater.ItemTemplate>

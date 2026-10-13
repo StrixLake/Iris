@@ -19,13 +19,13 @@ namespace Iris.UI
         Core.Message message;
         Markdown reasoningMarkdown;
         Markdown contentMarkdown;
-        public AssistantMessage(Core.Message backingMessage)
+        public AssistantMessage(Core.Message backingMessage, Action<Core.Message> RequestDeletion)
         {
             InitializeComponent();
             message = backingMessage;
 
-            reasoningMarkdown = new(message, "reasoning");
-            contentMarkdown = new(message, "content");
+            reasoningMarkdown = new(message, "reasoning", RequestDeletion);
+            contentMarkdown = new(message, "content", RequestDeletion);
 
             reasoningBlock.Content = reasoningMarkdown;
             contentBlock.Content = contentMarkdown;

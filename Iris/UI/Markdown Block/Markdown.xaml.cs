@@ -26,6 +26,7 @@ namespace Iris.UI
         // displays so we can subscribe to 
         // property changes in it's content
         readonly Core.Message message;
+        readonly Action<Core.Message> DeleteAction;
 
         // "element" arg can be "reasoning" or "content" and is used to decide
         // whether to show resoning or text from Core.Message
@@ -37,7 +38,7 @@ namespace Iris.UI
 
         RichTextBlock? richTextBlockInContext;
 
-        public Markdown(Core.Message message, string element)
+        public Markdown(Core.Message message, string element, Action<Core.Message> RequestDeletion)
         {
             if (!(element == "reasoning" || element == "content")) throw new System.Exception("invalid element name passed to display in markdown");
 
@@ -56,6 +57,8 @@ namespace Iris.UI
                 InnerMarkdown.Visibility = Visibility.Collapsed;
                 InnerTextBlock.Visibility = Visibility.Visible;
             }
+
+            DeleteAction = RequestDeletion;
         }
 
         private void Markdown_Rendered(object sender, CommunityToolkit.WinUI.UI.Controls.MarkdownRenderedEventArgs e)
@@ -227,5 +230,8 @@ namespace Iris.UI
             LogsBlock.Text = message.messageLog.ToString();
             LogsFlyout.ShowAt(richTextBlockInContext);
         }
+
+        private void DeleteMessage(object sender, RoutedEventArgs e) => DeleteAction(message);
+       
     }
 }
