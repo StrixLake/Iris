@@ -119,12 +119,17 @@ namespace Iris.Core
             return preSplitContext;
         }
 
-        static string GeneratePayload(ObservableCollection<Message> context, Worker worker)
+        static string GeneratePayload(ObservableCollection<Message> context, Worker worker, int partial)
         {
+            // limit the context to which ever is lower
+            partial = Math.Min(partial, context.Count);
+
             Payload payload = new(worker.Model, worker.prefered_provider, worker.Reasoning_Effort);
 
-            foreach (Message message in context)
+            for (int i = 0; i < partial; ++i)
             {
+                Message message = context[i];
+
                 bool include_image = worker.Inputs.Contains("image");
 
                 List<JsonMessage> jsonMessages = JsonMessage.MessageConstructor(message, include_image);
@@ -141,7 +146,7 @@ namespace Iris.Core
             Stopwatch watch = Stopwatch.StartNew();
             if(prompt is not null) Context.Add(prompt);
 
-            string payload = GeneratePayload(Context, this);
+            string payload = GeneratePayload(Context, this, Context.Count);
             Message assistantResponce = new()
             {
                 Role = "assistant",
@@ -157,6 +162,30 @@ namespace Iris.Core
             assistantResponce.Streaming = true;
             await Client.SendMessage(payload, assistantResponce, cancellationToken.Token);
             assistantResponce.Streaming = false;
+
+            Save();
+        }
+
+        public async void RegenerateMessage(Message message)
+        {
+            int partial = Context.IndexOf(message);
+
+            Stopwatch watch = Stopwatch.StartNew();
+            string payload = GeneratePayload(Context, this, partial);
+
+            lastLog = message.messageLog!;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(lastLog)));
+
+            message.Reasoning = "";
+            message.Content = "";
+
+            lastLog.ClientLatency = watch.ElapsedMilliseconds;
+
+            cancellationToken.Dispose();
+            cancellationToken = new();
+            message.Streaming = true;
+            await Client.SendMessage(payload, message, cancellationToken.Token);
+            message.Streaming = false;
 
             Save();
         }

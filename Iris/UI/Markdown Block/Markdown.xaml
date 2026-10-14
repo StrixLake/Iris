@@ -16,7 +16,7 @@
             <MenuFlyoutItem Text="Select All"/>
             <MenuFlyoutItem Text="Select Block"/>
             <MenuFlyoutItem Text="Delete" Click="DeleteMessage"/>
-            <MenuFlyoutItem Text="Regenerate"/>
+            <MenuFlyoutItem Text="Regenerate" Click="RegenerateMessage"/>
             <MenuFlyoutItem Text="Logs" Click="OpenLogs"/>
         </MenuFlyout>
 

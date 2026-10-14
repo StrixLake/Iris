@@ -34,11 +34,11 @@ namespace Iris.UI
 
             if (message.Role == "user")
             {
-                contentControl.Content = new UserMessage(message, (f) => { }, (msgToDelete) => { worker.Context.Remove(message); });
+                contentControl.Content = new UserMessage(message, (f) => { }, (msgToDelete) => { worker.Context.Remove(msgToDelete); });
             }
             else if (message.Role == "assistant")
             {
-                contentControl.Content = new AssistantMessage(message, (msgToDelete) => { worker.Context.Remove(message); });
+                contentControl.Content = new AssistantMessage(message, (msgToDelete) => { worker.Context.Remove(msgToDelete); }, worker.RegenerateMessage);
             }
             else
             {

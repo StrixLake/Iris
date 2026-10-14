@@ -27,7 +27,7 @@ namespace Iris.UI
         {
             InitializeComponent();
             this.message = message;
-            markdown = new(message, "content", RequestDeletion);
+            markdown = new(message, "content", RequestDeletion, (m) => { });
 
             // initialize the markdown
             MarkdownControl.Content = markdown;
