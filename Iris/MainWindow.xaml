@@ -131,6 +131,37 @@
                 </Border>
             </Grid>
 
+            <!--file overlay display-->
+            
+            <Grid x:Name="FileOverlayGrid"
+                  Visibility="Collapsed">
+
+                <Grid.Background>
+                    <media:BackdropBlurBrush Amount="20"/>
+                </Grid.Background>
+                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.75*"/>
+                    <RowDefinition Height="15*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <ScrollView Grid.Row="1" Grid.Column="1"
+                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            CornerRadius="20">
+                    <controls:MarkdownTextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                                x:Name="FileViewerMarkdownBlock" TextWrapping="WrapWholeWords"
+                                                Padding="20"/>
+                </ScrollView>
+
+            </Grid>
+            
         </Grid>
 
     </Page>

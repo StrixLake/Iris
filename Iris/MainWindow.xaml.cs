@@ -69,6 +69,9 @@ namespace Iris
             HistoryAreaOpen.PointerEntered += (o, e) => VisualStateManager.GoToState(rootPage, "HistoryOpen", true);
             HistoryBorder.PointerExited += (o, e) => VisualStateManager.GoToState(rootPage, "HistoryClose", true);
 
+            UIState.StateInstance.PropertyChanged += FileChanged;
+            FileOverlayGrid.PointerPressed += (_, _) => FileOverlayGrid.Visibility = Visibility.Collapsed;
+
             
             // subscribing to this event to force the rendering to
             // happen at 60 fps, this fixes the lag on the text box
@@ -92,7 +95,15 @@ namespace Iris
             SessionList.SelectedItem = sessionPage;
         }
 
-        void ChangeSession(object sender, SelectionChangedEventArgs e) => MainContent.Content = ((Tuple<Core.Worker, ChatPage>)SessionList.SelectedItem).Item2;      
+        void ChangeSession(object sender, SelectionChangedEventArgs e) => MainContent.Content = ((Tuple<Core.Worker, ChatPage>)SessionList.SelectedItem).Item2;
+
+        void FileChanged(object? sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName != nameof(UIState.StateInstance.DisplayFile)) return;
+
+            FileOverlayGrid.Visibility = Visibility.Visible;
+            FileViewerMarkdownBlock.Text = $"### {UIState.StateInstance.DisplayFile.Item1} \n\n{UIState.StateInstance.DisplayFile.Item2}";
+        }
         
     }
 

@@ -11,8 +11,6 @@ using System.Linq;
 
 namespace Iris.UI
 {
-    public delegate void StringEvent(string eventarg);
-
     public partial class UserMessage : UserControl
     {
 
@@ -21,9 +19,7 @@ namespace Iris.UI
         // the markdown control
         Markdown markdown;
 
-        event StringEvent? OpenFile;
-
-        public UserMessage(Core.Message message, StringEvent FileOpenMethod, Action<Core.Message> RequestDeletion)
+        public UserMessage(Core.Message message, Action<Core.Message> RequestDeletion)
         {
             InitializeComponent();
             this.message = message;
@@ -36,7 +32,6 @@ namespace Iris.UI
             if (message.files.Count == 0) FileList.Visibility = Visibility.Collapsed;
             if (message.images.Count == 0) ImageList.Visibility = Visibility.Collapsed;
 
-            OpenFile += FileOpenMethod;
         }
 
         void OpenFileViewer(object sender, RoutedEventArgs e)
@@ -45,9 +40,7 @@ namespace Iris.UI
             {
                 if(button.DataContext is Tuple<string, string> tuple)
                 {
-                    string content = tuple.Item2;
-                    OpenFile?.Invoke(content);
-
+                    UIState.StateInstance.DisplayFile = tuple;
                 }
             }
         }

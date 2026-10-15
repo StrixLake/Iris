@@ -34,7 +34,7 @@ namespace Iris.UI
 
             if (message.Role == "user")
             {
-                contentControl.Content = new UserMessage(message, (f) => { }, (msgToDelete) => { worker.Context.Remove(msgToDelete); });
+                contentControl.Content = new UserMessage(message, (msgToDelete) => { worker.Context.Remove(msgToDelete); });
             }
             else if (message.Role == "assistant")
             {

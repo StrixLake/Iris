@@ -18,7 +18,7 @@ namespace Iris.Core
         // base64 representation of images
         public ObservableCollection<string> images = [];
         // <filename, content>
-        public ObservableCollection<Tuple<string, string>> files = [];
+        public ObservableCollection<Tuple<string, string>> files { get; set; } = [];
 
         // aggregate tool call message chain
         // only use it when role is "aggregate"
