@@ -187,5 +187,13 @@ namespace Iris.UI
         {
             Logs.Text = lastLogs.ToString();
         }
+
+        private void OpenFile(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button button) return;
+            if (button.DataContext is not Tuple<string, string> file) return;
+
+            UIState.StateInstance.DisplayFile = file;
+        }
     }
 }

@@ -134,7 +134,7 @@
                             <Grid PointerEntered="Grid_PointerEntered"
                                   PointerExited="Grid_PointerExited">
 
-                                <Button Content="{Binding Converter={StaticResource FileConverter}}">
+                                <Button Content="{Binding Converter={StaticResource FileConverter}}" Click="OpenFile">
                                     <Button.Background>
                                         <AcrylicBrush TintOpacity="0.5" TintColor="Black"/>
                                     </Button.Background>
