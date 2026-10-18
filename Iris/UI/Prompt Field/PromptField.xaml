@@ -161,7 +161,7 @@
                 HorizontalAlignment="Stretch" 
                 VerticalAlignment="Stretch"
                 BorderThickness="2,0,2,2"
-                Background="#20FFFFFF">
+                Background="#FF202020">
 
             <Border.BorderBrush>
                 <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
