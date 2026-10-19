@@ -42,7 +42,8 @@
                         <DataTemplate>
                             <Border CornerRadius="4">
                                 <Image Source="{Binding Converter={StaticResource ImageConverter}}"
-                                       ContextFlyout="{StaticResource attachmentOptions}"/>
+                                       ContextFlyout="{StaticResource attachmentOptions}"
+                                       Height="100"/>
                             </Border>
                         </DataTemplate>
                     </ListView.ItemTemplate>

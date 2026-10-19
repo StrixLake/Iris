@@ -16,7 +16,7 @@ namespace Iris.Core
         string content = "";
         bool streaming = false;
         // base64 representation of images
-        public ObservableCollection<string> images = [];
+        public ObservableCollection<string> images { get; set; } = [];
         // <filename, content>
         public ObservableCollection<Tuple<string, string>> files { get; set; } = [];
 

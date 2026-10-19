@@ -81,7 +81,7 @@ namespace Iris.Core
                 {
                     jsonMessage.content.Add(new Dictionary<string, object>
                     {
-                        ["type"] = "image",
+                        ["type"] = "image_url",
                         ["image_url"] = new Dictionary<string, string>
                         {
                             ["url"] = image

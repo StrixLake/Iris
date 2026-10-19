@@ -26,8 +26,8 @@ namespace Iris.UI
         public event PropertyChangedEventHandler? PropertyChanged;
         EndpointPage endpoint;
 
-        ObservableCollection<Tuple<string, string>> fileAttachments { get; set; } = [];
-        ObservableCollection<string> images { get; set; } = [];
+        public ObservableCollection<Tuple<string, string>> fileAttachments { get; set; } = [];
+        public ObservableCollection<string> images { get; set; } = [];
         
         public PromptField(Core.Worker worker, SendMessageEvent sendMessageEvent)
         {

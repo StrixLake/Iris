@@ -110,7 +110,8 @@
                             <Grid PointerEntered="Grid_PointerEntered"
                                   PointerExited="Grid_PointerExited">
 
-                                <Image Source="{Binding Converter={StaticResource ImageConverter}}"/>
+                                <Image Source="{Binding Converter={StaticResource ImageConverter}}"
+                                       Height="100"/>
                                 <Button x:Name="DeleteButton"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Top"
