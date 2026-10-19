@@ -9,7 +9,11 @@
       mc:Ignorable="d">
 
     <Grid HorizontalAlignment="Stretch"
-          VerticalAlignment="Stretch">
+          VerticalAlignment="Stretch"
+          AllowDrop="True"
+          Background="Transparent"
+          DragOver="ItemDragOver"
+          Drop="ItemsDrop">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
