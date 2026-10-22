@@ -1,0 +1,53 @@
+<UserControl x:Class="Iris.UI.ToolMessage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:Iris.UI"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+      mc:Ignorable="d">
+
+      <UserControl.Resources>
+        <SolidColorBrush x:Key="ExpanderHeaderBorderBrush" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderContentBackground" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderContentBorderBrush" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderHeaderBorderPointerOverBrush" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderHeaderBorderPressedBrush" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderChevronForeground" Color="Transparent"/>
+        <Thickness x:Key="ExpanderContentPadding">0</Thickness>
+        <AcrylicBrush x:Key="BlackBrush" TintOpacity="0.2" TintLuminosityOpacity="0.4" TintColor="{StaticResource SystemAccentColor}"/>
+    </UserControl.Resources>
+
+    <StackPanel CornerRadius="8"
+                HorizontalAlignment="Stretch"
+                BorderThickness="1"
+                Padding="10">
+
+        <!--Tool response-->
+        <Expander HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Stretch"
+                  Margin="0,0,0,10"
+                  IsExpanded="{x:Bind toolcall.Streaming, Mode=OneWay}">
+            <Expander.Header>
+                <Border BorderThickness="2"
+                        HorizontalAlignment="Left"
+                        Padding="10,5,10,7"
+                        CornerRadius="12"
+                        x:Name="header">
+                    <TextBlock Text="{x:Bind toolcall.Reasoning, Mode=OneWay}"/>
+                </Border>
+            </Expander.Header>
+            <Border CornerRadius="16"
+                    Padding="16"
+                    HorizontalAlignment="Stretch"
+                    BorderBrush="{ThemeResource BlackBrush}"
+                    BorderThickness="2">
+                <ContentControl x:Name="toolResponse"
+                                HorizontalContentAlignment="Stretch"/>
+            </Border>
+        </Expander>
+
+    </StackPanel>
+
+</UserControl>

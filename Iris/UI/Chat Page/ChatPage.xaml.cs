@@ -44,6 +44,10 @@ namespace Iris.UI
             {
                 contentControl.Content = new AssistantMessage(message, (msgToDelete) => { worker.Context.Remove(msgToDelete); }, worker.RegenerateMessage);
             }
+            else if (message.Role == "tool")
+            {
+                contentControl.Content = new ToolMessage(message);
+            }
             else
             {
                 contentControl.Content = new UserControl() { Visibility = Visibility.Collapsed };
