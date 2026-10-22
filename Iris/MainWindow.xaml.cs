@@ -67,7 +67,7 @@ namespace Iris
             AppWindow.TitleBar.BackgroundColor = Colors.Black;
 
             HistoryAreaOpen.PointerEntered += (o, e) => VisualStateManager.GoToState(rootPage, "HistoryOpen", true);
-            HistoryBorder.PointerExited += (o, e) => VisualStateManager.GoToState(rootPage, "HistoryClose", true);
+            HistoryAreaClose.PointerEntered += (o, e) => VisualStateManager.GoToState(rootPage, "HistoryClose", true);
 
             UIState.StateInstance.PropertyChanged += FileChanged;
             FileOverlayGrid.PointerPressed += (_, _) => FileOverlayGrid.Visibility = Visibility.Collapsed;

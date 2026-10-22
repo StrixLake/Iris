@@ -98,9 +98,17 @@
                     <media:BackdropBlurBrush Amount="0" x:Name="ChatBlur"/>
                 </Grid.Background>
 
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="1" Background="Transparent"
+                      x:Name="HistoryAreaClose"/>
+
                 <Border HorizontalAlignment="Left" VerticalAlignment="Stretch"
                         Width="250" CornerRadius="0, 20, 20, 0"
-                        x:Name="HistoryBorder">
+                        x:Name="HistoryBorder" Grid.Column="0">
 
                     <Border.Background>
                         <AcrylicBrush TintColor="{ThemeResource SystemAccentColorDark1}"
@@ -122,7 +130,14 @@
                                   SelectionChanged="ChangeSession">
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="x:Object">
-                                    <TextBlock Text="{x:Bind local:MainWindow.TitleConverter((x:Object))}"/>
+                                    <TextBlock Text="{x:Bind local:MainWindow.TitleConverter((x:Object))}">
+                                        <TextBlock.ContextFlyout>
+                                            <MenuFlyout>
+                                                <MenuFlyoutItem Text="Rename"/>
+                                                <MenuFlyoutItem Text="Delete"/>
+                                            </MenuFlyout>
+                                        </TextBlock.ContextFlyout>
+                                    </TextBlock>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
