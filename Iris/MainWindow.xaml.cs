@@ -11,6 +11,7 @@ using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -114,6 +115,9 @@ namespace Iris
 
             TextBox textbox = (TextBox)contextParent.Children[1];
             textbox.Text = ((Tuple<Core.Worker, ChatPage>)contextParent.DataContext).Item1.Title;
+
+            // increase the fps when text box is active
+            CompositionTarget.Rendering += fps;
         }
 
 
@@ -123,6 +127,7 @@ namespace Iris
         }
 
         Grid? contextParent;
+        EventHandler<object> fps = (_, _) => { };
 
         private void EnterRename(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
         {
@@ -140,6 +145,9 @@ namespace Iris
 
             ((Tuple<Core.Worker, ChatPage>)grid.DataContext).Item1.Title = textbox.Text;
             textblock.Text = textbox.Text;
+
+            // set fps to normal when editing is finished
+            CompositionTarget.Rendering -= fps;
         }
 
     }
