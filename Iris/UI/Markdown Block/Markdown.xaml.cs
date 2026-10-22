@@ -53,11 +53,7 @@ namespace Iris.UI
 
             // the visibility states are resolved here as well since
             // items repeater might build this control *after* streaming is set to true
-            if (message.Streaming)
-            {
-                InnerMarkdown.Visibility = Visibility.Collapsed;
-                InnerTextBlock.Visibility = Visibility.Visible;
-            }
+            MessageChanged(null, new PropertyChangedEventArgs(nameof(message.Streaming)));
 
             DeleteAction = RequestDeletion;
             RegenerationAction = RequestRegen;
@@ -120,6 +116,10 @@ namespace Iris.UI
 
             InnerMarkdown.Visibility = Visibility.Visible;
 
+            // message changed with streaming is called again so
+            // tool call end syncs with the reasoning block
+            MessageChanged(null, new PropertyChangedEventArgs(nameof(message.Streaming)));
+
         }
 
 
@@ -156,8 +156,21 @@ namespace Iris.UI
                 {
                     InnerMarkdown.Visibility = Visibility.Visible;
                     InnerTextBlock.Visibility = Visibility.Collapsed;
-                    if (element == "content") InnerMarkdown.Text = message.Content;
-                    if (element == "reasoning") InnerMarkdown.Text = message.Reasoning;
+                    // when the content is a tool call, append the text in
+                    // reasoning block and hide the content block
+                    if (element == "content") 
+                    {
+                        if (message.Content.EndsWith("<<TOOL END>>")) this.Visibility = Visibility.Collapsed;
+                        else InnerMarkdown.Text = message.Content;
+                    }
+                    if (element == "reasoning")
+                    {
+                        if(message.Content.EndsWith("<<TOOL END>>"))
+                        {
+                            InnerMarkdown.Text = $"{message.Reasoning}\n\n```\n\n{message.Content}\n\n```";
+                        }
+                        else InnerMarkdown.Text = message.Reasoning;
+                    }
                 }
             }
         }
