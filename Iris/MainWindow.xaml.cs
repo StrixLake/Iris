@@ -6,28 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using Iris.Core;
 using Iris.UI;
 using Microsoft.UI;
-using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
-using Windows.ApplicationModel.VoiceCommands;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Media.Streaming.Adaptive;
-using Windows.System;
-using Windows.UI.Core;
-using static System.Collections.Specialized.BitVector32;
+
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -104,7 +88,60 @@ namespace Iris
             FileOverlayGrid.Visibility = Visibility.Visible;
             FileViewerMarkdownBlock.Text = $"### {UIState.StateInstance.DisplayFile.Item1} \n\n{UIState.StateInstance.DisplayFile.Item2}";
         }
-        
+
+        private void DeleteChat(object sender, RoutedEventArgs e)
+        {
+            if (sender is not MenuFlyoutItem delete) return;
+            if (delete.DataContext is not Tuple<Core.Worker, ChatPage> session) return;
+
+            if(SessionList.SelectedItem == session)
+            {
+                // create a new chat and set that to selected
+                // and then remove it
+                Core.Worker worker = new();
+                ChatPage chatPage = new ChatPage(worker);
+                var newSession = new Tuple<Core.Worker, ChatPage>(worker, chatPage);
+                sessions.Add(newSession);
+                SessionList.SelectedItem = newSession;
+            }
+            sessions.Remove(session);
+        }
+
+        private void RenameChat(object sender, RoutedEventArgs e)
+        {
+            contextParent!.Children[0].Visibility = Visibility.Collapsed;
+            contextParent.Children[1].Visibility = Visibility.Visible;
+
+            TextBox textbox = (TextBox)contextParent.Children[1];
+            textbox.Text = ((Tuple<Core.Worker, ChatPage>)contextParent.DataContext).Item1.Title;
+        }
+
+
+        private void HistoryListContextRequested(object sender, object e)
+        {
+            contextParent = (Grid)((MenuFlyout)sender).Target;
+        }
+
+        Grid? contextParent;
+
+        private void EnterRename(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            Grid grid = (Grid)args.Element;
+
+            grid.Children[0].Visibility = Visibility.Visible;
+            grid.Children[1].Visibility = Visibility.Collapsed;
+
+            TextBox textbox = (TextBox)grid.Children[1];
+            TextBlock textblock= (TextBlock)grid.Children[0];
+
+            // sometimes the enter key may invoke this accelerator for a grid that wasn't
+            // editing and the textbox text would be empty in that case, so we guard that case
+            if (textbox.Text == "") return;
+
+            ((Tuple<Core.Worker, ChatPage>)grid.DataContext).Item1.Title = textbox.Text;
+            textblock.Text = textbox.Text;
+        }
+
     }
 
 }

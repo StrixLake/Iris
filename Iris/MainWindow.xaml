@@ -130,14 +130,21 @@
                                   SelectionChanged="ChangeSession">
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="x:Object">
-                                    <TextBlock Text="{x:Bind local:MainWindow.TitleConverter((x:Object))}">
-                                        <TextBlock.ContextFlyout>
-                                            <MenuFlyout>
-                                                <MenuFlyoutItem Text="Rename"/>
-                                                <MenuFlyoutItem Text="Delete"/>
+                                    <Grid KeyboardAcceleratorPlacementMode="Hidden">
+                                        <Grid.ContextFlyout>
+                                            <MenuFlyout Opening="HistoryListContextRequested">
+                                                <MenuFlyoutItem Text="Rename" Click="RenameChat"/>
+                                                <MenuFlyoutItem Text="Delete" Click="DeleteChat"/>
                                             </MenuFlyout>
-                                        </TextBlock.ContextFlyout>
-                                    </TextBlock>
+                                        </Grid.ContextFlyout>
+                                        
+                                        <Grid.KeyboardAccelerators>
+                                            <KeyboardAccelerator Key="Enter" Invoked="EnterRename"/>
+                                        </Grid.KeyboardAccelerators>
+                                        
+                                        <TextBlock Text="{x:Bind local:MainWindow.TitleConverter((x:Object))}" TextWrapping="WrapWholeWords"/>
+                                        <TextBox Visibility="Collapsed" TextWrapping="Wrap"/>
+                                    </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
