@@ -13,6 +13,7 @@ using Buffer = Windows.Storage.Streams.Buffer;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.ComponentModel;
 using Windows.Devices.PointOfService.Provider;
+using Microsoft.UI.Xaml.Media;
 
 namespace Iris.UI
 {
@@ -54,11 +55,18 @@ namespace Iris.UI
             ProviderButton.Click += (o, e) => VisualStateManager.GoToState(this, "ProviderState", true);
             LogButton.Click += (o, e) => VisualStateManager.GoToState(this, "LogState", true);
 
+            EventHandler<object> sub = (_, _) => { };
+
             textField.LostFocus += (o, e) =>
             {
                 if(!ModelButton.IsPressed && !ReasoningSelector.IsDropDownOpen) VisualStateManager.GoToState(this, "Normal", false);
+                CompositionTarget.Rendering -= sub;
             };
-            textField.GotFocus += (o, e) => VisualStateManager.GoToState(this, "Expanded", false);
+            textField.GotFocus += (o, e) =>
+            { 
+                VisualStateManager.GoToState(this, "Expanded", false);
+                CompositionTarget.Rendering += sub;
+            };
             modelFlyout.Closing += (o, e) => textField.Focus(FocusState.Keyboard);
             hiddenTextField.TextChanged += (o, e) => textField.Focus(FocusState.Keyboard);
         }
