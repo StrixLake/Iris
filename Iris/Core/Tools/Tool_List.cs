@@ -26,13 +26,15 @@ namespace Iris.Core
 
             if (tool.filename == null) return new("", "");
 
-            path = Path.Combine(path, tool.filename.Trim());
+            tool.filename = tool.filename.Trim();
+
+            path = Path.Combine(path, tool.filename);
 
             string result = File.OpenText(path).ReadToEnd();
 
-            result = $"<{tool.filename.Trim()}>\n {result} \n</{tool.filename.Trim()}>";
+            result = $"<{tool.filename}>\n {result} \n</{tool.filename}>";
 
-            return new($"Read {tool.filename.Trim()}",result);
+            return new($"Read {tool.filename}",result);
         }
     }
 }
