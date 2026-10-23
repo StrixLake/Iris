@@ -21,7 +21,7 @@
         </Grid.RowDefinitions>
 
 
-        <ScrollView Grid.Row="0" Grid.RowSpan="2">
+        <ScrollView Grid.Row="0">
             <ItemsRepeater ItemsSource="{x:Bind worker.Context, Mode=OneWay}"
                        x:Name="controlRepeater"
                        ElementPrepared="PrepareControl">

@@ -98,7 +98,7 @@ namespace Iris.Core
             JsonMessage jsonMessage = new();
             jsonMessage.role = "assistant";
 
-            string text = text = "<thinking>" + message.Reasoning + "</thinking> \n" + message.Content;
+            string text = "<thinking>" + message.Reasoning + "</thinking> \n" + message.Content;
 
             jsonMessage.content.Add(new Dictionary<string, object>
             {
