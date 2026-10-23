@@ -48,6 +48,8 @@ namespace Iris.UI
             this.element = element;
             message.PropertyChanged += MessageChanged;
 
+            Unloaded += (_, _) => { message.PropertyChanged -= MessageChanged; };
+
             if (element == "content") InnerMarkdown.Text = message.Content;
             if (element == "reasoning") InnerMarkdown.Text = message.Reasoning;
 

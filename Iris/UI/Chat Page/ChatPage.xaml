@@ -23,8 +23,9 @@
 
         <ScrollView Grid.Row="0">
             <ItemsRepeater ItemsSource="{x:Bind worker.Context, Mode=OneWay}"
-                       x:Name="controlRepeater"
-                       ElementPrepared="PrepareControl">
+                           x:Name="controlRepeater"
+                           ElementPrepared="PrepareControl"
+                           VerticalCacheLength="20">
                 <ItemsRepeater.ItemTemplate>
                     <DataTemplate>
                         <ContentControl HorizontalContentAlignment="Stretch"
