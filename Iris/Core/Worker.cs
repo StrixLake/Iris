@@ -12,8 +12,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Iris.UI;
-using Windows.Foundation.Metadata;
+using System.Threading.Tasks;
 
 
 namespace Iris.Core
@@ -140,7 +139,7 @@ namespace Iris.Core
             return JsonSerializer.Serialize(payload);
         }
 
-        public async void SendMessage(Message? prompt)
+        public async Task SendMessage(Message? prompt)
         {
             // calculate the serializer time
             Stopwatch watch = Stopwatch.StartNew();
@@ -163,7 +162,10 @@ namespace Iris.Core
             await Client.SendMessage(payload, assistantResponce, cancellationToken.Token);
             assistantResponce.Streaming = false;
 
-            Save();
+            if(assistantResponce.Content.Trim().EndsWith("<<TOOL END>>"))
+            {
+                await ToolLoop(assistantResponce);
+            }
         }
 
         public async void RegenerateMessage(Message message)

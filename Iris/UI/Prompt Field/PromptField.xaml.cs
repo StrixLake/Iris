@@ -119,7 +119,7 @@ namespace Iris.UI
             if(textField.Text.Trim() == "" && fileAttachments.Count == 0 && images.Count == 0)
             {
                 sendMessageEvent?.Invoke(null);
-                settings.SendMessage(null);
+                _ = settings.SendMessage(null);
                 return;
             }
 
@@ -131,7 +131,7 @@ namespace Iris.UI
                 files = this.fileAttachments
             };
 
-            settings.SendMessage(message);
+            _ = settings.SendMessage(message);
 
             this.images = [];
             this.fileAttachments = [];
