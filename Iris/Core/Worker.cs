@@ -63,6 +63,7 @@ namespace Iris.Core
         
         public ObservableCollection<string> Inputs {get; set;} = ["text", "image"];
         public ObservableCollection<Message> Context {get; set;} = [];
+        public string allowedPath = "";
 
         public string prefered_provider {get; set;} = "";
 
@@ -99,6 +100,12 @@ namespace Iris.Core
         {
             get => models;
             set => OnPropertyChanged(ref models, value);
+        }
+
+        public string AllowedPath
+        {
+            get => allowedPath;
+            set => OnPropertyChanged(ref allowedPath, value);   
         }
 
         public List<Worker>? splitWorkers {get;set;}
@@ -161,6 +168,8 @@ namespace Iris.Core
             assistantResponce.Streaming = true;
             await Client.SendMessage(payload, assistantResponce, cancellationToken.Token);
             assistantResponce.Streaming = false;
+
+            Save();
 
             if(assistantResponce.Content.Trim().EndsWith("<<TOOL END>>"))
             {

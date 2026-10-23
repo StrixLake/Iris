@@ -72,6 +72,8 @@ namespace Iris.Core
             await Client.SendMessage(payload, assistantResponce, cancellationToken.Token);
             assistantResponce.Streaming = false;
 
+            Save();
+
             await ToolLoop(assistantResponce);
         }
     }

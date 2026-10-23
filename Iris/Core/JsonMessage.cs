@@ -114,7 +114,7 @@ namespace Iris.Core
             JsonMessage jsonMessage = new();
             jsonMessage.role = "user";
 
-            string text = text = $"<Tool_Result tool=\"{message.Reasoning}\">" + message.Content + "</Tool_Result> \n";
+            string text = $"<Tool_Result tool=\"{message.Reasoning}\">\n\n{message.Content}\n\n</Tool_Result>\n";
 
             jsonMessage.content.Add(new Dictionary<string, object>
             {
