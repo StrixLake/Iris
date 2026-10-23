@@ -22,20 +22,16 @@
 
 
         <ScrollView Grid.Row="0" Grid.RowSpan="2">
-            <StackPanel>
-                <ItemsRepeater ItemsSource="{x:Bind worker.Context, Mode=OneWay}"
-                           x:Name="controlRepeater"
-                           ElementPrepared="PrepareControl">
-                    <ItemsRepeater.ItemTemplate>
-                        <DataTemplate>
-                            <ContentControl HorizontalContentAlignment="Stretch"
-                                        Margin="30,10,30,10"/>
-                        </DataTemplate>
-                    </ItemsRepeater.ItemTemplate>
-                </ItemsRepeater>
-
-                <Grid Height="100"/>
-            </StackPanel>
+            <ItemsRepeater ItemsSource="{x:Bind worker.Context, Mode=OneWay}"
+                       x:Name="controlRepeater"
+                       ElementPrepared="PrepareControl">
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate>
+                        <ContentControl HorizontalContentAlignment="Stretch"
+                                    Margin="30,10,30,10"/>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
         </ScrollView>
 
         <Grid Grid.Row="1">
