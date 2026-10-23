@@ -34,7 +34,7 @@
                     </ItemsRepeater.ItemTemplate>
                 </ItemsRepeater>
 
-                <Rectangle Height="200"/>
+                <Grid Height="100"/>
             </StackPanel>
         </ScrollView>
 
