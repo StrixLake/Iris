@@ -11,7 +11,6 @@ namespace Iris.UI
     public partial class ToolMessage : UserControl
     {
         readonly Core.Message toolcall;
-        readonly Markdown toolResult;
 
         public ToolMessage(Core.Message message)
         {
@@ -30,10 +29,6 @@ namespace Iris.UI
                     Color = (Windows.UI.Color)Application.Current.Resources.ThemeDictionaries[new String("SystemAccentColorDark1")]
                 };
             }
-
-            toolResult = new Markdown(toolcall, "content", (_) => { }, (_) => { });
-
-            toolResponse.Content = toolResult;
         }
     }
 }

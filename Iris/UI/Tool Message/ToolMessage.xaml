@@ -21,13 +21,11 @@
 
     <StackPanel CornerRadius="8"
                 HorizontalAlignment="Stretch"
-                BorderThickness="1"
-                Padding="10">
+                BorderThickness="1">
 
         <!--Tool response-->
         <Expander HorizontalAlignment="Stretch"
                   HorizontalContentAlignment="Stretch"
-                  Margin="0,0,0,10"
                   IsExpanded="{x:Bind toolcall.Streaming, Mode=OneWay}">
             <Expander.Header>
                 <Border BorderThickness="2"
@@ -35,7 +33,8 @@
                         Padding="10,5,10,7"
                         CornerRadius="12"
                         x:Name="header">
-                    <TextBlock Text="{x:Bind toolcall.Reasoning, Mode=OneWay}"/>
+                    <TextBlock Text="{x:Bind toolcall.Reasoning, Mode=OneWay}"
+                               TextWrapping="WrapWholeWords"/>
                 </Border>
             </Expander.Header>
             <Border CornerRadius="16"
@@ -43,8 +42,9 @@
                     HorizontalAlignment="Stretch"
                     BorderBrush="{ThemeResource BlackBrush}"
                     BorderThickness="2">
-                <ContentControl x:Name="toolResponse"
-                                HorizontalContentAlignment="Stretch"/>
+                <TextBlock HorizontalAlignment="Stretch"
+                           Text="{x:Bind toolcall.Content, Mode=OneWay}"
+                           TextWrapping="WrapWholeWords"/>
             </Border>
         </Expander>
 
