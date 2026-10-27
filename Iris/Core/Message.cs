@@ -41,7 +41,7 @@ namespace Iris.Core
             set => OnPropertyChanged(ref reasoning, value);
         }
 
-        public string Content
+        public virtual string Content
         {
             get => content;
             set => OnPropertyChanged(ref content, value);

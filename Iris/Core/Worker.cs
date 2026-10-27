@@ -45,6 +45,31 @@ namespace Iris.Core
             Context.Add(system_message);
         }
 
+        public Worker(Worker? preSplitWorker, Worker? parentWorker)
+        {
+            if(preSplitWorker != null)
+            {
+                Model = preSplitWorker.Model;
+                ModelChanged();
+                // don't add the system prompt
+            }
+            else if(parentWorker != null)
+            {
+                Model = parentWorker.Model;
+                ModelChanged();
+
+                Message system_message = new()
+                {
+                    Role = "system",
+                    Content = system_prompt
+                };
+
+                Context.Add(system_message);
+            }
+            
+            else throw new NotImplementedException();
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
         
         static ObservableCollection<string> models = ["z-ai/glm-5.3-flash"];
