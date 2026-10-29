@@ -26,15 +26,48 @@ namespace Iris.Core
 
             if (tool.filename == null) return new("", "");
 
-            tool.filename = tool.filename.Trim();
-
             path = Path.Combine(path, tool.filename);
 
-            string result = File.OpenText(path).ReadToEnd();
+            string result = FileManager.ReadFile(Path.GetFullPath(path));
 
             result = $"<{tool.filename}>\n {result} \n</{tool.filename}>";
 
             return new($"Read {tool.filename}",result);
+        }
+
+        public static Tuple<string, string> RCat(Tools.Tool tool, Worker worker)
+        {
+            string path = "C:/Users/yasha/Documents/Projects/Iris";
+
+            if (tool.filename == null) return new("", "");
+
+            path = Path.Combine(path, tool.filename);
+
+            string result = FileManager.ReadRawFile(Path.GetFullPath(path));
+
+            result = $"<{tool.filename}>\n {result} \n</{tool.filename}>";
+
+            return new($"Read {tool.filename}",result);
+        }
+
+        public static Tuple<string, string> WriteAnchor(Tools.Tool tool, Worker worker)
+        {
+            double anchor = tool.anchor;
+
+            string path = "C:/Users/yasha/Documents/Projects/Iris";
+
+            string filename = Path.GetFullPath(Path.Combine(path, tool.filename!));
+
+            bool status = FileManager.WritePage(filename, anchor, tool.edit!);
+
+            if(status)
+            {
+                return new Tuple<string, string>($"Write at {tool.anchor} on {tool.filename}", "Edit successful");
+            }
+            else
+            {
+                return new Tuple<string, string>($"Invalid Tool Call", "Edit failed, the file being editied is not in the file manager or the anchor is not present, please reread the file");
+            }
         }
     }
 }

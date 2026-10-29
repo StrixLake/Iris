@@ -31,6 +31,7 @@ namespace Iris.Core
                 List<Tools.Tool> tools = Tools.Parse(response.Content);
                 foreach(Tools.Tool tool in tools)
                 {
+                    if(tool.filename != null) tool.filename = tool.filename.Trim();
                     Tuple<string, string> result = Tools.Dispatch(tool, this);
                     Message toolResult = new()
                     {

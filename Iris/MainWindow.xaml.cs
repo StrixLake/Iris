@@ -105,6 +105,16 @@ namespace Iris
                 sessions.Add(newSession);
                 SessionList.SelectedItem = newSession;
             }
+
+            // remove the history file from disk so it doesn't
+            // get reloaded on the next launch
+            if (session.Item1.filename is string fname)
+            {
+                string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                string historyPath = System.IO.Path.Combine(rootPath, ".iris", "newhistory", $"{fname}.json");
+                if (File.Exists(historyPath)) File.Delete(historyPath);
+            }
+
             sessions.Remove(session);
         }
 
@@ -153,3 +163,4 @@ namespace Iris
     }
 
 }
+

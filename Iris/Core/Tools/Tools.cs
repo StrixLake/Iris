@@ -20,7 +20,7 @@ namespace Iris.Core
             [XmlElement]
             public string? filename {get; set;}
             [XmlElement]
-            public string? anchor {get; set;}
+            public double anchor {get; set;}
             [XmlElement]
             public string? edit {get; set;}
         }
@@ -45,15 +45,24 @@ namespace Iris.Core
             calls = "<tools>\n" + calls + "\n</tools>";
 
             XmlSerializer serializer = new XmlSerializer(typeof(Tools));
-            Tools toollist = (Tools?)serializer.Deserialize(new MemoryStream(Encoding.UTF8.GetBytes(calls))) ?? new Tools();
 
-            return toollist.toolcalls;
+            List<Tool> outList = [];
+
+            try 
+            {
+                Tools toollist = (Tools?)serializer.Deserialize(new MemoryStream(Encoding.UTF8.GetBytes(calls))) ?? new Tools();
+                outList = toollist.toolcalls;
+            } catch {}
+            
+            return outList;
         }
 
         public static Tuple<string, string> Dispatch(Tool tool, Worker worker)
         {
             if(tool.name == "ls") return Tool_Providers.Ls(tool, worker);
             if(tool.name == "cat") return Tool_Providers.Cat(tool, worker);
+            if(tool.name == "rcat") return Tool_Providers.RCat(tool, worker);
+            if(tool.name == "editfile") return Tool_Providers.WriteAnchor(tool, worker);
             else return new("", "");
         }
     }
