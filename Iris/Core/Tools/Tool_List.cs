@@ -69,5 +69,40 @@ namespace Iris.Core
                 return new Tuple<string, string>($"Invalid Tool Call", "Edit failed, the file being editied is not in the file manager or the anchor is not present, please reread the file");
             }
         }
+
+        public static Tuple<string, string> ReadAnchor(Tools.Tool tool, Worker worker)
+        {
+            double anchor = tool.anchor;
+
+            string path = "C:/Users/yasha/Documents/Projects/Iris";
+
+            string filename = Path.GetFullPath(Path.Combine(path, tool.filename!));
+
+            string page = FileManager.ReadPage(filename, anchor);
+
+            if(page == "[|Error: File or Page doesn't exist|]") return new Tuple<string, string>("Invalid Tool Call", page);
+
+            return new Tuple<string, string>($"Page read at anchor {anchor} on file {filename}", page);
+        }
+
+        public static Tuple<string, string> InsertAnchor(Tools.Tool tool, Worker worker)
+        {
+            double anchor = tool.anchor;
+
+            string path = "C:/Users/yasha/Documents/Projects/Iris";
+
+            string filename = Path.GetFullPath(Path.Combine(path, tool.filename!));
+
+            bool status = FileManager.InsertAnchor(filename, anchor, tool.edit!);
+
+            if(status)
+            {
+                return new Tuple<string, string>($"Anchor inserted in file {filename}", $"Anchor inserted after {anchor}");
+            }
+            else
+            {
+                return new Tuple<string, string>("Invalid Tool Call", "Failed to insert anchor, file or anchor not found");
+            }
+        }
     }
 }

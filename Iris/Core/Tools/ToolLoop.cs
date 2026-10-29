@@ -42,6 +42,17 @@ namespace Iris.Core
                     Context.Add(toolResult);
                 }
 
+                if(tools.Count == 0)
+                {
+                    Message toolResult = new()
+                    {
+                        Role = "tool",
+                        Reasoning = "Invalid Tool Call",
+                        Content = "XML parsing failed, try again"
+                    };
+                    Context.Add(toolResult);
+                }                
+
             }
             else
             {

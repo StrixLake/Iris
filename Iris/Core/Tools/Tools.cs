@@ -63,6 +63,8 @@ namespace Iris.Core
             if(tool.name == "cat") return Tool_Providers.Cat(tool, worker);
             if(tool.name == "rcat") return Tool_Providers.RCat(tool, worker);
             if(tool.name == "editfile") return Tool_Providers.WriteAnchor(tool, worker);
+            if(tool.name == "readanchor") return Tool_Providers.ReadAnchor(tool, worker);
+            if(tool.name == "insertanchor") return Tool_Providers.InsertAnchor(tool, worker);
             else return new("", "");
         }
     }
