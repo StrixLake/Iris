@@ -177,6 +177,11 @@ namespace Iris.Core
             Stopwatch watch = Stopwatch.StartNew();
             if(prompt is not null) Context.Add(prompt);
 
+            // save the message with the prompt since
+            // it's been crashing a lot right after i send the
+            // prompt and before the message streaming has stopped
+            Save();
+
             string payload = GeneratePayload(Context, this, Context.Count);
             Message assistantResponce = new()
             {
