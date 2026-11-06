@@ -46,7 +46,8 @@ namespace Iris.UI
             InitializeComponent();
             this.message = message;
             this.element = element;
-            message.PropertyChanged += MessageChanged;
+
+            Loaded += (_, _) => { message.PropertyChanged += MessageChanged; };
 
             Unloaded += (_, _) => { message.PropertyChanged -= MessageChanged; };
 
