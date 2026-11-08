@@ -22,6 +22,10 @@ namespace Iris.Core
             [XmlElement]
             public double anchor {get; set;}
             [XmlElement]
+            public double StartAnchor {get; set;}
+            [XmlElement]
+            public double EndAnchor {get; set;}
+            [XmlElement]
             public string? edit {get; set;}
         }
 
@@ -64,8 +68,9 @@ namespace Iris.Core
             if(tool.name == "rcat") return Tool_Providers.RCat(tool, worker);
             if(tool.name == "editfile") return Tool_Providers.WriteAnchor(tool, worker);
             if(tool.name == "readanchor") return Tool_Providers.ReadAnchor(tool, worker);
+            if(tool.name == "readanchorRange") return Tool_Providers.ReadAnchorRange(tool, worker);
             if(tool.name == "insertanchor") return Tool_Providers.InsertAnchor(tool, worker);
-            else return new("", "");
+            else return new("Invalid Tool Call", "Tool not found. Check if there is a typo in the tool name or maybe the tool doesn't exist.");
         }
     }
 }

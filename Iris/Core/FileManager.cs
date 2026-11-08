@@ -52,6 +52,23 @@ namespace Iris.Core
             else return "[|Error: File or Page doesn't exist|]";
         }
 
+        public static string ReadPageRange(string file, double StartPage, double EndPage)
+        {
+            if(files.ContainsKey(file) && files[file].pages.ContainsKey(StartPage) && files[file].pages.ContainsKey(EndPage))
+            {
+                string page = "";
+                int index1 = files[file].pages.IndexOf(StartPage);
+                int index2 = files[file].pages.IndexOf(EndPage);
+
+                for(double i = index1; i <= index2; ++i)
+                {
+                    page += files[file].pages[i];
+                }
+                return page;
+            }
+            else return "[|Error: File or Page doesn't exist|]";
+        }
+
         public static string ReadFile(string file)
         {
             if(!files.ContainsKey(file))

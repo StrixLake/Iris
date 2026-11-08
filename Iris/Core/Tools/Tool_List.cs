@@ -85,6 +85,19 @@ namespace Iris.Core
             return new Tuple<string, string>($"Page read at anchor {anchor} on file {filename}", page);
         }
 
+        public static Tuple<string, string> ReadAnchorRange(Tools.Tool tool, Worker worker)
+        {
+            string path = "C:/Users/yasha/Documents/Projects/Iris";
+
+            string filename = Path.GetFullPath(Path.Combine(path, tool.filename!));
+
+            string page = FileManager.ReadPageRange(filename, tool.StartAnchor, tool.EndAnchor);
+
+            if(page == "[|Error: File or Page doesn't exist|]") return new Tuple<string, string>("Invalid Tool Call", page);
+
+            return new Tuple<string, string>($"Read anchors from {tool.StartAnchor} to {tool.EndAnchor}", page);
+        }
+
         public static Tuple<string, string> InsertAnchor(Tools.Tool tool, Worker worker)
         {
             double anchor = tool.anchor;
