@@ -8,9 +8,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Windows.Media.Core;
-using Windows.ApplicationModel.Contacts;
-using System.Runtime.CompilerServices;
+using Microsoft.UI.Dispatching;
+using System.Threading.Tasks;
 
 
 // a wrapper over the markdown textblock
@@ -29,6 +28,7 @@ namespace Iris.UI
         readonly Action<Core.Message> DeleteAction;
         readonly Action<Core.Message> RegenerationAction;
 
+        bool isLoaded = false;
         // "element" arg can be "reasoning" or "content" and is used to decide
         // whether to show resoning or text from Core.Message
         readonly string element;
@@ -47,16 +47,31 @@ namespace Iris.UI
             this.message = message;
             this.element = element;
 
-            Loaded += (_, _) => { message.PropertyChanged += MessageChanged; };
+            Loaded += (_, _) => 
+            { 
+                isLoaded = true;
+                message.PropertyChanged += MessageChanged;
+                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
+                {
+                    await Task.Delay(400);
+                    if(isLoaded) MessageChanged(null, new PropertyChangedEventArgs(nameof(message.Streaming)));
+                });
+            };
 
-            Unloaded += (_, _) => { message.PropertyChanged -= MessageChanged; };
+            Unloaded += (_, _) => 
+            {
+                isLoaded = false;
+                message.PropertyChanged -= MessageChanged;
+                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () => 
+                { 
+                    InnerTextBlock.Visibility = Visibility.Visible;
+                    InnerMarkdown.Visibility = Visibility.Collapsed;
+                    InnerMarkdown.Text = null;
+                });
+            };
 
-            if (element == "content") InnerMarkdown.Text = message.Content;
-            if (element == "reasoning") InnerMarkdown.Text = message.Reasoning;
-
-            // the visibility states are resolved here as well since
-            // items repeater might build this control *after* streaming is set to true
-            MessageChanged(null, new PropertyChangedEventArgs(nameof(message.Streaming)));
+            if (element == "content") InnerTextBlock.Text = message.Content;
+            if (element == "reasoning") InnerTextBlock.Text = message.Reasoning;
 
             DeleteAction = RequestDeletion;
             RegenerationAction = RequestRegen;
@@ -64,34 +79,36 @@ namespace Iris.UI
 
         private void Markdown_Rendered(object sender, CommunityToolkit.WinUI.UI.Controls.MarkdownRenderedEventArgs e)
         {
-            // traverse the visual tree and add the custom context flyout to each rich textblock
-            List<RichTextBlock> richTextBlocksFound = [];
-            FindVisualElement<RichTextBlock>(sender, richTextBlocksFound);
+            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () => 
+            { 
+                // traverse the visual tree and add the custom context flyout to each rich textblock
+                List<RichTextBlock> richTextBlocksFound = [];
+                FindVisualElement<RichTextBlock>(sender, richTextBlocksFound);
 
-            foreach(RichTextBlock richTextBlock in richTextBlocksFound)
-            {
-                // richTextBlock.ContextFlyout = MarkdownFlyout;
-                // this has to be set to null so it doesn't use it's default
-                // flyout
-                richTextBlock.ContextFlyout = null;
-                // we subscribe to the context requested event
-                // to save a reference to it so we can use it later for menu flyout click events
-                // since it's not possible to get the rich text block from that event
-                // by travelling up the visual tree
-                // this event will only fire if we don't set the contextflyout
-                // property of the ui element, so we have to manually show the
-                // menu flyout at the mouse position
-                richTextBlock.ContextRequested += (UIElement sender, ContextRequestedEventArgs args) =>
+                foreach(RichTextBlock richTextBlock in richTextBlocksFound)
                 {
-                    richTextBlockInContext = (RichTextBlock)sender;
-                    // get the position of the right click
-                    args.TryGetPosition(sender, out Point point);
-                    MarkdownFlyout.ShowAt(sender, point);
-                };
-            }
+                    // richTextBlock.ContextFlyout = MarkdownFlyout;
+                    // this has to be set to null so it doesn't use it's default
+                    // flyout
+                    richTextBlock.ContextFlyout = null;
+                    // we subscribe to the context requested event
+                    // to save a reference to it so we can use it later for menu flyout click events
+                    // since it's not possible to get the rich text block from that event
+                    // by travelling up the visual tree
+                    // this event will only fire if we don't set the contextflyout
+                    // property of the ui element, so we have to manually show the
+                    // menu flyout at the mouse position
+                    richTextBlock.ContextRequested += (UIElement sender, ContextRequestedEventArgs args) =>
+                    {
+                        richTextBlockInContext = (RichTextBlock)sender;
+                        // get the position of the right click
+                        args.TryGetPosition(sender, out Point point);
+                        MarkdownFlyout.ShowAt(sender, point);
+                    };
+                }
 
-            richTextBlocks = richTextBlocksFound;
-
+                richTextBlocks = richTextBlocksFound;
+            });
         }
 
         // when we start editing, make the edit text box visible
@@ -133,7 +150,7 @@ namespace Iris.UI
         {
             // if either of the display text changes, check the element we are updating
             // and update that
-            if(args.PropertyName == nameof(message.Content) || args.PropertyName == nameof(message.Reasoning))
+            if (args.PropertyName == nameof(message.Content) || args.PropertyName == nameof(message.Reasoning))
             {
                 if (element == "reasoning") InnerTextBlock.Text = message.Reasoning;
                 if (element == "content") InnerTextBlock.Text = message.Content;
@@ -157,8 +174,6 @@ namespace Iris.UI
                 }
                 else
                 {
-                    InnerMarkdown.Visibility = Visibility.Visible;
-                    InnerTextBlock.Visibility = Visibility.Collapsed;
                     // when the content is a tool call, append the text in
                     // reasoning block and hide the content block
                     if (element == "content") 
@@ -174,6 +189,9 @@ namespace Iris.UI
                         }
                         else InnerMarkdown.Text = message.Reasoning;
                     }
+                    
+                    InnerMarkdown.Visibility = Visibility.Visible;
+                    InnerTextBlock.Visibility = Visibility.Collapsed;
                 }
             }
         }

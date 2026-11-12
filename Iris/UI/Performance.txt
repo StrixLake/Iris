@@ -1,0 +1,11 @@
+When switching sessions, the layout pass for markdown text block is very expensive because of a large number of child elements used to render the parsed markdown.
+
+Since the child elements have to be created on the ui thread, that is also very slow for large number of elements.
+
+When scrolling rapidly, markdown text block are loaded and unloaded faster than they can be layed out and rendered, so the work keeps getting queued up. As well as the collapsed reasoning blocks are created too despite not being visible.
+
+The solution is to display a textblock in place of the markdown block and queue the creation of markdown block after a delay in the event that the ui element got unloaded in that time.
+Similarly, in the assistant message, don't create the markdown block for reasoning until the header is expanded.
+All the work that is not immediatly needed, like changing the menu flyout of markdown blocks, is also queued up with low priority.
+
+The pop during scrolling is still present for textblock since creating another ui element instead of caching is very heavy. Using a simpler cached ui element for each message type could help prevent pop at all (yet to be tested), since textblock in the data template for items repeater does not suffer from pop ups.

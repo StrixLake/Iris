@@ -51,13 +51,13 @@
         <controls:MarkdownTextBlock x:Name="InnerMarkdown"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Stretch"
+                                    Visibility="Collapsed"
                                     MarkdownRendered="Markdown_Rendered"
                                     Background="Transparent"/>
         
         <TextBlock x:Name="InnerTextBlock"
                    HorizontalAlignment="Stretch"
                    VerticalAlignment="Stretch"
-                   Visibility="Collapsed"
                    TextWrapping="WrapWholeWords"/>
 
         <TextBox x:Name="InnerTextBox_Edit"

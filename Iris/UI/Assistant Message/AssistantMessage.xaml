@@ -35,6 +35,7 @@
         <Expander HorizontalAlignment="Stretch"
                   HorizontalContentAlignment="Stretch"
                   Margin="0,0,0,10"
+                  x:Name="reasoningHeader"
                   IsExpanded="{x:Bind message.Streaming, Mode=OneWay}">
             <Expander.Header>
                 <Border BorderBrush="{ThemeResource BlackBrush}"

@@ -16,22 +16,41 @@ namespace Iris.UI
 {
     public partial class AssistantMessage : UserControl
     {
-        Core.Message message;
-        Markdown reasoningMarkdown;
-        Markdown contentMarkdown;
+        readonly Core.Message message;
+        Markdown? reasoningMarkdown;
+        readonly Markdown contentMarkdown;
+
+        readonly Action<Core.Message> requestDeletion;
+        readonly Action<Core.Message> requestRegeneration;
+
         public AssistantMessage(Core.Message backingMessage, Action<Core.Message> RequestDeletion, Action<Core.Message> RequestRegen)
         {
             InitializeComponent();
             message = backingMessage;
 
-            reasoningMarkdown = new(message, "reasoning", RequestDeletion, RequestRegen);
-            contentMarkdown = new(message, "content", RequestDeletion, RequestRegen);
+            requestDeletion = RequestDeletion; 
+            requestRegeneration = RequestRegen;
 
-            reasoningBlock.Content = reasoningMarkdown;
+            contentMarkdown = new(message, "content", requestDeletion, requestRegeneration);
+
             contentBlock.Content = contentMarkdown;
 
-            message.messageLog!.PropertyChanged += StatusHandler;
+            reasoningHeader.Expanding += ExpanderOpen;
+
+            Loaded += (_,_) => message.messageLog!.PropertyChanged += StatusHandler;
+            Unloaded += (_,_) => message.messageLog!.PropertyChanged -= StatusHandler;
+
             StatusHandler(null, new PropertyChangedEventArgs(nameof(message.messageLog.Status)));
+        }
+
+        bool alreadyOpened = false;
+        private void ExpanderOpen(Expander sender, ExpanderExpandingEventArgs args)
+        {
+            if(alreadyOpened) return;
+            alreadyOpened = true;
+
+            reasoningMarkdown = new(message, "reasoning", requestDeletion, requestRegeneration);
+            reasoningBlock.Content = reasoningMarkdown;
         }
 
         void StatusHandler(object? sender, PropertyChangedEventArgs args)

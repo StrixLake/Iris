@@ -19,12 +19,12 @@ namespace Iris.UI
 
         readonly UI.PromptField promptField;
         
-        Core.Worker worker;
-        
+        readonly Core.Worker worker;
+
         public ChatPage(Core.Worker worker)
         {
             InitializeComponent();
-
+            
             this.worker = worker;
             promptField = new PromptField(worker, (e) => {});
             prompt.Content = promptField;
@@ -34,24 +34,28 @@ namespace Iris.UI
         {
             if (args.Element is not ContentControl contentControl) return;
 
+            UserControl messageUI;
+            
             Core.Message message = worker.Context[args.Index];
-
-            if (message.Role == "user")
+            
+            if(message.Role == "user")
             {
-                contentControl.Content = new UserMessage(message, (msgToDelete) => { worker.Context.Remove(msgToDelete); });
+                messageUI = new UserMessage(message, (msgToDelete) => { worker.Context.Remove(msgToDelete); });
             }
             else if (message.Role == "assistant")
             {
-                contentControl.Content = new AssistantMessage(message, (msgToDelete) => { worker.Context.Remove(msgToDelete); }, worker.RegenerateMessage);
+                messageUI = new AssistantMessage(message, (msgToDelete) => { worker.Context.Remove(msgToDelete); }, worker.RegenerateMessage);
             }
             else if (message.Role == "tool")
             {
-                contentControl.Content = new ToolMessage(message);
+                messageUI = new ToolMessage(message);
             }
             else
             {
-                contentControl.Content = new UserControl() { Visibility = Visibility.Collapsed };
+                messageUI = new UserControl() { Visibility = Visibility.Collapsed };
             }
+            
+            contentControl.Content = messageUI;
         }
 
         void ItemDragOver(object sender, DragEventArgs args)
@@ -78,7 +82,7 @@ namespace Iris.UI
                         promptField.images.Add(image);
                     }
 
-                    else if (storageFile.ContentType.StartsWith("text"))
+                    else if (storageFile.ContentType.StartsWith("text") || storageFile.FileType.EndsWith("md")) // markdown files don't appear as text file for some reason
                     {
                         using Stream stream = await storageFile.OpenStreamForReadAsync();
                         byte[] bytes = new byte[stream.Length];
