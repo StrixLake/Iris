@@ -11,6 +11,8 @@ using Windows.Storage;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Microsoft.UI.Dispatching;
+using System.Threading.Tasks;
 
 namespace Iris.UI
 {
@@ -37,25 +39,56 @@ namespace Iris.UI
             UserControl messageUI;
             
             Core.Message message = worker.Context[args.Index];
-            
-            if(message.Role == "user")
+
+            if (message.Role == "user")
             {
-                messageUI = new UserMessage(message, (msgToDelete) => { worker.Context.Remove(msgToDelete); });
+                messageUI = UserMessage.GetCached(message);
             }
             else if (message.Role == "assistant")
             {
-                messageUI = new AssistantMessage(message, (msgToDelete) => { worker.Context.Remove(msgToDelete); }, worker.RegenerateMessage);
+                messageUI = AssistantMessage.GetCached(message);
             }
             else if (message.Role == "tool")
             {
-                messageUI = new ToolMessage(message);
+                messageUI = ToolMessage.GetCached(message);
             }
             else
             {
                 messageUI = new UserControl() { Visibility = Visibility.Collapsed };
             }
-            
+
             contentControl.Content = messageUI;
+            
+            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () => 
+            {
+                await Task.Delay(200);
+
+                int index = controlRepeater.GetElementIndex(contentControl);
+                if (index == -1) return;
+                Core.Message message = worker.Context[index];
+
+                UserControl messageUI;
+
+                if(message.Role == "user")
+                {
+                    messageUI = new UserMessage(message, (msgToDelete) => { worker.Context.Remove(msgToDelete); });
+                }
+                else if (message.Role == "assistant")
+                {
+                    messageUI = new AssistantMessage(message, (msgToDelete) => { worker.Context.Remove(msgToDelete); }, worker.RegenerateMessage);
+                }
+                else if (message.Role == "tool")
+                {
+                    messageUI = new ToolMessage(message);
+                }
+                else
+                {
+                    messageUI = new UserControl() { Visibility = Visibility.Collapsed };
+                }
+                
+                contentControl.Content = messageUI;
+            });
+
         }
 
         void ItemDragOver(object sender, DragEventArgs args)

@@ -10,12 +10,30 @@ using Iris.UI;
 using Core = Iris.Core;
 using System.ComponentModel;
 using Microsoft.UI;
+using System.Collections.Generic;
 
 
 namespace Iris.UI
 {
     public partial class AssistantMessage : UserControl
     {
+        static Queue<AssistantMessageLight> cachedMessage = [];
+        static AssistantMessage()
+        {
+            for(int i = 0; i < 150; ++i) 
+            { 
+                cachedMessage.Enqueue(new AssistantMessageLight()); 
+            }
+        }
+
+        public static AssistantMessageLight GetCached(Core.Message message)
+        {
+            var x = cachedMessage.Dequeue();
+            cachedMessage.Enqueue(x);
+            x.Text = message.Content;
+            return x;
+        }
+
         readonly Core.Message message;
         Markdown? reasoningMarkdown;
         readonly Markdown contentMarkdown;

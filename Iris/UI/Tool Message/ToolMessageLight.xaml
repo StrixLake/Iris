@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="Iris.UI.ToolMessageLight"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Iris.UI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="ExpanderHeaderBorderBrush" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderContentBackground" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderContentBorderBrush" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderHeaderBorderPointerOverBrush" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderHeaderBorderPressedBrush" Color="Transparent"/>
+        <SolidColorBrush x:Key="ExpanderChevronForeground" Color="Transparent"/>
+        <Thickness x:Key="ExpanderContentPadding">0</Thickness>
+        <AcrylicBrush x:Key="BlackBrush" TintOpacity="0.2" TintLuminosityOpacity="0.4" TintColor="{StaticResource SystemAccentColor}"/>
+    </UserControl.Resources>
+
+    <StackPanel CornerRadius="8"
+                HorizontalAlignment="Stretch"
+                BorderThickness="1">
+
+        <!--Tool response-->
+        <Expander HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Stretch">
+            <Expander.Header>
+                <Border BorderThickness="2"
+                        HorizontalAlignment="Left"
+                        Padding="10,5,10,7"
+                        CornerRadius="12"
+                        x:Name="header">
+                    <TextBlock x:Name="headerText"
+                               TextWrapping="WrapWholeWords"/>
+                </Border>
+            </Expander.Header>
+        </Expander>
+
+    </StackPanel>
+</UserControl>

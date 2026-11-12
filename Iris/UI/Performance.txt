@@ -8,4 +8,6 @@ The solution is to display a textblock in place of the markdown block and queue 
 Similarly, in the assistant message, don't create the markdown block for reasoning until the header is expanded.
 All the work that is not immediatly needed, like changing the menu flyout of markdown blocks, is also queued up with low priority.
 
-The pop during scrolling is still present for textblock since creating another ui element instead of caching is very heavy. Using a simpler cached ui element for each message type could help prevent pop at all (yet to be tested), since textblock in the data template for items repeater does not suffer from pop ups.
+The pop during scrolling is still present for textblock since creating another ui element instead of caching is very heavy. Using a simpler cached ui element for each message type helps prevent pop at all, since textblock in the data template for items repeater does not suffer from pop ups.
+
+By using cached light variants of messages ui controls and dispatching the heavier elements with a delay, the pop up when scrolling is almost gone completely.

@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
 using System.Linq;
+using System.Collections.Generic;
 
 
 
@@ -14,10 +15,26 @@ namespace Iris.UI
     public partial class UserMessage : UserControl
     {
 
-        Core.Message message;
+        static Queue<UserMessageLight> cachedMessage = [];
+        static UserMessage()
+        {
+            for(int i = 0; i < 50; ++i)
+            {
+                cachedMessage.Enqueue(new());
+            }
+        }
 
+        public static UserMessageLight GetCached(Core.Message message)
+        {
+            var x = cachedMessage.Dequeue();
+            cachedMessage.Enqueue(x);
+            x.Text = message.Content;
+            return x;
+        }
+
+        readonly Core.Message message;
         // the markdown control
-        Markdown markdown;
+        readonly Markdown markdown;
 
         public UserMessage(Core.Message message, Action<Core.Message> RequestDeletion)
         {
